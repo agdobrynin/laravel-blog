@@ -3,7 +3,7 @@
     'showView' => true,
 ])
 
-<div class="d-flex gap-2">
+<div class="d-flex gap-2" {{ $attributes }}>
     @if($showView)
         <a class="btn btn-sm btn-outline-primary" href="{{ route('post.show', [$post]) }}">show</a>
     @endif

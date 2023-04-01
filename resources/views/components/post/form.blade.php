@@ -5,7 +5,7 @@
     'method' => 'POST',
 ])
 
-<form action="{{ $route }}" method="post">
+<form action="{{ $route }}" method="post" {{ $attributes }}>
     @csrf
     @method($method)
     <x-ui.input name="title" label="Title" class="input-small" value="{{ old('title', $post->title ?? '') }}"/>
