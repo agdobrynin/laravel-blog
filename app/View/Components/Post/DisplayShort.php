@@ -8,7 +8,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
 
-class BlogPostItemDisplay extends Component
+class DisplayShort extends Component
 {
     public function __construct(public readonly Post $post)
     {
@@ -24,6 +24,6 @@ class BlogPostItemDisplay extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.post.blog-post-item-display');
+        return view('components.post.display-short');
     }
 }

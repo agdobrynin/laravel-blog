@@ -17,8 +17,8 @@ class BlogPostFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->city,
-            'content' => fake()->realTextBetween,
+            'title' => fake()->realTextBetween(5, 50),
+            'content' => fake()->realTextBetween(390, 700),
         ];
     }
 }

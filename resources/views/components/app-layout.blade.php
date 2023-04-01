@@ -4,28 +4,34 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel App @isset($pageTitle) | {{  $pageTitle }}@endisset</title>
+    <title>Laravel App @isset($pageTitle)
+            | {{  $pageTitle }}
+        @endisset</title>
+    @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 </head>
 <body>
-<div>
-    <a href="{{ route('home.index') }}">Home</a>
-    |
-    <a href="{{ route('post.index') }}">Posts</a>
-    |
-    <a href="{{ route('post.create') }}">New post</a>
+<div class="d-flex flex-column flex-md-row align-content-center p-3 px-md-4 bg-white border-bottom shadow-sm mb-3">
+    <h5 class="my-0 me-md-auto">
+        <a href="{{ route('home.index') }}" class="text-dark text-decoration-none">Laravel App</a>
+    </h5>
+    <nav class="my-2 my-md-0 me-md-3">
+        <a href="{{ route('post.index') }}" class="p-2 text-dark">Posts</a>
+        <a href="{{ route('post.create') }}" class="p-2 text-dark">New post</a>
+    </nav>
 </div>
-<hr>
-@if(session('error'))
-    <x-ui.alert type="error" class="m-4">
-        {{ session('error') }}
-    </x-ui.alert>
-@endif
-@if(session('success'))
-    <x-ui.alert type="success" class="m-4">
-        {{ session('success') }}
-    </x-ui.alert>
-@endif
+<div class="container mb-4">
+    @if(session('error'))
+        <x-ui.alert type="dander">
+            {{ session('error') }}
+        </x-ui.alert>
+    @endif
+    @if(session('success'))
+        <x-ui.alert type="success">
+            {{ session('success') }}
+        </x-ui.alert>
+    @endif
 
-{{ $slot }}
+    {{ $slot }}
+</div>
 </body>
 </html>
