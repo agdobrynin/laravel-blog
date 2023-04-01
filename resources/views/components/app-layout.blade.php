@@ -16,14 +16,14 @@
 </div>
 <hr>
 @if(session('error'))
-    <x-alert type="error" class="m-4">
+    <x-ui.alert type="error" class="m-4">
         {{ session('error') }}
-    </x-alert>
+    </x-ui.alert>
 @endif
 @if(session('success'))
-    <x-alert type="success" class="m-4">
+    <x-ui.alert type="success" class="m-4">
         {{ session('success') }}
-    </x-alert>
+    </x-ui.alert>
 @endif
 
 {{ $slot }}

@@ -1,18 +1,14 @@
+@props([
+    'route',
+    'actionTitle',
+    'post' => null,
+    'method' => 'POST',
+])
+
 <form action="{{ $route }}" method="post">
     @csrf
-    <div>
-        <label>Title</label>
-        <input type="text" name="title" value="{{ old('title') }}">
-        @error('title')
-            <div>{{ $message }}</div>
-        @enderror
-    </div>
-    <div>
-        <label>Content</label>
-        <textarea name="content" cols="30" rows="10">{{ old('content') }}</textarea>
-        @error('content')
-            <div>{{ $message }}</div>
-        @enderror
-    </div>
+    @method($method)
+    <x-ui.input name="title" label="Title" class="input-small" value="{{ old('title', $post->title ?? '') }}"/>
+    <x-ui.textarea name="content" label="Post content" value="{{ old('content', $post->content ?? '') }}"/>
     <input type="submit" value="{{ $actionTitle }}">
 </form>

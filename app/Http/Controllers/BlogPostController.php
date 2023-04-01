@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BlogPostRequest;
-use Illuminate\Http\Request;
 use App\Models\BlogPost;
 use Illuminate\Support\Str;
 
@@ -53,24 +52,32 @@ class BlogPostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(BlogPost $post)
     {
-        //
+        return view('post.edit', ['post' => $post]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BlogPostRequest $request, BlogPost $post)
     {
-        //
+        $post->update($request->validated());
+
+        return redirect()
+            ->route('post.show', ['post' => $post])
+            ->with('success', 'Post was updated');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(BlogPost $post)
     {
-        //
+        $post->delete();
+
+        return redirect()
+            ->route('post.index')
+            ->with('success', 'Post "' . $post->title . '" was deleted');
     }
 }
