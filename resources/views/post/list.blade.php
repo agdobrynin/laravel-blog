@@ -1,11 +1,13 @@
 <x-app-layout pageTitle='Latest posts'>
-    <div class="row">
+    <div class="row justify-content-center row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
         @if($posts->count())
             @foreach($posts as $post)
-                <x-post.display-short :$post class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4"/>
+                <x-post.display-short :$post class="col d-flex align-items-stretch"/>
             @endforeach
         @else
-            <div class="col-12 col-md-6 text-center offset-md-3 shadow-lg p-2"><h5>Posts not found</h5></div>
+            <div class="col shadow-lg p-4 text-center">
+                <h5 class="m-0">Posts not found</h5>
+            </div>
         @endif
     </div>
 </x-app-layout>

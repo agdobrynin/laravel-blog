@@ -19,6 +19,11 @@ class DisplayShort extends Component
         return Str::limit($this->post->content,  50);
     }
 
+    public function isUpdated(): bool
+    {
+        return $this->post->created_at != $this->post->updated_at;
+    }
+
     /**
      * Get the view / contents that represent the component.
      */

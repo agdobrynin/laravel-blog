@@ -10,7 +10,7 @@
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 </head>
 <body>
-<div class="d-flex flex-column flex-md-row align-content-center p-3 px-md-4 bg-white border-bottom shadow-sm mb-3">
+<div class="d-flex flex-column flex-md-row align-content-center p-3 px-md-4 bg-white border-bottom shadow-sm mb-4">
     <h5 class="my-0 me-md-auto">
         <a href="{{ route('home.index') }}" class="text-dark text-decoration-none">Laravel App</a>
     </h5>
