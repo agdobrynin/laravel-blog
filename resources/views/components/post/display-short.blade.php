@@ -7,11 +7,11 @@
         </div>
         <div class="card-body">
             <p> {{ $shortContent() }} </p>
-            <div class="text-muted fw-lighter position-relative">
+            <div class="text-muted fw-lighter">
                 {{ $post->updated_at->diffForHumans()  }}
 
                 @if($isUpdated())
-                    <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-primary">
+                    <span class="badge rounded-pill bg-primary">
                         🔔 updated
                         <span class="visually-hidden">was updated</span>
                     </span>
