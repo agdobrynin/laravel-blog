@@ -13,7 +13,7 @@ class BlogPostController extends Controller
      */
     public function index()
     {
-        $posts = BlogPost::latest()->get();
+        $posts = BlogPost::latest()->withCount('comments')->get();
 
         return view('post.list', ['posts' => $posts]);
     }
@@ -43,6 +43,8 @@ class BlogPostController extends Controller
      */
     public function show(BlogPost $post)
     {
+        $post->loadMissing('comments');
+
         return view('post.show', [
             'post' => $post,
             'pageTitle' => Str::limit($post->title, 30),

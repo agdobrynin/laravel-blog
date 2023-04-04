@@ -3,7 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\BlogPost;
+use App\Models\Comment;
+use Faker\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class PostTest extends TestCase
@@ -18,7 +21,7 @@ class PostTest extends TestCase
         $response->assertSeeText('Posts not found');
     }
 
-    public function testAddPostAndSeeItOnPage(): void
+    public function testAddPostAndSeeItOnPageWithNoComments(): void
     {
         $post = BlogPost::create([
             'title' => 'Post title one',
@@ -30,8 +33,27 @@ class PostTest extends TestCase
         $response->assertOk();
         $response->assertSeeText('Post title one');
         $response->assertSeeText('Lorem ipsum dolor sit amet');
+        $response->assertSeeText('No comments yet.');
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
+    }
+
+    public function testAddPostAndSeeItOnPageWithFiveComments(): void
+    {
+        /** @var BlogPost $post */
+        $post = BlogPost::factory()->create();
+        $comments = Comment::factory(5)->make();
+        $post->comments()->saveMany($comments);
+
+        $response = $this->get('/post');
+
+        $response->assertOk();
+        $response->assertSeeText($post->title);
+
+        $limitContent = Str::limit($post->content,  50);
+        $response->assertSeeText($limitContent);
+        $response->assertSeeText('Has comments');
+        $response->assertSeeText('💬 5');
     }
 
     public function testStorePost(): void

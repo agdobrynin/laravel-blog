@@ -17,6 +17,16 @@
                     </span>
                 @endif
             </div>
+            <div class="text-muted fw-lighter">
+                @if($post->comments_count)
+                    Has comments
+                    <span class="badge rounded-pill bg-secondary">
+                        💬 {{ $post->comments_count }}
+                    </span>
+                @else
+                    No comments yet.
+                @endif
+            </div>
         </div>
         <div class="card-footer text-end">
             <x-post.action :$post/>

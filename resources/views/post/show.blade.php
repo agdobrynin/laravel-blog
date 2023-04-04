@@ -11,4 +11,10 @@
     </div>
 
     <x-post.action :$post :showView="false"/>
+
+    @forelse($post->comments as $comment)
+        <x-comment.item :$comment />
+    @empty
+        <p class="my-3 p-3 border rounded shadow-sm">No comments yet.</p>
+    @endforelse
 </x-app-layout>

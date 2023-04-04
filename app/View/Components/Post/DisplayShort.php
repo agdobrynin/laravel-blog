@@ -10,13 +10,15 @@ use Illuminate\View\Component;
 
 class DisplayShort extends Component
 {
+    public const LIMIT_POST_CONTENT = 50;
+
     public function __construct(public readonly Post $post)
     {
     }
 
     public function shortContent(): string
     {
-        return Str::limit($this->post->content,  50);
+        return Str::limit($this->post->content,  self::LIMIT_POST_CONTENT);
     }
 
     public function isUpdated(): bool
