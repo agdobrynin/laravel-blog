@@ -1,6 +1,6 @@
-<x-app-layout pageTitle='New post'>
+<x-app-layout pageTitle="{{ __('Обновить пост') }}">
     <x-post.form
-        actionTitle="Update"
+        actionTitle="{{ __('Обновить') }}"
         route="{{ route('post.update', [$post]) }}"
         method="PUT"
         :$post

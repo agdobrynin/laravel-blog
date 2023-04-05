@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('content');
 
             $table->foreignIdFor(BlogPost::class)
-                ->constrained('blog_posts');
+                ->constrained('blog_posts')->cascadeOnDelete();
         });
     }
 

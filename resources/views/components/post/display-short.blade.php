@@ -12,19 +12,19 @@
 
                 @if($isUpdated())
                     <span class="badge rounded-pill bg-primary">
-                        🔔 updated
-                        <span class="visually-hidden">was updated</span>
+                        🔔 {{ __('обновлено') }}
+                        <span class="visually-hidden">{{ __('обновлено') }}</span>
                     </span>
                 @endif
             </div>
             <div class="text-muted fw-lighter">
                 @if($post->comments_count)
-                    Has comments
+                    {{ __('Есть комментарии') }}
                     <span class="badge rounded-pill bg-secondary">
                         💬 {{ $post->comments_count }}
                     </span>
                 @else
-                    No comments yet.
+                    {{ __('Комментариев пока нет.') }}
                 @endif
             </div>
         </div>

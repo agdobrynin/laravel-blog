@@ -6,7 +6,7 @@
             @endforeach
         @else
             <div class="col shadow-lg p-4 text-center">
-                <h5 class="m-0">Posts not found</h5>
+                <h5 class="m-0">{{ __('Записей в блоге нет') }}</h5>
             </div>
         @endif
     </div>

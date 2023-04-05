@@ -1,7 +1,7 @@
-<x-app-layout pageTitle='New post'>
+<x-app-layout pageTitle="{{ __('Новый пост')  }}">
     <div class="col col-lg-6 mx-auto">
         <x-post.form
-            actionTitle="Add"
+            actionTitle="{{ __('Создать') }}"
             route="{{ route('post.store') }}"
             :post="null"
             class="shadow-lg p-4"

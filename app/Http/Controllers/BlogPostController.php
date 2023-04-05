@@ -40,7 +40,7 @@ class BlogPostController extends Controller
 
         return redirect()
             ->route('post.show', ['post' => $post])
-            ->with('success', 'New post was created');
+            ->with('success', trans('Новый пост создан успешно'));
     }
 
     /**
@@ -73,7 +73,7 @@ class BlogPostController extends Controller
 
         return redirect()
             ->route('post.show', ['post' => $post])
-            ->with('success', 'Post was updated');
+            ->with('success', trans('Пост обновлен'));
     }
 
     /**
@@ -82,9 +82,10 @@ class BlogPostController extends Controller
     public function destroy(BlogPost $post)
     {
         $post->delete();
+        $message = trans('Пост ":title" успешно удален', ['title' => $post->title]);
 
         return redirect()
             ->route('post.index')
-            ->with('success', 'Post "' . $post->title . '" was deleted');
+            ->with('success', $message);
     }
 }
