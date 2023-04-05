@@ -35,12 +35,14 @@ Route::middleware('auth')
         Route::post('/verification-notification', function (Request $request) {
             $request->user()->sendEmailVerificationNotification();
 
-            return back()->with('message', 'Verification link sent!');
+            return back()
+                ->with('message', trans('Ссылка подтверждения умпешно отправлена!'));
         })->middleware(['throttle:6,1'])->name('send');
 
         Route::get('/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
             $request->fulfill();
 
-            return redirect()->route('home.index')->with('success', 'Your email was verified');
+            return redirect()->route('home.index')
+                ->with('success', trans('Ваш email успешно подтвержен'));
         })->middleware(['signed'])->name('verify');
     });
