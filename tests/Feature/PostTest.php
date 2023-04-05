@@ -4,8 +4,9 @@ namespace Tests\Feature;
 
 use App\Models\BlogPost;
 use App\Models\Comment;
-use Faker\Factory;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -18,7 +19,7 @@ class PostTest extends TestCase
         $response = $this->get('/post');
 
         $response->assertOk();
-        $response->assertSeeText('Posts not found');
+        $response->assertSeeText(trans('Записей в блоге нет'));
     }
 
     public function testAddPostAndSeeItOnPageWithNoComments(): void
@@ -33,7 +34,7 @@ class PostTest extends TestCase
         $response->assertOk();
         $response->assertSeeText('Post title one');
         $response->assertSeeText('Lorem ipsum dolor sit amet');
-        $response->assertSeeText('No comments yet.');
+        $response->assertSeeText(trans('Комментариев пока нет.'));
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
     }
@@ -52,21 +53,24 @@ class PostTest extends TestCase
 
         $limitContent = Str::limit($post->content,  50);
         $response->assertSeeText($limitContent);
-        $response->assertSeeText('Has comments');
+        $response->assertSeeText(trans('Есть комментарии'));
         $response->assertSeeText('💬 5');
     }
 
-    public function testStorePost(): void
+    public function testStorePostWithVerifiedUser(): void
     {
         $data = [
             'title' => 'Post new for store',
             'content' => 'Long content in new post'
         ];
 
-        $response = $this->post('/post', $data);
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->post('/post', $data);
 
         $response->assertStatus(302);
-        $response->assertSessionHas('success', 'New post was created');
+        $response->assertSessionHas('success', trans('Новый пост создан успешно'));
     }
 
     public function testStorePostFailValidationRequired(): void
@@ -76,12 +80,15 @@ class PostTest extends TestCase
             'content' => '',
         ];
 
-        $response = $this->post('/post', $data);
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->post('/post', $data);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors([
-            'title' => 'The title field is required.',
-            'content' => 'The content field is required.',
+            'title' => 'Поле наименование обязательно.',
+            'content' => 'Поле контент обязательно.',
         ]);
     }
 
@@ -92,12 +99,15 @@ class PostTest extends TestCase
             'content' => 'c',
         ];
 
-        $response = $this->post('/post', $data);
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->post('/post', $data);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors([
-            'title' => 'The title field must be at least 5 characters.',
-            'content' => 'The content field must be at least 10 characters.',
+            'title' => 'Количество символов в поле наименование должно быть не меньше 5.',
+            'content' => 'Количество символов в поле контент должно быть не меньше 10.',
         ]);
     }
 
@@ -111,10 +121,13 @@ class PostTest extends TestCase
         $this->assertDatabaseHas('blog_posts', $post->toArray());
         $url = sprintf('/post/%s', $post->id);
 
-        $response = $this->put($url, ['title' => 'title updated', 'content' => 'Updated content']);
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->put($url, ['title' => 'title updated', 'content' => 'Updated content']);
 
         $response->assertStatus(302);
-        $response->assertSessionHas('success', 'Post was updated');
+        $response->assertSessionHas('success', trans('Пост обновлен'));
         $this->assertDatabaseHas('blog_posts', ['title' => 'title updated']);
         $this->assertDatabaseMissing('blog_posts', $post->toArray());
     }
@@ -130,10 +143,13 @@ class PostTest extends TestCase
 
         $url = sprintf('/post/%s', $post->id);
 
-        $response = $this->delete($url)
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->delete($url)
             ->assertStatus(302);
 
-        $successMessage = sprintf('Post "%s" was deleted', $post->title);
+        $successMessage = trans('Пост ":title" успешно удален', ['title' => $post->title]);
         $response->assertSessionHas('success', $successMessage);
     }
 }

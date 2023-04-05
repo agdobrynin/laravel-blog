@@ -18,6 +18,6 @@
     @forelse($post->comments as $comment)
         <x-comment.item :$comment />
     @empty
-        <p class="my-3 p-3 border rounded shadow-sm">{{ __('Пока комментарие нет.') }}</p>
+        <p class="my-3 p-3 border rounded shadow-sm">{{ __('Пока комментариев нет.') }}</p>
     @endforelse
 </x-app-layout>
