@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\BlogPostController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -15,10 +17,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Auth::routes();
+
 Route::get('/', function () {
     return view('home.index');
 })->name('home.index');
 
 Route::resource('post', BlogPostController::class);
 
-Auth::routes();
+Route::middleware('auth')
+    ->name('verification.')
+    ->prefix('/email')
+    ->group(static function () {
+
+        Route::get('/verify', fn () => view('auth.verify'))->name('notice');
+
+        Route::post('/verification-notification', function (Request $request) {
+            $request->user()->sendEmailVerificationNotification();
+
+            return back()->with('message', 'Verification link sent!');
+        })->middleware(['throttle:6,1'])->name('send');
+
+        Route::get('/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+            $request->fulfill();
+
+            return redirect()->route('home.index')->with('success', 'Your email was verified');
+        })->middleware(['signed'])->name('verify');
+    });

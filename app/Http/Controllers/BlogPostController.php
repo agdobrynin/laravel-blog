@@ -8,6 +8,11 @@ use Illuminate\Support\Str;
 
 class BlogPostController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth', 'verified'])->except(['index', 'show']);
+    }
+
     /**
      * Display a listing of the resource.
      */
