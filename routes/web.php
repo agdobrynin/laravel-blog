@@ -36,7 +36,7 @@ Route::middleware('auth')
             $request->user()->sendEmailVerificationNotification();
 
             return back()
-                ->with('message', trans('Ссылка подтверждения умпешно отправлена!'));
+                ->with('success', trans('Ссылка подтверждения успешно отправлена!'));
         })->middleware(['throttle:6,1'])->name('send');
 
         Route::get('/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
