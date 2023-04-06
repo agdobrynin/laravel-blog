@@ -67,7 +67,7 @@
         </div>
     </div>
 </nav>
-<div class="container mb-4">
+<div class="container mb-5">
     @if(session('error'))
         <x-ui.alert type="dander">
             {{ session('error') }}

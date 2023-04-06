@@ -63,7 +63,7 @@ class PostTest extends TestCase
             'title' => 'Post new for store',
             'content' => 'Long content in new post'
         ];
-
+        // User with verified email
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
@@ -79,7 +79,7 @@ class PostTest extends TestCase
             'title' => '',
             'content' => '',
         ];
-
+        // User with verified email
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
@@ -98,7 +98,7 @@ class PostTest extends TestCase
             'title' => 't',
             'content' => 'c',
         ];
-
+        // User with verified email
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
@@ -120,7 +120,7 @@ class PostTest extends TestCase
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
         $url = sprintf('/post/%s', $post->id);
-
+        // User with verified email
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
@@ -142,7 +142,7 @@ class PostTest extends TestCase
         $this->assertDatabaseHas('blog_posts', $post->toArray());
 
         $url = sprintf('/post/%s', $post->id);
-
+        // User with verified email
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)

@@ -6,8 +6,10 @@
             @if($post->created_at != $post->updated_at)
                 / {{ __('последнее обновление') }} {{ $post->updated_at->diffForHumans() }}
             @endif
+            .
+            {{ __('Автор') }} {{ $post->user->name }}
         </div>
-        <div class="mt-4 mb-4 pt-4">
+        <div class="mt-4 mb-4 pt-4 text-wrap">
             {{ $post->content }}
         </div>
         <hr>

@@ -36,7 +36,10 @@ class BlogPostController extends Controller
      */
     public function store(BlogPostRequest $request)
     {
-        $post = BlogPost::create($request->validated());
+        /** @var BlogPost $post */
+        $post = BlogPost::make($request->validated());
+        $post->user()->associate($request->user());
+        $post->save();
 
         return redirect()
             ->route('post.show', ['post' => $post])
@@ -48,7 +51,7 @@ class BlogPostController extends Controller
      */
     public function show(BlogPost $post)
     {
-        $post->loadMissing('comments');
+        $post->loadMissing(['comments.user', 'user']);
 
         return view('post.show', [
             'post' => $post,
