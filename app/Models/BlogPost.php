@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BlogPost extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = ['title', 'content'];
 
@@ -26,5 +27,16 @@ class BlogPost extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::deleting(fn (self $post) => $post->comments()->delete());
+
+        static::restoring(function (self $post) {
+            $post->comments()->withTrashed()->where('deleted_at', '>=', $post->deleted_at)->restore();
+        });
     }
 }

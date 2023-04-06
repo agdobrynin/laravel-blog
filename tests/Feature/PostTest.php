@@ -151,5 +151,6 @@ class PostTest extends TestCase
 
         $successMessage = trans('Пост ":title" успешно удален', ['title' => $post->title]);
         $response->assertSessionHas('success', $successMessage);
+        $this->assertSoftDeleted('blog_posts', $post->toArray());
     }
 }
