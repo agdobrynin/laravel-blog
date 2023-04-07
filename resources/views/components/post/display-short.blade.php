@@ -7,25 +7,29 @@
         </div>
         <div class="card-body">
             <p> {{ $shortContent() }} </p>
-            <div class="text-muted fw-lighter">
-                {{ $post->updated_at->diffForHumans()  }}
-
-                @if($isUpdated())
-                    <span class="badge rounded-pill bg-primary">
-                        🔔 {{ __('обновлено') }}
+            <p>{{ __('Автор') }}: {{ $post->user->name }}</p>
+        </div>
+        <div class="card-footer text-muted">
+            <div class="d-flex justify-content-between gap-4">
+                <div class="text-start">
+                    {{ $post->updated_at->diffForHumans()  }}
+                    @if($isUpdated())
+                        <span class="badge rounded-pill bg-primary">
+                        🔔
                         <span class="visually-hidden">{{ __('обновлено') }}</span>
                     </span>
-                @endif
-            </div>
-            <div class="text-muted fw-lighter">
-                @if($post->comments_count)
-                    {{ __('Есть комментарии') }}
-                    <span class="badge rounded-pill bg-secondary">
+                    @endif
+                </div>
+                <div class="text-end">
+                    @if($post->comments_count)
+                        {{ __('Есть комментарии') }}
+                        <span class="badge rounded-pill bg-secondary">
                         💬 {{ $post->comments_count }}
                     </span>
-                @else
-                    {{ __('Комментариев пока нет.') }}
-                @endif
+                    @else
+                        {{ __('Комментариев пока нет.') }}
+                    @endif
+                </div>
             </div>
         </div>
         <div class="card-footer text-end">

@@ -19,7 +19,10 @@ class BlogPostController extends Controller
      */
     public function index()
     {
-        $posts = BlogPost::latest()->withCount('comments')->get();
+        $posts = BlogPost::latest()
+            ->withCount('comments')
+            ->with('user')
+            ->get();
 
         return view('post.list', ['posts' => $posts]);
     }

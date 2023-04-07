@@ -19,6 +19,9 @@ class BlogPost extends Model
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
+    protected $with = [
+        // 'user.roles'
+    ];
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);

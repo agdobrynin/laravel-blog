@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\RolesEnum;
 use App\Models\BlogPost;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -13,6 +14,9 @@ class BlogPostPolicy
      */
     public function before(User $user, string $ability): bool|null
     {
+        if($user->hasRole(RolesEnum::ADMIN)) {
+            return true;
+        }
         // TODO make roles and permission with spatie/laravel-permission
 
         return null;

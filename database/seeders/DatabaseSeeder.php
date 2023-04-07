@@ -15,12 +15,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        if ($this->command->confirm('Refresh database ?')) {
+        if ($this->command->confirm('Refresh database ?', true)) {
             $this->command->call('mig:ref');
             $this->command->info('Database was refreshed');
         }
 
         $this->call([
+            RoleSeeder::class,
             UserSeeder::class,
             BlogPostSeeder::class,
             CommentSeeder::class,

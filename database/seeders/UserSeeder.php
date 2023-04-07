@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Enums\RolesEnum;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -22,5 +24,20 @@ class UserSeeder extends Seeder
         }
 
         User::factory($userCount)->create();
+
+        if ($this->command->confirm('Do you want add Site admin?', true)) {
+            /** @var User $admin */
+            $admin = User::factory(['email' => 'admin@example.com'])->create();
+
+            $adminRole = Role::where('slug', RolesEnum::ADMIN)->first();
+
+            if (!$adminRole) {
+                $adminRole = Role::create('admin', RolesEnum::ADMIN);
+            }
+
+            $admin->attachRole($adminRole);
+
+            $this->command->info('Create admin user with email ' . $admin->email);
+        }
     }
 }
