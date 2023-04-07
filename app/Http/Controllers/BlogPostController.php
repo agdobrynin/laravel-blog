@@ -11,6 +11,7 @@ class BlogPostController extends Controller
     public function __construct()
     {
         $this->middleware(['auth', 'verified'])->except(['index', 'show']);
+        $this->authorizeResource(BlogPost::class, 'post');
     }
 
     /**

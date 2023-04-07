@@ -6,7 +6,6 @@ use App\Models\BlogPost;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -113,15 +112,17 @@ class PostTest extends TestCase
 
     public function testEditPostSuccess(): void
     {
+        // User with verified email
+        $user = User::factory()->create();
+
         $post = new BlogPost();
         $post->title = 'The new title';
         $post->content = 'Long new content';
+        $post->user_id = $user->id;
         $post->save();
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
         $url = sprintf('/post/%s', $post->id);
-        // User with verified email
-        $user = User::factory()->create();
 
         $response = $this->actingAs($user)
             ->put($url, ['title' => 'title updated', 'content' => 'Updated content']);
@@ -134,16 +135,20 @@ class PostTest extends TestCase
 
     public function testDelete(): void
     {
-        $post = BlogPost::create([
+        // User with verified email
+        $user = User::factory()->create();
+
+        $post = BlogPost::make([
             'title' => 'title one',
             'content' => 'long content here',
         ]);
 
+        $post->user_id = $user->id;
+        $post->save();
+
         $this->assertDatabaseHas('blog_posts', $post->toArray());
 
         $url = sprintf('/post/%s', $post->id);
-        // User with verified email
-        $user = User::factory()->create();
 
         $response = $this->actingAs($user)
             ->delete($url)

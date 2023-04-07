@@ -12,7 +12,7 @@
         <div class="mt-4 mb-4 pt-4 text-wrap">
             {{ $post->content }}
         </div>
-        <hr>
+
         <x-post.action :$post :showView="false"/>
     </div>
 
