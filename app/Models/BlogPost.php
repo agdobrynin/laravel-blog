@@ -12,7 +12,7 @@ class BlogPost extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['title', 'content'];
+    protected $fillable = ['title', 'content', 'user_id'];
 
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i:s',

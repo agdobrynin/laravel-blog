@@ -40,10 +40,10 @@ class BlogPostController extends Controller
      */
     public function store(BlogPostRequest $request)
     {
+        $data = $request->validated();
+        $data['user_id'] = $request->user()->id;
         /** @var BlogPost $post */
-        $post = BlogPost::make($request->validated());
-        $post->user()->associate($request->user());
-        $post->save();
+        $post = BlogPost::create($data);
 
         return redirect()
             ->route('post.show', ['post' => $post])
