@@ -23,25 +23,30 @@ class PostTest extends TestCase
 
     public function testAddPostAndSeeItOnPageWithNoComments(): void
     {
-        $post = BlogPost::create([
+        $post = BlogPost::make([
             'title' => 'Post title one',
             'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         ]);
+        $post->user_id = User::factory()->create()->id;
+        $post->save();
 
         $response = $this->get('/post');
 
         $response->assertOk();
         $response->assertSeeText('Post title one');
         $response->assertSeeText('Lorem ipsum dolor sit amet');
-        $response->assertSeeText(trans('Комментариев пока нет.'));
+        $response->assertSeeText('💬 0');
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
     }
 
     public function testAddPostAndSeeItOnPageWithFiveComments(): void
     {
+        $user = User::factory()->create();
         /** @var BlogPost $post */
-        $post = BlogPost::factory()->create();
+        $post = BlogPost::factory()->make();
+        $post->user_id = $user->id;
+        $post->save();
         $comments = Comment::factory(5)->make();
         $post->comments()->saveMany($comments);
 
@@ -52,7 +57,6 @@ class PostTest extends TestCase
 
         $limitContent = Str::limit($post->content,  50);
         $response->assertSeeText($limitContent);
-        $response->assertSeeText(trans('Есть комментарии'));
         $response->assertSeeText('💬 5');
     }
 
