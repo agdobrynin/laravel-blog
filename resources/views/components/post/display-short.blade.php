@@ -15,20 +15,15 @@
                     {{ $post->updated_at->diffForHumans()  }}
                     @if($isUpdated())
                         <span class="badge rounded-pill bg-primary">
-                        🔔
+                        ✏
                         <span class="visually-hidden">{{ __('обновлено') }}</span>
                     </span>
                     @endif
                 </div>
                 <div class="text-end">
-                    @if($post->comments_count)
-                        {{ __('Есть комментарии') }}
-                        <span class="badge rounded-pill bg-secondary">
+                    <span class="badge rounded-pill {{$post->comments_count ? 'bg-success' : 'bg-secondary'}}">
                         💬 {{ $post->comments_count }}
                     </span>
-                    @else
-                        {{ __('Комментариев пока нет.') }}
-                    @endif
                 </div>
             </div>
         </div>

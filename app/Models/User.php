@@ -18,6 +18,8 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public const ROLE_CACHE_PREFIX_KEY = 'user-roles:';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -27,10 +29,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-    ];
-
-    protected $with = [
-        // 'roles'
     ];
 
     /**
@@ -70,9 +68,15 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getRoles()
     {
-        return Cache::remember('user-'.$this->id.'-roles', 60, function () {
-            return $this->roles()->get();
-        });
+        if (config('roles.cache.enabled')) {
+            return Cache::remember(
+                self::ROLE_CACHE_PREFIX_KEY . $this->id,
+                config('roles.cache.ttl'),
+                fn() => $this->roles()->get()
+            );
+        }
+
+        return $this->roles()->get();
     }
 
     /**
@@ -92,6 +96,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function attachRole(Role $role): self
     {
         if (!$this->getRoles()->contains($role)) {
+            $this->clearCache();
             $this->roles()->attach($role);
         }
 
@@ -100,16 +105,29 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function detachRole(Role $role): int
     {
+        $this->clearCache();
+
         return $this->roles()->detach($role);
     }
 
     public function detachAllRoles(): int
     {
+        $this->clearCache();
+
         return $this->roles()->detach();
     }
 
     public function syncRoles(array|Collection $roles): array
     {
+        $this->clearCache();
+
         return $this->roles()->sync($roles);
+    }
+
+    private function clearCache(): void
+    {
+        if (config('roles.cache.enabled')) {
+            Cache::forget(self::ROLE_CACHE_PREFIX_KEY . $this->id);
+        }
     }
 }
