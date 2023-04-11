@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\RolesEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -122,6 +123,25 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->clearCache();
 
         return $this->roles()->sync($roles);
+    }
+
+    public function scopeWithMostBlogPostLastMonth(Builder $builder, ?int $lastMonth = null, ?int $minCountPost = null): Builder
+    {
+        return $builder
+            ->when($lastMonth, function (Builder $query, int $value) {
+                return $query->withCount([
+                    'blogPosts' => function (Builder $query) use ($value) {
+                        return $query->whereBetween(static::CREATED_AT, [now()->subMonths($value), now()]);
+                    }
+                ]);
+            })
+            ->when(!$lastMonth, function (Builder $query) {
+                return $query->withCount('blogPosts');
+            })
+            ->when($minCountPost, function (Builder $query, int $value) {
+                return $query->having('blog_posts_count', '>=', $value);
+            })
+            ->orderBy('blog_posts_count', 'desc');
     }
 
     private function clearCache(): void

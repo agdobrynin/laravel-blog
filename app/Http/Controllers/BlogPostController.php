@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Dto\BlogPostFilterDto;
+use App\Dto\MostActiveBloggerDto;
 use App\Enums\OrderBlogPostEnum;
 use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -28,7 +31,26 @@ class BlogPostController extends Controller
         $filterDto = new BlogPostFilterDto($order);
         $posts = BlogPost::filter($filterDto);
 
-        return view('post.list', ['posts' => $posts->get(), 'filterDto' => $filterDto]);
+        // For most active bloggers
+        $lastMonth = env('MOST_ACTIVE_BLOGGER_LAST_MONTH');
+        $minCountPost = env('MOST_ACTIVE_BLOGGER_MIN_POSTS', 5);
+
+        $bloggers = User::withMostBlogPostLastMonth($lastMonth, $minCountPost)->get();
+
+        $mostActiveBloggers = new MostActiveBloggerDto(
+            bloggers: $bloggers,
+            lastMonth: $lastMonth,
+            minCountPost: $minCountPost,
+        );
+
+        return view(
+            'post.list',
+            [
+                'posts' => $posts->get(),
+                'filterDto' => $filterDto,
+                'mostActiveBloggers' => $mostActiveBloggers,
+            ]
+        );
     }
 
     /**

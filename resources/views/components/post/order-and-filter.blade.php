@@ -1,5 +1,5 @@
 @props([
-    'blogPostFilterDto'
+    'blogPostFilterDto',
 ])
 <form {{ $attributes->merge(['class' => 'row g-3']) }}>
     <div class="col-auto fw-light">{{ __('Фильтры') }}</div>
