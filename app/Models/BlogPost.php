@@ -49,7 +49,7 @@ class BlogPost extends Model
         return $builder
             ->when(
                 $dto->order === OrderBlogPostEnum::MOST_COMMENTED,
-                fn(Builder $query, $value) => $query->mostCommented()
+                fn(Builder $query, $value) => $query->orderBy('comments_count', 'desc')
             );
     }
 
