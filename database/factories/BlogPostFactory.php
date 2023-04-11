@@ -2,8 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\BlogPost as Post;
-use App\Models\Comment;
+use App\Models\BlogPost;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,9 +17,12 @@ class BlogPostFactory extends Factory
      */
     public function definition(): array
     {
+        $date = fake()->dateTimeBetween('-180 days');
         return [
             'title' => fake('ru_RU')->realTextBetween(5, 50, 1),
             'content' => fake('ru_RU')->realTextBetween(390, 700, 1),
+            BlogPost::CREATED_AT => $date,
+            BlogPost::UPDATED_AT => $date,
         ];
     }
 }

@@ -43,6 +43,18 @@ class CommentSeeder extends Seeder
                                 fn(Sequence $sequence) => ['user_id' => rand(0, 1) ? null : $users->random()->id]
                             )
                         )
+                        ->state(
+                            new Sequence(
+                                function (Sequence $sequence) use ($post) {
+                                    $date = fake()->dateTimeBetween($post->created_at);
+
+                                    return [
+                                        Comment::CREATED_AT => $date,
+                                        Comment::UPDATED_AT => $date,
+                                    ];
+                                }
+                            )
+                        )
                         ->make()
                 );
         });

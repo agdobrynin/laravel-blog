@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Dto\BlogPostFilterDto;
+use App\Enums\OrderBlogPostEnum;
+use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class BlogPostController extends Controller
@@ -17,14 +21,14 @@ class BlogPostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = BlogPost::latest()
-            ->withCount('comments')
-            ->with('user')
-            ->get();
+        $order = OrderBlogPostFactory::make($request->get('order', '')) ?: OrderBlogPostEnum::LATEST_UPDATED;
 
-        return view('post.list', ['posts' => $posts]);
+        $filterDto = new BlogPostFilterDto($order);
+        $posts = BlogPost::filter($filterDto);
+
+        return view('post.list', ['posts' => $posts->get(), 'filterDto' => $filterDto]);
     }
 
     /**

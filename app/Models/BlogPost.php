@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Dto\BlogPostFilterDto;
+use App\Enums\OrderBlogPostEnum;
+use App\Scopes\LatestUpdatedScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,9 +26,10 @@ class BlogPost extends Model
     protected $with = [
         // 'user.roles'
     ];
+
     public function comments(): HasMany
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class)->latestUpdated();
     }
 
     public function user(): BelongsTo
@@ -32,11 +37,28 @@ class BlogPost extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function scopeMostCommented(Builder $builder)
+    {
+        return $this->withCount('comments')->orderBy('comments_count', 'desc');
+    }
+
+    public function scopeFilter(Builder $builder, BlogPostFilterDto $dto): Builder
+    {
+        $builder->with('user')->withCount('comments');
+
+        return $builder
+            ->when(
+                $dto->order === OrderBlogPostEnum::MOST_COMMENTED,
+                fn(Builder $query, $value) => $query->mostCommented()
+            );
+    }
+
     public static function boot(): void
     {
         parent::boot();
+        static::addGlobalScope(new LatestUpdatedScope());
 
-        static::deleting(fn (self $post) => $post->comments()->delete());
+        static::deleting(fn(self $post) => $post->comments()->delete());
 
         static::restoring(function (self $post) {
             $post->comments()->withTrashed()->where('deleted_at', '>=', $post->deleted_at)->restore();
