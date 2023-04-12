@@ -16,7 +16,7 @@ readonly class MostActiveBloggerDto
         public ?int $minCountPost = null,
     )
     {
-        throw_if(!($bloggers->first() instanceof User), message: 'Bloggers must be a collection of '.User::class);
+        throw_if($bloggers->count() && !($bloggers->first() instanceof User), message: 'Bloggers must be a collection of '.User::class);
 
         $this->bloggers = $bloggers;
     }
