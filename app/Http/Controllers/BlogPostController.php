@@ -35,7 +35,9 @@ class BlogPostController extends Controller
         $lastMonth = env('MOST_ACTIVE_BLOGGER_LAST_MONTH');
         $minCountPost = env('MOST_ACTIVE_BLOGGER_MIN_POSTS', 5);
 
-        $bloggers = User::withMostBlogPostLastMonth($lastMonth, $minCountPost)->get();
+        $bloggers = User::withMostBlogPostLastMonth($lastMonth, $minCountPost)
+            ->take(env('MOST_ACTIVE_BLOGGER_MAX_USERS', 5))
+            ->get();
 
         $mostActiveBloggers = new MostActiveBloggerDto(
             bloggers: $bloggers,

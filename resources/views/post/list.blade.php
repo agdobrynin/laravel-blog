@@ -1,9 +1,11 @@
 <x-app-layout pageTitle='Latest posts'>
-    <x-post.order-and-filter
-        class="border rounded mx-0 my-4"
-        :blogPostFilterDto="$filterDto"/>
+    @if($posts->count())
+        <x-post.order-and-filter
+            class="border rounded mx-0 my-4"
+            :blogPostFilterDto="$filterDto"/>
+    @endif
     <div class="row">
-        <div class="col-12 @if($mostActiveBloggers) col-lg-8 col-xl-9 @endif order-lg-0 order-1">
+        <div class="col-12 @if($mostActiveBloggers->bloggers->count()) col-lg-8 col-xl-9 @endif order-lg-0 order-1">
             <div class="row justify-content-center row-cols-1 row-cols-lg-2 row-cols-xl-3 g-4">
                 @if($posts->count())
                     @foreach($posts as $post)
@@ -18,7 +20,7 @@
                 @endif
             </div>
         </div>
-        @if($mostActiveBloggers)
+        @if($mostActiveBloggers->bloggers->count())
             <div class="col-12 col-lg-4 col-xl-3 order-lg-2 order-0">
                 <x-blogger.most-active class="mb-4" :$mostActiveBloggers/>
             </div>
