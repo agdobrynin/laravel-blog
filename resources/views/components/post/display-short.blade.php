@@ -7,18 +7,15 @@
         </div>
         <div class="card-body">
             <p> {{ $shortContent() }} </p>
-            <p>{{ __('Автор') }}: {{ $post->user->name }}</p>
         </div>
         <div class="card-footer text-muted">
             <div class="d-flex justify-content-between gap-4">
                 <div class="text-start">
-                    {{ $post->updated_at->diffForHumans()  }}
-                    @if($isUpdated())
-                        <span class="badge rounded-pill bg-primary">
-                        ✏
-                        <span class="visually-hidden">{{ __('обновлено') }}</span>
-                    </span>
-                    @endif
+                    <x-ui.author-and-date
+                        :name="$post['user']['name']"
+                        :created_at="$post['created_at']"
+                        :updated_at="$post['updated_at']"
+                    />
                 </div>
                 <div class="text-end">
                     <span class="badge rounded-pill {{$post->comments_count ? 'bg-success' : 'bg-secondary'}}">
