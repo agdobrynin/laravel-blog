@@ -4,14 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Dto\BlogPostFilterDto;
 use App\Dto\MostActiveBloggerDto;
-use App\Enums\CacheKeysEnum;
 use App\Enums\OrderBlogPostEnum;
 use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
-use App\Models\User;
+use App\Services\Contracts\MostActiveBloggersInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class BlogPostController extends Controller
@@ -25,29 +23,23 @@ class BlogPostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, MostActiveBloggersInterface $mostActiveBloggers)
     {
-        $order = OrderBlogPostFactory::make($request->get('order', '')) ?: OrderBlogPostEnum::LATEST_UPDATED;
+        $order = OrderBlogPostFactory::make($request->get('order', ''))
+            ?: OrderBlogPostEnum::LATEST_UPDATED;
 
         $filterDto = new BlogPostFilterDto($order);
         $posts = BlogPost::filter($filterDto);
 
-        // For most active bloggers
-        $lastMonth = env('MOST_ACTIVE_BLOGGER_LAST_MONTH');
-        $minCountPost = env('MOST_ACTIVE_BLOGGER_MIN_POSTS', 5);
-
-        $ttlForMostActiveBloggers = env('MOST_ACTIVE_BLOGGER_CACHE_TTL', 60);
-
-        $bloggers = Cache::remember(CacheKeysEnum::MOST_ACTIVE_BLOGGERS->value, $ttlForMostActiveBloggers, function () use ($lastMonth, $minCountPost) {
-            return User::withMostBlogPostLastMonth($lastMonth, $minCountPost)
-                ->take(env('MOST_ACTIVE_BLOGGER_MAX_USERS', 5))
-                ->get();
-        });
+        $bloggers = $mostActiveBloggers->getCached(
+            env('MOST_ACTIVE_BLOGGER_TAKE_USERS', 5),
+            env('MOST_ACTIVE_BLOGGER_CACHE_TTL', 60),
+        );
 
         $mostActiveBloggers = new MostActiveBloggerDto(
             bloggers: $bloggers,
-            lastMonth: $lastMonth,
-            minCountPost: $minCountPost,
+            lastMonth: $mostActiveBloggers->getLastMonth(),
+            minCountPost: $mostActiveBloggers->getMinCountPost(),
         );
 
         return view(
