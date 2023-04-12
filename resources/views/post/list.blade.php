@@ -20,10 +20,29 @@
                 @endif
             </div>
         </div>
+
         @if($mostActiveBloggers->bloggers->count())
             <div class="col-12 col-lg-4 col-xl-3 order-lg-2 order-0">
-                <x-blogger.most-active class="mb-4" :$mostActiveBloggers/>
+                <x-ui.card title="{{ trans('Самые активные блогеры') }}" class="border-info">
+                    <x-slot:subtitle>
+                        @if($mostActiveBloggers->minCountPost)
+                            {{ __('опубликовавшие :count постов и более', ['count' => $mostActiveBloggers->minCountPost]) }}
+                        @endif
+                        @if($mostActiveBloggers->lastMonth)
+                            {{ __('за последние :month месяцев', ['month' => $mostActiveBloggers->lastMonth]) }}
+                        @endif
+                    </x-slot:subtitle>
+                    <x-slot:items>
+                        @foreach($mostActiveBloggers->bloggers as $blogger)
+                            <li class="list-group-item">
+                                <span class="fw-bold">{{ $blogger->name }}</span>
+                                , опубликовал <span class="badge bg-info">{{ $blogger->blog_posts_count }}</span> постов
+                            </li>
+                        @endforeach
+                    </x-slot:items>
+                </x-ui.card>
             </div>
         @endif
+
     </div>
 </x-app-layout>
