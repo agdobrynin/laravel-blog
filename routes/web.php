@@ -24,6 +24,9 @@ Route::get('/', function () {
 })->name('home.index');
 
 Route::resource('post', BlogPostController::class);
+Route::put('post/{post}/restore', [BlogPostController::class, 'restore'])
+    ->name('post.restore')
+    ->withTrashed();
 
 Route::middleware('auth')
     ->name('verification.')

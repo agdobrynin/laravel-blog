@@ -4,7 +4,8 @@ namespace App\Models;
 
 use App\Dto\BlogPostFilterDto;
 use App\Enums\OrderBlogPostEnum;
-use App\Scopes\LatestUpdatedScope;
+use App\Scopes\LatestCreatedScope;
+use App\Scopes\ShowDeletedForAdminRoleScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -55,8 +56,9 @@ class BlogPost extends Model
 
     public static function boot(): void
     {
+        static::addGlobalScope(new ShowDeletedForAdminRoleScope());
         parent::boot();
-        static::addGlobalScope(new LatestUpdatedScope());
+        static::addGlobalScope(new LatestCreatedScope());
 
         static::deleting(fn(self $post) => $post->comments()->delete());
 

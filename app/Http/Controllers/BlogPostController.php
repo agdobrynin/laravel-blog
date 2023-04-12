@@ -121,4 +121,16 @@ class BlogPostController extends Controller
             ->route('post.index')
             ->with('success', $message);
     }
+
+    public function restore(BlogPost $post)
+    {
+        if ($post->restore()) {
+            $message = trans('Пост ":title" успешно восстановлен', ['title' => $post->title]);
+
+            return back()
+                ->with('success', $message);
+        }
+
+        abort(500, 'Cant restore post');
+    }
 }

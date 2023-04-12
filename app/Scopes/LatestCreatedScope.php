@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
-class LatestUpdatedScope implements Scope
+class LatestCreatedScope implements Scope
 {
 
     public function apply(Builder $builder, Model $model)
     {
-        $builder->orderBy(Model::UPDATED_AT, 'desc');
+        $builder->orderBy(Model::CREATED_AT, 'desc');
     }
 }
