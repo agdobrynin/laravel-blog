@@ -2,12 +2,9 @@
     <div class="border rounded shadow-sm p-3">
         <h4>{{ $post->title }}</h4>
         <div class="text-muted fw-lighter">
-            {{ __('Создано') }}: {{ $post->created_at }} ({{ $post->created_at->diffForHumans() }})
-            @if($post->created_at != $post->updated_at)
-                / {{ __('последнее обновление') }} {{ $post->updated_at->diffForHumans() }}
-            @endif
-            .
-            {{ __('Автор') }} {{ $post->user->name }}
+            <x-ui.author-and-date :created_at="$post['created_at']" :updated_at="$post['updated_at']">
+                <x-slot:name> {{ $post->user->name }}</x-slot:name>
+            </x-ui.author-and-date>
         </div>
         <div class="mt-4 mb-4 pt-4 text-wrap">
             {{ $post->content }}

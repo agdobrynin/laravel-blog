@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Dto\BlogPostFilterDto;
 use App\Dto\MostActiveBloggerDto;
+use App\Enums\CacheKeysEnum;
 use App\Enums\OrderBlogPostEnum;
 use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
-use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class BlogPostController extends Controller
@@ -35,9 +36,13 @@ class BlogPostController extends Controller
         $lastMonth = env('MOST_ACTIVE_BLOGGER_LAST_MONTH');
         $minCountPost = env('MOST_ACTIVE_BLOGGER_MIN_POSTS', 5);
 
-        $bloggers = User::withMostBlogPostLastMonth($lastMonth, $minCountPost)
-            ->take(env('MOST_ACTIVE_BLOGGER_MAX_USERS', 5))
-            ->get();
+        $ttlForMostActiveBloggers = env('MOST_ACTIVE_BLOGGER_CACHE_TTL', 60);
+
+        $bloggers = Cache::remember(CacheKeysEnum::MOST_ACTIVE_BLOGGERS->value, $ttlForMostActiveBloggers, function () use ($lastMonth, $minCountPost) {
+            return User::withMostBlogPostLastMonth($lastMonth, $minCountPost)
+                ->take(env('MOST_ACTIVE_BLOGGER_MAX_USERS', 5))
+                ->get();
+        });
 
         $mostActiveBloggers = new MostActiveBloggerDto(
             bloggers: $bloggers,
