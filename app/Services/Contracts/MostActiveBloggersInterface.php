@@ -26,13 +26,4 @@ interface MostActiveBloggersInterface
      * @return Collection<User>
      */
     public function get(int $take): Collection;
-
-    /**
-     * Get cached collection.
-     *
-     * @param int $take Limit of users
-     * @param int $ttl Ttl for cache
-     * @return Collection<User>
-     */
-    public function getCached(int $take, int $ttl): Collection;
 }

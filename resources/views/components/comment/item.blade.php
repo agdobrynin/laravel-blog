@@ -1,5 +1,6 @@
 @props(['comment'])
 <div class="border rounded shadow-sm p-3 my-3">
+    @if($comment->trashed()) <del class="text-muted"> @endif
     <div class="fw-lighter">
         <small>
             <x-ui.author-and-date
@@ -9,4 +10,5 @@
         </small>
     </div>
     {{ $comment->content }}
+    @if($comment->trashed()) <del class="text-muted"> @endif
 </div>

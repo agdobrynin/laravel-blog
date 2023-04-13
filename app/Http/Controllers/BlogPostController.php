@@ -10,6 +10,7 @@ use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
 use App\Services\Contracts\MostActiveBloggersInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class BlogPostController extends Controller
@@ -31,9 +32,10 @@ class BlogPostController extends Controller
         $filterDto = new BlogPostFilterDto($order);
         $posts = BlogPost::filter($filterDto);
 
-        $bloggers = $mostActiveBloggers->getCached(
-            env('MOST_ACTIVE_BLOGGER_TAKE_USERS', 5),
-            env('MOST_ACTIVE_BLOGGER_CACHE_TTL', 60),
+        $bloggers = Cache::remember(
+            MostActiveBloggersInterface::class,
+            env('MOST_ACTIVE_BLOGGER_CACHE_TTL', 1800)
+            , fn() => $mostActiveBloggers->get(env('MOST_ACTIVE_BLOGGER_TAKE_USERS', 5))
         );
 
         $mostActiveBloggers = new MostActiveBloggerDto(
