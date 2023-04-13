@@ -14,17 +14,12 @@ readonly class ReadNowObject implements ReadNowObjectInterface
         $readers = Cache::get($cacheUsersKey) ?: [];
 
         $now = now();
+        $readers[$userIdentification] = $now;
 
-        if (!isset($readers[$userIdentification])) {
-            $readers[$userIdentification] = $now;
-        } else {
-            foreach ($readers as $userIdentificationKey => $lastVisit) {
-                if (1 <= $now->diffInMinutes($lastVisit)) {
-                    unset($readers[$userIdentificationKey]);
-                }
+        foreach ($readers as $userIdentificationKey => $lastVisit) {
+            if (1 <= $now->diffInMinutes($lastVisit)) {
+                unset($readers[$userIdentificationKey]);
             }
-
-            $readers[$userIdentification] = $now;
         }
 
         Cache::forever($cacheUsersKey, $readers);

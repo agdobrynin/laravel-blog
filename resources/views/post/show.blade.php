@@ -8,7 +8,7 @@
         </div>
         @if(!empty($readCount))
             <div class="text-muted fw-lighter">
-                {{ __('Сейчас читают :count пользователей', ['count' => $readCount]) }}
+                {{ trans_choice('{1} Сейчас читает :count пользователь|[2,19] Сейчас читает :count пользователей', $readCount) }}
             </div>
         @endif
         <div class="mt-4 mb-4 pt-4 text-wrap">
