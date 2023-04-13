@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Services\Contracts\MostActiveBloggersInterface;
+use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\MostActiveBloggers;
+use App\Services\ReadNowObject;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
@@ -25,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
                 ]
             )
         );
+
+        $this->app->bind(ReadNowObjectInterface::class, ReadNowObject::class);
     }
 
     /**

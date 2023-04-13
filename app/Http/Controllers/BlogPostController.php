@@ -9,6 +9,7 @@ use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
 use App\Services\Contracts\MostActiveBloggersInterface;
+use App\Services\Contracts\ReadNowObjectInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -80,13 +81,14 @@ class BlogPostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(BlogPost $post)
+    public function show(BlogPost $post, ReadNowObjectInterface $readNowObject)
     {
         $post->loadMissing(['comments.user', 'user']);
 
         return view('post.show', [
             'post' => $post,
             'pageTitle' => Str::limit($post->title, 30),
+            'readCount' => $readNowObject->readNowCount($post->id, session()->getId()),
         ]);
     }
 
