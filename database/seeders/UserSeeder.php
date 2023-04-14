@@ -3,10 +3,12 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Enums\CacheTagsEnum;
 use App\Enums\RolesEnum;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 
 class UserSeeder extends Seeder
 {
@@ -22,6 +24,8 @@ class UserSeeder extends Seeder
 
             return;
         }
+
+        Cache::tags(CacheTagsEnum::USER_GROUP->value)->flush();
 
         User::factory($userCount)->create();
 
