@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CacheTagsEnum;
 use App\Enums\RolesEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -70,11 +71,12 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getRoles()
     {
         if (config('roles.cache.enabled')) {
-            return Cache::remember(
-                self::ROLE_CACHE_PREFIX_KEY . $this->id,
-                config('roles.cache.ttl'),
-                fn() => $this->roles()->get()
-            );
+            return Cache::tags(CacheTagsEnum::USER_GROUP->value)
+                ->remember(
+                    self::ROLE_CACHE_PREFIX_KEY . $this->id,
+                    config('roles.cache.ttl'),
+                    fn() => $this->roles()->get()
+                );
         }
 
         return $this->roles()->get();

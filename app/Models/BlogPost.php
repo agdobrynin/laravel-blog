@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Dto\BlogPostFilterDto;
+use App\Enums\CacheTagsEnum;
 use App\Enums\OrderBlogPostEnum;
 use App\Scopes\LatestCreatedScope;
 use App\Scopes\ShowDeletedForAdminRoleScope;
@@ -63,16 +64,16 @@ class BlogPost extends Model
         static::addGlobalScope(new LatestCreatedScope());
 
         static::created(function (self $post) {
-            Cache::forget(MostActiveBloggersInterface::class);
+            Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)->flush();
         });
 
         static::deleted(function (self $post) {
-            Cache::forget(MostActiveBloggersInterface::class);
+            Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)->flush();
             $post->comments()->delete();
         });
 
         static::restoring(function (self $post) {
-            Cache::forget(MostActiveBloggersInterface::class);
+            Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)->flush();
             $post->comments()->withTrashed()->where('deleted_at', '>=', $post->deleted_at)->restore();
         });
     }

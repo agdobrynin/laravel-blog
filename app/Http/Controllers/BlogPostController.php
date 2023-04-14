@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dto\BlogPostFilterDto;
 use App\Dto\MostActiveBloggerDto;
+use App\Enums\CacheTagsEnum;
 use App\Enums\OrderBlogPostEnum;
 use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
@@ -33,10 +34,14 @@ class BlogPostController extends Controller
         $filterDto = new BlogPostFilterDto($order);
         $posts = BlogPost::filter($filterDto);
 
-        $bloggers = Cache::remember(
-            MostActiveBloggersInterface::class,
+        $takeMostActiveBloggers = env('MOST_ACTIVE_BLOGGER_TAKE_USERS', 5);
+        $bloggers = Cache::tags([
+            CacheTagsEnum::BLOG_INDEX->value,
+            CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value
+        ])->remember(
+            MostActiveBloggersInterface::class.$takeMostActiveBloggers,
             env('MOST_ACTIVE_BLOGGER_CACHE_TTL', 1800)
-            , fn() => $mostActiveBloggers->get(env('MOST_ACTIVE_BLOGGER_TAKE_USERS', 5))
+            , fn() => $mostActiveBloggers->get($takeMostActiveBloggers)
         );
 
         $mostActiveBloggers = new MostActiveBloggerDto(
