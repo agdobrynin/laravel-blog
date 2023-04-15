@@ -14,8 +14,9 @@
         <div class="mt-4 mb-4 pt-4 text-wrap">
             {{ $post->content }}
         </div>
-
-        <x-post.action :$post :showView="false"/>
+        @auth
+            <x-post.action :$post :showView="false"/>
+        @endauth
     </div>
 
     <h4 class="mt-4">{{ __('Комментарии') }}</h4>
