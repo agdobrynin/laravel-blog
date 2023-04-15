@@ -41,7 +41,7 @@ class BlogPostSeeder extends Seeder
         BlogPost::factory($postCount)->make()->each(static function (BlogPost $post) use ($users, $tags) {
             $post->user_id = $users->random()->id;
             $post->save();
-            $randTags = $tags->random(rand(0, $tags->count()));
+            $randTags = $tags->random(rand(1, $tags->count()));
             $post->tags()->attach($randTags);
         });
     }

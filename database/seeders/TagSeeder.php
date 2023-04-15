@@ -13,6 +13,19 @@ class TagSeeder extends Seeder
      */
     public function run(): void
     {
-        Tag::factory(10)->create();
+        Tag::factory(10)
+            ->sequence(
+                ['name' => 'Sports'],
+                ['name' => 'Travel'],
+                ['name' => 'Entertainment'],
+                ['name' => 'Development'],
+                ['name' => 'Customization'],
+                ['name' => 'Ability'],
+                ['name' => 'Astrology'],
+                ['name' => 'Space'],
+                ['name' => 'Auto & moto'],
+                ['name' => 'Films & serials'],
+            )
+            ->create();
     }
 }
