@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Dto\BlogPostFilterDto;
-use App\Dto\MostActiveBloggerDto;
 use App\Enums\CacheTagsEnum;
 use App\Enums\OrderBlogPostEnum;
 use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
 use App\Models\Tag;
-use App\Services\Contracts\MostActiveBloggersInterface;
 use App\Services\Contracts\ReadNowObjectInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -27,7 +25,7 @@ class BlogPostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, MostActiveBloggersInterface $mostActiveBloggers)
+    public function index(Request $request)
     {
         $order = OrderBlogPostFactory::make($request->get('order', ''))
             ?: OrderBlogPostEnum::LATEST_UPDATED;
@@ -42,28 +40,11 @@ class BlogPostController extends Controller
         $filterDto = new BlogPostFilterDto($order, $tags->find($tagId));
         $posts = BlogPost::filter($filterDto);
 
-        $takeMostActiveBloggers = env('MOST_ACTIVE_BLOGGER_TAKE_USERS', 5);
-        $bloggers = Cache::tags([
-            CacheTagsEnum::BLOG_INDEX->value,
-            CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value
-        ])->remember(
-            MostActiveBloggersInterface::class . $takeMostActiveBloggers,
-            env('MOST_ACTIVE_BLOGGER_CACHE_TTL', 1800)
-            , fn() => $mostActiveBloggers->get($takeMostActiveBloggers)
-        );
-
-        $mostActiveBloggers = new MostActiveBloggerDto(
-            bloggers: $bloggers,
-            lastMonth: $mostActiveBloggers->getLastMonth(),
-            minCountPost: $mostActiveBloggers->getMinCountPost(),
-        );
-
         return view(
             'post.list',
             [
                 'posts' => $posts->get(),
                 'filterDto' => $filterDto,
-                'mostActiveBloggers' => $mostActiveBloggers,
                 'tags' => $tags,
             ]
         );

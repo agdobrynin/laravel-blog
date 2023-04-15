@@ -1,25 +1,34 @@
 <x-app-layout pageTitle="{{ __('Пост') }}: {{$pageTitle}}">
-    <div class="border rounded shadow-sm p-3">
-        <h4>{{ $post->title }}</h4>
-        <div class="text-muted fw-light">
-            <x-ui.author-and-date :created_at="$post['created_at']" :updated_at="$post['updated_at']">
-                <x-slot:name> {{ $post->user->name }}</x-slot:name>
-            </x-ui.author-and-date>
+    <div class="row">
+        <div class="col-12 @if($mostActiveBloggerDto->bloggers->count()) col-md-8 col-xl-9 @endif">
+            <div class="border rounded shadow-sm p-3">
+                <h4>{{ $post->title }}</h4>
+                <div class="text-muted fw-light">
+                    <x-ui.author-and-date :created_at="$post['created_at']" :updated_at="$post['updated_at']">
+                        <x-slot:name> {{ $post->user->name }}</x-slot:name>
+                    </x-ui.author-and-date>
+                </div>
+                @if(!empty($readCount))
+                    <div class="text-muted fw-lighter">
+                        {{ trans_choice('{1} Сейчас читает :count пользователь|[2,19] Сейчас читает :count пользователей', $readCount) }}
+                    </div>
+                @endif
+                @if($post->tags->count())
+                    <div class="text-lowercase pt-0">
+                        <x-post.tags :tags="$post['tags']" class="bg-success fw-lighter text-light"/>
+                    </div>
+                @endif
+                <div class="mt-4 mb-4 pt-4" style="white-space: pre-wrap;">{{ $post->content }}</div>
+                @auth
+                    <x-post.action :$post :showView="false"/>
+                @endauth
+            </div>
         </div>
-        @if(!empty($readCount))
-            <div class="text-muted fw-lighter">
-                {{ trans_choice('{1} Сейчас читает :count пользователь|[2,19] Сейчас читает :count пользователей', $readCount) }}
+        @if($mostActiveBloggerDto->bloggers->count())
+            <div class="col-12 col-md-4 col-xl-3 d-sm-none d-md-inline">
+                <x-info.most-active-bloggers :$mostActiveBloggerDto />
             </div>
         @endif
-        @if($post->tags->count())
-            <div class="text-lowercase pt-0">
-                <x-post.tags :tags="$post['tags']" class="bg-success fw-lighter text-light"/>
-            </div>
-        @endif
-        <div class="mt-4 mb-4 pt-4" style="white-space: pre-wrap;">{{ $post->content }}</div>
-        @auth
-            <x-post.action :$post :showView="false"/>
-        @endauth
     </div>
 
     <h4 class="mt-4">{{ __('Комментарии') }}</h4>
