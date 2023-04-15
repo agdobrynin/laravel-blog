@@ -54,14 +54,20 @@ class BlogPost extends Model
 
     public function scopeFilter(Builder $builder, BlogPostFilterDto $dto): Builder
     {
-        $builder->with(['user', 'tags'])
-            ->withCount('comments');
-
         return $builder
+            ->with(['user', 'tags'])
+            ->withCount('comments')
             ->when(
                 $dto->order === OrderBlogPostEnum::MOST_COMMENTED,
                 fn(Builder $query, $value) => $query->orderBy('comments_count', 'desc')
-            );
+            )
+            ->when(
+                $dto->tag,
+                function (Builder $query, $value) {
+                    return $query->whereHas('tags', fn (Builder $query) => $query->where('tags.id', $value->id));
+                }
+            )
+            ;
     }
 
     public static function boot(): void

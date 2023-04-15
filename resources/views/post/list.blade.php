@@ -2,7 +2,9 @@
     @if($posts->count())
         <x-post.order-and-filter
             class="border rounded mx-0 my-4"
-            :blogPostFilterDto="$filterDto"/>
+            :blogPostFilterDto="$filterDto"
+            :$tags
+        />
     @endif
     <div class="row">
         <div class="col-12 @if($mostActiveBloggers->bloggers->count()) col-lg-8 col-xl-9 @endif order-lg-0 order-1">

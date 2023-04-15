@@ -13,7 +13,7 @@
         @endif
         @if($post->tags->count())
             <div class="text-lowercase pt-0">
-                <x-post.tags :tags="$post['tags']" class="bg-success fw-lighter"/>
+                <x-post.tags :tags="$post['tags']" class="bg-success fw-lighter text-light"/>
             </div>
         @endif
         <div class="mt-4 mb-4 pt-4" style="white-space: pre-wrap;">{{ $post->content }}</div>
