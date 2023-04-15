@@ -7,7 +7,6 @@ use App\Enums\CacheTagsEnum;
 use App\Enums\OrderBlogPostEnum;
 use App\Scopes\LatestCreatedScope;
 use App\Scopes\ShowDeletedForAdminRoleScope;
-use App\Services\Contracts\MostActiveBloggersInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -64,10 +63,9 @@ class BlogPost extends Model
             ->when(
                 $dto->tag,
                 function (Builder $query, $value) {
-                    $query->whereHas('tags', fn (Builder $query) => $query->where('tags.id', $value->id));
+                    $query->whereHas('tags', fn(Builder $query) => $query->where('tags.id', $value->id));
                 }
-            )
-            ;
+            );
     }
 
     public static function boot(): void
@@ -76,9 +74,7 @@ class BlogPost extends Model
         parent::boot();
         static::addGlobalScope(new LatestCreatedScope());
 
-        static::created(function (self $post) {
-            Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)->flush();
-        });
+        static::created(fn() => Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)->flush());
 
         static::deleted(function (self $post) {
             Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)->flush();
