@@ -14,7 +14,7 @@
     <x-ui.textarea name="content" label="{{ __('Содержание поста') }}" rows="5" value="{{ old('content', $post->content ?? '') }}"/>
     <x-ui.select
         name="tags"
-        label="{{ __('Теги для поста') }}"
+        label="{{ __('Тэги для поста') }}"
         :multiple="true"
         :values="$tagsDictionary->tagsForForm()"
         :data="old('tags', $post?->tags->pluck('id')->toArray())"
