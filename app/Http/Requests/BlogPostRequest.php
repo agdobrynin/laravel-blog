@@ -23,7 +23,8 @@ class BlogPostRequest extends FormRequest
     {
         return [
             'title' => 'required|min:5|max:100',
-            'content' => 'required|min:10'
+            'content' => 'required|min:10',
+            'tags' => 'required|array|min:1',
         ];
     }
 }

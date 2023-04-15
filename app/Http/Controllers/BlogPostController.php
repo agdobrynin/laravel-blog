@@ -3,15 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Dto\BlogPostFilterDto;
-use App\Enums\CacheTagsEnum;
 use App\Enums\OrderBlogPostEnum;
 use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
-use App\Models\Tag;
 use App\Services\Contracts\ReadNowObjectInterface;
+use App\Services\Contracts\TagsDictionaryInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class BlogPostController extends Controller
@@ -25,17 +23,13 @@ class BlogPostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, TagsDictionaryInterface $tagsDictionary)
     {
         $order = OrderBlogPostFactory::make($request->get('order', ''))
             ?: OrderBlogPostEnum::LATEST_UPDATED;
         $tagId = (int)$request->get('tag');
 
-        $tags = Cache::tags(CacheTagsEnum::TAGS->value)->remember(
-            Tag::class,
-            env('BLOG_POST_TAGS_CACHE_TTL'),
-            fn() => Tag::orderBy('name', 'asc')->get()
-        );
+        $tags = $tagsDictionary->tags();
 
         $filterDto = new BlogPostFilterDto($order, $tags->find($tagId));
         $posts = BlogPost::filter($filterDto);
@@ -67,6 +61,8 @@ class BlogPostController extends Controller
         $data['user_id'] = $request->user()->id;
         /** @var BlogPost $post */
         $post = BlogPost::create($data);
+
+        $post->tags()->sync($data['tags']);
 
         return redirect()
             ->route('post.show', ['post' => $post])
@@ -100,7 +96,9 @@ class BlogPostController extends Controller
      */
     public function update(BlogPostRequest $request, BlogPost $post)
     {
-        $post->update($request->validated());
+        $data = $request->validated();
+        $post->update($data);
+        $post->tags()->sync($data['tags'] ?? []);
 
         return redirect()
             ->route('post.show', ['post' => $post])
