@@ -34,11 +34,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ReadNowObjectInterface::class, ReadNowObject::class);
 
         $this->app->bind(TagsDictionaryInterface::class, function () {
-            $cache = null;
-
-            if (config('tags-dictionary.cache.enabled')) {
-                $cache = TagsDictionaryCache::init(config('tags-dictionary.cache.ttl'));
-            }
+            $cache = config('tags-dictionary.cache.enabled')
+                ? TagsDictionaryCache::init(config('tags-dictionary.cache.ttl'))
+                : null;
 
             return new TagsDictionary($cache);
         });
