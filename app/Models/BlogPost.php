@@ -54,7 +54,8 @@ class BlogPost extends Model
 
     public function scopeFilter(Builder $builder, BlogPostFilterDto $dto): Builder
     {
-        $builder->with('user')->withCount('comments');
+        $builder->with(['user', 'tags'])
+            ->withCount('comments');
 
         return $builder
             ->when(

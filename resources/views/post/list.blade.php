@@ -22,7 +22,7 @@
         </div>
 
         @if($mostActiveBloggers->bloggers->count())
-            <div class="col-12 col-lg-4 col-xl-3 order-lg-2 order-0">
+            <div class="col-12 col-lg-4 col-xl-3 order-lg-2 order-0 mb-4">
                 <x-ui.card title="{{ trans('Самые активные блогеры') }}" class="border-info">
                     <x-slot:subtitle>
                         @if($mostActiveBloggers->minCountPost)

@@ -20,7 +20,7 @@ class BlogPostFactory extends Factory
         $date = fake()->dateTimeBetween('-180 days');
         return [
             'title' => fake('ru_RU')->realTextBetween(5, 50, 1),
-            'content' => fake('ru_RU')->realTextBetween(390, 700, 1),
+            'content' => fake('ru_RU')->paragraphs(rand(2, 8), true),
             BlogPost::CREATED_AT => $date,
             BlogPost::UPDATED_AT => $date,
         ];

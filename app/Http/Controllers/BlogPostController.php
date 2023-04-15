@@ -88,8 +88,6 @@ class BlogPostController extends Controller
      */
     public function show(BlogPost $post, ReadNowObjectInterface $readNowObject)
     {
-        $post->loadMissing(['comments.user', 'user']);
-
         return view('post.show', [
             'post' => $post,
             'pageTitle' => Str::limit($post->title, 30),

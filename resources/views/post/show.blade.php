@@ -11,9 +11,12 @@
                 {{ trans_choice('{1} Сейчас читает :count пользователь|[2,19] Сейчас читает :count пользователей', $readCount) }}
             </div>
         @endif
-        <div class="mt-4 mb-4 pt-4 text-wrap">
-            {{ $post->content }}
-        </div>
+        @if($post->tags->count())
+            <div class="text-lowercase pt-0">
+                <x-post.tags :tags="$post['tags']" class="bg-success fw-lighter"/>
+            </div>
+        @endif
+        <div class="mt-4 mb-4 pt-4" style="white-space: pre-wrap;">{{ $post->content }}</div>
         @auth
             <x-post.action :$post :showView="false"/>
         @endauth
