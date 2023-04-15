@@ -64,7 +64,7 @@ class BlogPost extends Model
             ->when(
                 $dto->tag,
                 function (Builder $query, $value) {
-                    return $query->whereHas('tags', fn (Builder $query) => $query->where('tags.id', $value->id));
+                    $query->whereHas('tags', fn (Builder $query) => $query->where('tags.id', $value->id));
                 }
             )
             ;
