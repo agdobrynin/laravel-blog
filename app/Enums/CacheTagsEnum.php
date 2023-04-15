@@ -19,5 +19,5 @@ enum CacheTagsEnum: string
     case READ_NOW_OBJECT = 'read_now_object';
 
     #[Description('Cache for blog post tags')]
-    case TAGS = 'tags';
+    case TAGS = 'post_tags';
 }
