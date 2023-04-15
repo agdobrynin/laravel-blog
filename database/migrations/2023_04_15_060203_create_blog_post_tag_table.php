@@ -22,6 +22,8 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Tag::class)
                 ->constrained('tags')
                 ->cascadeOnDelete();
+
+            $table->unique(['blog_post_id', 'tag_id']);
         });
     }
 

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\CacheTagsEnum;
 use App\Models\BlogPost;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Cache;
@@ -33,11 +34,15 @@ class BlogPostSeeder extends Seeder
             return;
         }
 
+        $tags = Tag::all();
+
         Cache::tags(CacheTagsEnum::READ_NOW_OBJECT->value)->flush();
 
-        BlogPost::factory($postCount)->make()->each(static function ($post) use ($users) {
+        BlogPost::factory($postCount)->make()->each(static function (BlogPost $post) use ($users, $tags) {
             $post->user_id = $users->random()->id;
             $post->save();
+            $randTags = $tags->random(rand(0, $tags->count()));
+            $post->tags()->attach($randTags);
         });
     }
 }
