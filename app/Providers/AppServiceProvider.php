@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             MostActiveBloggersInterface::class,
-            fn(Application $app) => App::make(
+            fn(Application $app) => $app->make(
                 MostActiveBloggers::class,
                 [
                     'lastMonth' => env('MOST_ACTIVE_BLOGGER_LAST_MONTH'),
