@@ -1,5 +1,6 @@
 // Import only the Bootstrap components we need
 import { Popover } from 'bootstrap';
+import.meta.glob([ '../images/**', ]);
 
 // Create an example popover
 document.querySelectorAll('[data-bs-toggle="popover"]')
