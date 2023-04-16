@@ -2,7 +2,7 @@
     <div class="card w-100">
         <div class="card-header">
             <h5 class="card-title">
-                <a href="{{ route('post.show', [$post]) }}">{{ $post->title }}</a>
+                <a href="{{ route('posts.show', [$post]) }}">{{ $post->title }}</a>
             </h5>
         </div>
         <div class="card-body">

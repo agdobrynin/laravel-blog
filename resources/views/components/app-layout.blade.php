@@ -21,7 +21,7 @@
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('post.index') }}">{{ __('Записи в блоге') }}</a>
+                    <a class="nav-link" href="{{ route('posts.index') }}">{{ __('Записи в блоге') }}</a>
                 </li>
             </ul>
 
@@ -42,7 +42,7 @@
                     @endif
                 @else
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('post.create') }}">{{ __('Новый пост') }}</a>
+                        <a class="nav-link" href="{{ route('posts.create') }}">{{ __('Новый пост') }}</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -74,7 +74,7 @@
 </nav>
 <div class="container mb-5">
     @if(session('error'))
-        <x-ui.alert type="dander">
+        <x-ui.alert type="danger">
             {{ session('error') }}
         </x-ui.alert>
     @endif

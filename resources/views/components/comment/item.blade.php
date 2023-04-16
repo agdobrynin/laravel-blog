@@ -9,6 +9,6 @@
             />
         </small>
     </div>
-    {{ $comment->content }}
+    <div style="white-space: pre-wrap;">{{ $comment->content }}</div>
     @if($comment->trashed()) <del class="text-muted"> @endif
 </div>

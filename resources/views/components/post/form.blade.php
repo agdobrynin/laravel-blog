@@ -7,7 +7,7 @@
 
 @inject('tagsDictionary', App\Services\Contracts\TagsDictionaryInterface::class)
 
-<form action="{{ $route }}" method="post" {{ $attributes }}>
+<form action="{{ $route }}" method="post" {{ $attributes->merge(['class' => '']) }}>
     @csrf
     @method($method)
     <x-ui.input name="title" label="{{ __('Название') }}" class="input-small" value="{{ old('title', $post->title ?? '') }}"/>

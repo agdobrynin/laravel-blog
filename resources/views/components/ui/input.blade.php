@@ -4,6 +4,7 @@
     'value' => '',
     'hasError' => false,
     'type' => 'text',
+    'disabled' => false,
     'id' => \Illuminate\Support\Str::uuid(),
 ])
 
@@ -15,6 +16,7 @@
            {{ $attributes->class(['form-control', 'is-invalid' => $errors->has($name)]) }}
            type="{{ $type }}"
            name="{{ $name }}"
+           @if($disabled) disabled @endif
            value="{{ $value }}">
     @error($name)
         <div class="invalid-feedback">{{ $message }}</div>

@@ -20,7 +20,7 @@
                 @endif
                 <div class="mt-4 mb-4 pt-4" style="white-space: pre-wrap;">{{ $post->content }}</div>
                 @auth
-                    <x-post.action :$post :showView="false"/>
+                    <x-post.action :$post/>
                 @endauth
             </div>
         </div>
@@ -32,6 +32,7 @@
     </div>
 
     <h4 class="mt-4">{{ __('Комментарии') }}</h4>
+    <x-comment.form :$post class="border rounded p-3 shadow-sm"/>
     @forelse($post->comments as $comment)
         <x-comment.item :$comment />
     @empty

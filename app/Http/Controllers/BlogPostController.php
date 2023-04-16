@@ -65,7 +65,7 @@ class BlogPostController extends Controller
         $post->tags()->sync($data['tags']);
 
         return redirect()
-            ->route('post.show', ['post' => $post])
+            ->route('posts.show', ['post' => $post])
             ->with('success', trans('Новый пост создан успешно'));
     }
 
@@ -74,7 +74,7 @@ class BlogPostController extends Controller
      */
     public function show(BlogPost $post, ReadNowObjectInterface $readNowObject)
     {
-        $post->loadMissing(['comments.user', 'tags']);
+        $post->loadMissing(['user', 'comments.user', 'tags']);
 
         return view('post.show', [
             'post' => $post,
@@ -101,7 +101,7 @@ class BlogPostController extends Controller
         $post->tags()->sync($data['tags'] ?? []);
 
         return redirect()
-            ->route('post.show', ['post' => $post])
+            ->route('posts.show', ['post' => $post])
             ->with('success', trans('Пост обновлен'));
     }
 
@@ -114,7 +114,7 @@ class BlogPostController extends Controller
         $message = trans('Пост ":title" успешно удален', ['title' => $post->title]);
 
         return redirect()
-            ->route('post.index')
+            ->route('posts.index')
             ->with('success', $message);
     }
 

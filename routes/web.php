@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BlogPostController;
+use App\Http\Controllers\PostCommentController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,10 +24,13 @@ Route::get('/', function () {
     return view('home.index');
 })->name('home.index');
 
-Route::resource('post', BlogPostController::class);
-Route::put('post/{post}/restore', [BlogPostController::class, 'restore'])
-    ->name('post.restore')
+Route::resource('posts', BlogPostController::class);
+Route::put('posts/{post}/restore', [BlogPostController::class, 'restore'])
+    ->name('posts.restore')
     ->withTrashed();
+
+Route::resource('posts.comments', PostCommentController::class)
+    ->only(['store']);
 
 Route::middleware('auth')
     ->name('verification.')
