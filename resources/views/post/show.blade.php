@@ -18,7 +18,12 @@
                         <x-post.tags :tags="$post['tags']" class="bg-success fw-lighter text-light"/>
                     </div>
                 @endif
-                <div class="mt-4 mb-4 pt-4" style="white-space: pre-wrap;">{{ $post->content }}</div>
+                <div class="mt-0 mb-4 pt-4">
+                    @if($image = $post->image)
+                        <img src="{{ $image->url() }}" class="img-fluid w-100 mb-4">
+                    @endif
+                    <div style="white-space: pre-wrap;">{{ $post->content }}</div>
+                </div>
                 @auth
                     <x-post.action :$post/>
                 @endauth

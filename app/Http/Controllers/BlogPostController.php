@@ -7,9 +7,12 @@ use App\Enums\OrderBlogPostEnum;
 use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
+use App\Models\Image;
 use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Session\Store;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class BlogPostController extends Controller
@@ -62,6 +65,12 @@ class BlogPostController extends Controller
         /** @var BlogPost $post */
         $post = BlogPost::create($data);
 
+
+        if ($file = $request->file('thumb')) {
+            $path = $file->store('thumbs');
+            $post->image()->save(new Image(['path' => $path]));
+        }
+
         $post->tags()->sync($data['tags']);
 
         return redirect()
@@ -74,7 +83,7 @@ class BlogPostController extends Controller
      */
     public function show(BlogPost $post, ReadNowObjectInterface $readNowObject)
     {
-        $post->loadMissing(['user', 'comments.user', 'tags']);
+        $post->loadMissing(['user', 'comments.user', 'tags', 'image']);
 
         return view('post.show', [
             'post' => $post,
@@ -99,6 +108,23 @@ class BlogPostController extends Controller
         $data = $request->validated();
         $post->update($data);
         $post->tags()->sync($data['tags'] ?? []);
+
+        if ($request->input('delete_image') && $post->image) {
+            Storage::delete($post->image->path);
+            $post->image->delete();
+        }
+
+        if ($file = $request->file('thumb')) {
+            $path = $file->store('thumbs');
+
+            if ($post->image) {
+                Storage::delete($post->image->path);
+                $post->image->path = $path;
+                $post->image->save();
+            } else {
+                $post->image()->save(new Image(['path' => $path]));
+            }
+        }
 
         return redirect()
             ->route('posts.show', ['post' => $post])

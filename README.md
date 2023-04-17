@@ -85,7 +85,11 @@ composer install --ignore-platform-reqs --no-scripts
     ```shell
     ./vendor/bin/sail artisan migrate --seed
     ```
-3. Собрать фронт
+3. Натсроить storage link для загруженных файлов
+    ```shell
+    ./vendor/bin/sail artisan storage:link
+    ```
+4. Собрать фронт
     ```shell
     ./vendor/bin/sail npm install
     ```
