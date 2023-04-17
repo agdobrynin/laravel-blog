@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\StoragePathEnum;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\Image;
 use App\Models\User;
@@ -66,7 +67,7 @@ class UserController extends Controller
         $user->save();
 
         if ($avatar = $request->file('avatar')) {
-            $path = $avatar->store('avatars');
+            $path = $avatar->store(StoragePathEnum::USER_AVATAR->value);
 
             if ($user->image) {
                 Storage::delete($user->image->path);

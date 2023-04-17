@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dto\BlogPostFilterDto;
 use App\Enums\OrderBlogPostEnum;
+use App\Enums\StoragePathEnum;
 use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
@@ -64,7 +65,7 @@ class BlogPostController extends Controller
         $post = BlogPost::create($data);
 
         if ($file = $request->file('thumb')) {
-            $path = $file->store('thumbs');
+            $path = $file->store(StoragePathEnum::POST_THUMBNAIL->value);
             $post->image()->save(new Image(['path' => $path]));
         }
 
@@ -112,7 +113,7 @@ class BlogPostController extends Controller
         }
 
         if ($file = $request->file('thumb')) {
-            $path = $file->store('thumbs');
+            $path = $file->store(StoragePathEnum::POST_THUMBNAIL->value);
 
             if ($post->image) {
                 Storage::delete($post->image->path);
