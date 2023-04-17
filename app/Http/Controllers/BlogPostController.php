@@ -105,7 +105,7 @@ class BlogPostController extends Controller
     {
         $data = $request->validated();
         $post->update($data);
-        $post->tags()->sync($data['tags'] ?? []);
+        $post->tags()->sync($data['tags']);
 
         if ($request->input('delete_image') && $post->image) {
             Storage::delete($post->image->path);
