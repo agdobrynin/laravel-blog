@@ -4,18 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Facades\Storage;
 
 class Image extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['path', 'blog_post_id'];
+    protected $fillable = ['path'];
 
-    public function blogPost(): HasOne
+    public function blogPost(): MorphOne
     {
-        return $this->hasOne(BlogPost::class);
+        return $this->morphOne(BlogPost::class, 'imageable');
+    }
+
+    public function user(): MorphOne
+    {
+        return $this->morphOne(User::class, 'imageable');
     }
 
     public function url(): string

@@ -4,9 +4,11 @@
             <div class="border rounded shadow-sm p-3">
                 <h4>{{ $post->title }}</h4>
                 <div class="text-muted fw-light">
-                    <x-ui.author-and-date :created_at="$post['created_at']" :updated_at="$post['updated_at']">
-                        <x-slot:name> {{ $post->user->name }}</x-slot:name>
-                    </x-ui.author-and-date>
+                    <x-user.author-and-date
+                        :user="$post['user']"
+                        :avatarSize="48"
+                        :created_at="$post['created_at']"
+                        :updated_at="$post['updated_at']" />
                 </div>
                 @if(!empty($readCount))
                     <div class="text-muted fw-lighter">

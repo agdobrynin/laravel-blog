@@ -16,10 +16,11 @@
         <div class="card-footer text-muted">
             <div class="d-flex justify-content-between gap-4">
                 <div class="text-start">
-                    <x-ui.author-and-date
-                        :name="$post['user']['name']"
+                    <x-user.author-and-date
+                        :user="$post['user']"
                         :created_at="$post['created_at']"
                         :updated_at="$post['updated_at']"
+                        :avatarSize="36"
                     />
                 </div>
                 <div class="text-end">

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 
@@ -43,9 +43,9 @@ class BlogPost extends Model
         return $this->belongsToMany(Tag::class)->withTimestamps()->as('tagged');
     }
 
-    public function image(): HasOne
+    public function image(): MorphOne
     {
-        return $this->hasOne(Image::class);
+        return $this->morphOne(Image::class, 'imageable');
     }
 
     public function scopeMostCommented(Builder $builder)
@@ -56,7 +56,7 @@ class BlogPost extends Model
     public function scopeFilter(Builder $builder, BlogPostFilterDto $dto): Builder
     {
         return $builder
-            ->with(['user', 'tags'])
+            ->with(['user.image', 'tags'])
             ->withCount('comments')
             ->when(
                 $dto->order === OrderBlogPostEnum::MOST_COMMENTED,

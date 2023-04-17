@@ -11,7 +11,6 @@ use App\Models\Image;
 use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
 use Illuminate\Http\Request;
-use Illuminate\Session\Store;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -35,12 +34,11 @@ class BlogPostController extends Controller
         $tags = $tagsDictionary->tags();
 
         $filterDto = new BlogPostFilterDto($order, $tags->find($tagId));
-        $posts = BlogPost::filter($filterDto);
-
+        $posts = BlogPost::filter($filterDto)->get();
         return view(
             'post.list',
             [
-                'posts' => $posts->get(),
+                'posts' => $posts,
                 'filterDto' => $filterDto,
                 'tags' => $tags,
             ]
@@ -65,7 +63,6 @@ class BlogPostController extends Controller
         /** @var BlogPost $post */
         $post = BlogPost::create($data);
 
-
         if ($file = $request->file('thumb')) {
             $path = $file->store('thumbs');
             $post->image()->save(new Image(['path' => $path]));
@@ -83,7 +80,7 @@ class BlogPostController extends Controller
      */
     public function show(BlogPost $post, ReadNowObjectInterface $readNowObject)
     {
-        $post->loadMissing(['user', 'comments.user', 'tags', 'image']);
+        $post->loadMissing(['user.image', 'comments.user.image', 'tags', 'image']);
 
         return view('post.show', [
             'post' => $post,

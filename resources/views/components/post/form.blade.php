@@ -24,7 +24,7 @@
     />
     <div class="row mb-4">
         <div class="col-12 col-md-6 text-center img-thumbnail">
-            @if($post->image)
+            @if($post?->image)
                 <img src="{{ $post->image->url() }}" class="img-fluid w-100"/>
             @else
                 {{ __('Без картинки') }}
@@ -35,7 +35,7 @@
                         type="file"
                         label="{{ __('Картинка') }}"
                         class="input-small"/>
-            @if($post->image)
+            @if($post?->image)
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" name="delete_image" role="switch" id="flexSwitchCheckDefault">
                     <label class="form-check-label" for="flexSwitchCheckDefault">{{ __('Удалить картинку') }}</label>

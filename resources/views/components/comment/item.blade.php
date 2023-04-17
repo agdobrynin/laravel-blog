@@ -3,9 +3,10 @@
     @if($comment->trashed()) <del class="text-muted"> @endif
     <div class="fw-lighter">
         <small>
-            <x-ui.author-and-date
-                :name="$comment['user']['name'] ?? null"
+            <x-user.author-and-date
+                :user="$comment['user']"
                 :created_at="$comment['created_at']"
+                :avatarSize="24"
             />
         </small>
     </div>

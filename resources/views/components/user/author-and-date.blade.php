@@ -1,5 +1,12 @@
+@props([
+    'user',
+    'createdAt' => null,
+    'updatedAt' => null,
+    'avatarSize' => 24
+])
 <span>
-    {{ __('Автор') }}: {{ $name ?? trans('Аноним') }},
+    <x-user.avatar :$user :size="$avatarSize"/>
+    {{ __('Автор') }}: {{ $user ? $user->name : trans('Аноним') }}
 
     {{ __('создано :diff', ['diff' => $createdAt->diffForHumans()]) }}
 
