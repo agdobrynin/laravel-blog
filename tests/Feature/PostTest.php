@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\BlogPost;
 use App\Models\Comment;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -15,7 +16,7 @@ class PostTest extends TestCase
 
     public function testNoPostInDatabase(): void
     {
-        $response = $this->get('/post');
+        $response = $this->get('/posts');
 
         $response->assertOk();
         $response->assertSeeText(trans('Записей в блоге нет'));
@@ -30,7 +31,7 @@ class PostTest extends TestCase
         $post->user_id = User::factory()->create()->id;
         $post->save();
 
-        $response = $this->get('/post');
+        $response = $this->get('/posts');
 
         $response->assertOk();
         $response->assertSeeText('Post title one');
@@ -50,7 +51,7 @@ class PostTest extends TestCase
         $comments = Comment::factory(5)->make();
         $post->comments()->saveMany($comments);
 
-        $response = $this->get('/post');
+        $response = $this->get('/posts');
 
         $response->assertOk();
         $response->assertSeeText($post->title);
@@ -62,15 +63,18 @@ class PostTest extends TestCase
 
     public function testStorePostWithVerifiedUser(): void
     {
+        $tag = Tag::create(['name' => 'Super tag']);
+
         $data = [
             'title' => 'Post new for store',
-            'content' => 'Long content in new post'
+            'content' => 'Long content in new post',
+            'tags' => [$tag->id],
         ];
         // User with verified email
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
-            ->post('/post', $data);
+            ->post('/posts', $data);
 
         $response->assertStatus(302);
         $response->assertSessionHas('success', trans('Новый пост создан успешно'));
@@ -86,7 +90,7 @@ class PostTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
-            ->post('/post', $data);
+            ->post('/posts', $data);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors([
@@ -105,7 +109,7 @@ class PostTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
-            ->post('/post', $data);
+            ->post('/posts', $data);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors([
@@ -118,18 +122,20 @@ class PostTest extends TestCase
     {
         // User with verified email
         $user = User::factory()->create();
+        $tag = Tag::create(['name' => 'Yap!']);
 
         $post = new BlogPost();
         $post->title = 'The new title';
         $post->content = 'Long new content';
         $post->user_id = $user->id;
         $post->save();
+        $post->tags()->save($tag);
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
-        $url = sprintf('/post/%s', $post->id);
+        $url = sprintf('/posts/%s', $post->id);
 
         $response = $this->actingAs($user)
-            ->put($url, ['title' => 'title updated', 'content' => 'Updated content']);
+            ->put($url, ['title' => 'title updated', 'content' => 'Updated content', 'tags' => [$tag->id]]);
 
         $response->assertStatus(302);
         $response->assertSessionHas('success', trans('Пост обновлен'));
@@ -152,7 +158,7 @@ class PostTest extends TestCase
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
 
-        $url = sprintf('/post/%s', $post->id);
+        $url = sprintf('/posts/%s', $post->id);
 
         $response = $this->actingAs($user)
             ->delete($url)
