@@ -20,7 +20,7 @@
                 @endif
                 <div class="mt-0 mb-4 pt-4">
                     @if($image = $post->image)
-                        <img src="{{ $image->url() }}" class="img-fluid w-100 mb-4">
+                        <img src="{{ $image->url() }}" class="img-fluid w-100 mb-4 img-thumbnail">
                     @endif
                     <div style="white-space: pre-wrap;">{{ $post->content }}</div>
                 </div>
