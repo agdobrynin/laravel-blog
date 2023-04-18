@@ -10,6 +10,7 @@ use App\Services\ReadNowObject;
 use App\Services\TagsDictionary;
 use App\Services\TagsDictionaryCache;
 use Illuminate\Foundation\Application;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        Paginator::useBootstrapFive();
+
         $this->app->bind(
             MostActiveBloggersInterface::class,
             fn(Application $app) => $app->make(

@@ -20,7 +20,9 @@ class PostCommentController extends Controller
         );
 
         if ($comment->id) {
-            return back()->with('success', trans('Комментарий успешно добавлен.'));
+            return redirect()
+                ->route('posts.show', $post)
+                ->with('success', trans('Комментарий успешно добавлен.'));
         }
 
         return back()->with('error', trans('Что-то пошло не так!'));

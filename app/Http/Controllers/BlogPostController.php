@@ -35,7 +35,11 @@ class BlogPostController extends Controller
         $tags = $tagsDictionary->tags();
 
         $filterDto = new BlogPostFilterDto($order, $tags->find($tagId));
-        $posts = BlogPost::filter($filterDto)->get();
+        $posts = BlogPost::filter($filterDto)
+            ->paginate(env('BLOG_POSTS_PAGINATE_SIZE', 12))
+            ->onEachSide(3)
+            ->withQueryString();
+
         return view(
             'post.list',
             [
@@ -81,10 +85,16 @@ class BlogPostController extends Controller
      */
     public function show(BlogPost $post, ReadNowObjectInterface $readNowObject)
     {
-        $post->loadMissing(['user.image', 'comments.user.image', 'tags', 'image']);
+        $comments = $post->comments()->with('user.image')
+            ->paginate(env('COMMENTS_PAGINATE_SIZE', 20))
+            ->onEachSide(3)
+            ->withQueryString();
+
+        $post->loadMissing(['user.image', 'tags', 'image']);
 
         return view('post.show', [
             'post' => $post,
+            'comments' => $comments,
             'pageTitle' => Str::limit($post->title, 30),
             'readCount' => $readNowObject->readNowCount($post->id, session()->getId()),
         ]);

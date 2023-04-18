@@ -40,9 +40,15 @@
 
     <h4 class="mt-4">{{ __('Комментарии') }}</h4>
     <x-comment.form :$post class="border rounded p-3 shadow-sm"/>
-    @forelse($post->comments as $comment)
+    @if($comments->hasPages())
+        <div class="pt-4">{{ $comments->onEachSide(3)->links() }}</div>
+    @endif
+    @forelse($comments as $comment)
         <x-comment.item :$comment />
     @empty
         <p class="my-3 p-3 border rounded shadow-sm">{{ __('Пока комментариев нет.') }}</p>
     @endforelse
+    @if($comments->hasPages())
+        <div class="pt-4">{{ $comments->onEachSide(3)->links() }}</div>
+    @endif
 </x-app-layout>

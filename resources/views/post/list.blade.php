@@ -8,7 +8,10 @@
     @endif
     <div class="row">
         <div class="col-12 @if($mostActiveBloggerDto->bloggers->count()) col-lg-8 col-xl-9 @endif order-lg-0 order-1">
-            <div class="row justify-content-center row-cols-1 row-cols-lg-2 row-cols-xl-3 g-4">
+            <div class="col-12">
+                {{ $posts->onEachSide(3)->links() }}
+            </div>
+            <div class="row justify-content-center row-cols-1 row-cols-lg-2 row-cols-xl-3 g-4 mb-4">
                 @if($posts->count())
                     @foreach($posts as $post)
                         @if($post->trashed()) <del class="text-muted"> @endif
@@ -20,6 +23,9 @@
                         <h5 class="m-0">{{ __('Записей в блоге нет') }}</h5>
                     </div>
                 @endif
+            </div>
+            <div class="col-12">
+                {{ $posts->onEachSide(3)->links() }}
             </div>
         </div>
 
