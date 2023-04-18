@@ -39,10 +39,11 @@
         @endif
     </div>
 
-    <h4 class="mt-4">{{ __('Комментарии') }}</h4>
+    <h4 class="mt-4 text-secondary">{{ __('Добавить комментарий') }}</h4>
     <x-comment.form :$post class="border rounded p-3 shadow-sm"/>
+    <h4 class="mt-4">{{ __('Коментарии') }}</h4>
     @if($comments->hasPages())
-        <div class="pt-4">{{ $comments->onEachSide(3)->links() }}</div>
+        <div>{{ $comments->onEachSide(3)->links() }}</div>
     @endif
     @forelse($comments as $comment)
         <x-comment.item :$comment />
