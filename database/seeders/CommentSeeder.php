@@ -24,7 +24,7 @@ class CommentSeeder extends Seeder
             return;
         }
 
-        $maxCommentCount = max($this->command->ask('How do you want max comment in each post ?', 15), 0);
+        $maxCommentCount = max($this->command->ask('How do you want max comment in each post ?', 30), 0);
 
         if (!$maxCommentCount) {
             $this->command->info('You choose no comments :(');
