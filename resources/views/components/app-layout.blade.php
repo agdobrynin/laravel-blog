@@ -56,7 +56,7 @@
                             @else
                                 🎠
                             @endrole
-                            <x-user.avatar :user="Auth::user()" :size="36"/>
+                            <x-user.avatar :user="Auth::user()" class="shadow-sm" :size="36"/>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end mt-0">
                             <li><a class="dropdown-item" href="{{ route('users.show', Auth::user()) }}">{{ __('Профиль') }}</a></li>

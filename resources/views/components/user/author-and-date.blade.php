@@ -5,7 +5,7 @@
     'avatarSize' => 24
 ])
 <span>
-    <x-user.avatar :$user :size="$avatarSize"/>
+    <x-user.avatar :$user :size="$avatarSize" {{ $attributes->merge(['class' => '']) }}/>
     {{ __('Автор') }}: {{ $user ? $user->name : trans('Аноним') }}
 
     {{ __('создано :diff', ['diff' => $createdAt->diffForHumans()]) }}

@@ -4,8 +4,8 @@
 ])
 @if ($user?->image)
     <img src="{{ $user->image->url() }}" alt="{{ __('Аватар пользователя') }}"
-         class="avatar avatar-{{$size}} rounded-circle shadow-4">
+         {{ $attributes->merge(['class' => 'avatar avatar-'.$size.' rounded-circle']) }}/>
 @else
     <img src="{{  Vite::asset('resources/images/unicorn-icon-svgrepo-com.svg') }}" alt="{{ __('Без аватара') }}"
-         class="avatar avatar-{{$size}} rounded-circle shadow-4 bg-secondary">
+         {{ $attributes->merge(['class' => 'avatar avatar-'.$size.' rounded-circle bg-secondary']) }}/>
 @endif

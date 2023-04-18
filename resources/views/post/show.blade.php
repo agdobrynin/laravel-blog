@@ -7,6 +7,7 @@
                     <x-user.author-and-date
                         :user="$post['user']"
                         :avatarSize="48"
+                        class="shadow-sm"
                         :created_at="$post['created_at']"
                         :updated_at="$post['updated_at']" />
                 </div>
