@@ -12,7 +12,8 @@ readonly class ReadNowObject implements ReadNowObjectInterface
     public function readNowCount(int|string $objectIdentification, string|int $userIdentification): int
     {
         $cacheUsersKey = 'read-object-users:' . $objectIdentification;
-        $readers = Cache::get($cacheUsersKey) ?: [];
+
+        $readers = Cache::tags(CacheTagsEnum::READ_NOW_OBJECT->value)->get($cacheUsersKey, []);
 
         $now = now();
         $readers[$userIdentification] = $now;
