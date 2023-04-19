@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BlogPostController;
 use App\Http\Controllers\PostCommentController;
+use App\Http\Controllers\UserCommentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -31,6 +32,9 @@ Route::put('posts/{post}/restore', [BlogPostController::class, 'restore'])
     ->withTrashed();
 
 Route::resource('posts.comments', PostCommentController::class)
+    ->only(['store']);
+
+Route::resource('users.comments', UserCommentController::class)
     ->only(['store']);
 
 Route::resource('users', UserController::class)

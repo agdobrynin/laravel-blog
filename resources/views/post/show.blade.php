@@ -23,7 +23,7 @@
                 @endif
                 <div class="mt-0 mb-4 pt-4">
                     @if($image = $post->image)
-                        <img src="{{ $image->url() }}" class="img-fluid w-100 mb-4 img-thumbnail">
+                        <img src="{{ $image->url() }}" class="img-fluid w-100 mb-4 img-thumbnail" alt="Image">
                     @endif
                     <div style="white-space: pre-wrap;">{{ $post->content }}</div>
                 </div>
@@ -39,18 +39,8 @@
         @endif
     </div>
 
-    <h4 class="mt-4 text-secondary">{{ __('Добавить комментарий') }}</h4>
-    <x-comment.form :$post class="border rounded p-3 shadow-sm"/>
-    <h4 class="mt-4">{{ __('Коментарии') }}</h4>
-    @if($comments->hasPages())
-        <div>{{ $comments->onEachSide(3)->links() }}</div>
-    @endif
-    @forelse($comments as $comment)
-        <x-comment.item :$comment />
-    @empty
-        <p class="my-3 p-3 border rounded shadow-sm">{{ __('Пока комментариев нет.') }}</p>
-    @endforelse
-    @if($comments->hasPages())
-        <div class="pt-4">{{ $comments->onEachSide(3)->links() }}</div>
-    @endif
+    <x-comment.list-with-form
+        action="{{ route('posts.comments.store', $post) }}"
+        :$comments
+    />
 </x-app-layout>

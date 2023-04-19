@@ -14,7 +14,6 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
         $this->authorizeResource(User::class, 'user');
     }
 
@@ -47,7 +46,12 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return view('user.show', ['user' => $user]);
+        $comments = $user->commentsOn()->with('user.image')
+            ->paginate(env('COMMENTS_PAGINATE_SIZE', 20))
+            ->onEachSide(3)
+            ->withQueryString();
+
+        return view('user.show', ['user' => $user, 'comments' => $comments]);
     }
 
     /**

@@ -58,5 +58,30 @@ class CommentSeeder extends Seeder
                         ->make()
                 );
         });
+
+        $maxCommentForUserCount = max($this->command->ask('How do you want max comment for some user profile?', 30), 0);
+
+        if (!$maxCommentForUserCount) {
+            $this->command->info('You choose no comments for user profiles :(');
+
+            return;
+        }
+
+        $users = User::all();
+
+        $randomUserCount = max($this->command->ask('How users will be with comment?', ceil($users->count() / 2)), 1);
+
+        User::all()->random(min($randomUserCount, $users->count()))
+            ->each(static function (User $user) use ($maxCommentForUserCount, $users) {
+                $user->commentsOn()->saveMany(
+                    Comment::factory(rand(0, $maxCommentForUserCount))
+                        ->state(
+                            new Sequence(
+                                fn(Sequence $sequence) => ['user_id' => $users->random()->id]
+                            )
+                        )
+                        ->make()
+                );
+        });
     }
 }

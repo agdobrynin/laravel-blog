@@ -6,7 +6,12 @@
 ])
 <span>
     <x-user.avatar :$user :size="$avatarSize" {{ $attributes->merge(['class' => '']) }}/>
-    {{ __('Автор') }}: {{ $user ? $user->name : trans('Аноним') }}
+    {{ __('Автор') }}:
+    @if($user)
+        <a href="{{ route('users.show', $user) }}">{{$user->name}}</a>
+    @else
+        {{ trans('Аноним') }}
+    @endif
 
     {{ __('создано :diff', ['diff' => $createdAt->diffForHumans()]) }}
 

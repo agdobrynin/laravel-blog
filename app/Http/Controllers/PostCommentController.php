@@ -22,9 +22,9 @@ class PostCommentController extends Controller
         if ($comment->id) {
             return redirect()
                 ->route('posts.show', $post)
-                ->with('success', trans('Комментарий успешно добавлен.'));
+                ->with('success', trans('comment.add.success'));
         }
 
-        return back()->with('error', trans('Что-то пошло не так!'));
+        return back()->with('error', trans('error.ups'));
     }
 }
