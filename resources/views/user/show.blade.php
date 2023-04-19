@@ -5,7 +5,14 @@
         </div>
         <div class="col-12 col-md-8">
             <x-ui.input :disabled="true" name="" value="{{ $user->name }}" label="{{ __('Имя пользователя') }}"/>
-            <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-outline-secondary w-100">{{ __('Изменить имя или аватар') }}</a>
+            @can('update', $user)
+                <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-outline-secondary w-100">{{ __('Изменить имя или аватар') }}</a>
+            @endcan
         </div>
     </div>
+
+    <x-comment.list-with-form
+        :$comments
+        title="{{ __('Добавить комментарий для пользователя :name', ['name' => $user->name]) }}"
+        action="{{ route('users.comments.store', $user) }}"/>
 </x-app-layout>

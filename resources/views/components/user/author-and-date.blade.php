@@ -8,7 +8,7 @@
     <x-user.avatar :$user :size="$avatarSize" {{ $attributes->merge(['class' => '']) }}/>
     {{ __('Автор') }}:
     @if($user)
-        <a href="#">{{$user->name}}</a>
+        <a href="{{ route('users.show', $user) }}">{{$user->name}}</a>
     @else
         {{ trans('Аноним') }}
     @endif

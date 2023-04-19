@@ -1,7 +1,7 @@
 @props([
-    'post'
+    'action'
 ])
-<form action="{{ route('posts.comments.store', ['post' => $post->id]) }}" method="POST" {{ $attributes->merge(['class' => '']) }}>
+<form action="{{ $action }}" method="POST" {{ $attributes->merge(['class' => '']) }}>
     @csrf
     <x-ui.input label="{{ __('От имени') }}"
                 name=""
