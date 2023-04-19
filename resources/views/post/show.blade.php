@@ -39,8 +39,9 @@
         @endif
     </div>
 
-    <x-comment.list-with-form
+    <h4 class="mt-4 text-secondary">{{ __('Добавить комментарий к публикации') }}</h4>
+    <x-comment.form
         action="{{ route('posts.comments.store', $post) }}"
-        :$comments
-    />
+        class="border rounded p-3 shadow-sm"/>
+    <x-comment.list-with-pagination :$comments/>
 </x-app-layout>

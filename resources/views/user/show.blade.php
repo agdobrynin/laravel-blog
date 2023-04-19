@@ -11,8 +11,9 @@
         </div>
     </div>
 
-    <x-comment.list-with-form
-        :$comments
-        title="{{ __('Добавить комментарий для пользователя :name', ['name' => $user->name]) }}"
-        action="{{ route('users.comments.store', $user) }}"/>
+    <h4 class="mt-4 text-secondary">{{ __('Добавить комментарий для пользователя :name', ['name' => $user->name]) }}</h4>
+    <x-comment.form
+        action="{{ route('users.comments.store', $user) }}"
+        class="border rounded p-3 shadow-sm"/>
+    <x-comment.list-with-pagination :$comments/>
 </x-app-layout>

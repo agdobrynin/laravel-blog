@@ -1,10 +1,7 @@
 @props([
     'comments',
-    'action',
-    'title' => trans('Добавить комментарий'),
 ])
-<h4 class="mt-4 text-secondary">{{ $title }}</h4>
-<x-comment.form :$action class="border rounded p-3 shadow-sm"/>
+
 <h4 class="mt-4">{{ __('Комментарии') }}</h4>
 @if($comments->hasPages())
     <div>{{ $comments->onEachSide(3)->links() }}</div>
