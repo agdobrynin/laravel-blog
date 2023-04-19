@@ -12,8 +12,15 @@
     </div>
 
     <h4 class="mt-4 text-secondary">{{ __('Добавить комментарий для пользователя :name', ['name' => $user->name]) }}</h4>
-    <x-comment.form
-        action="{{ route('users.comments.store', $user) }}"
-        class="border rounded p-3 shadow-sm"/>
+    @if(Auth::user())
+        <x-comment.form
+            action="{{ route('users.comments.store', $user) }}"
+            class="border rounded p-3 shadow-sm"/>
+    @else
+        <div class="border rounded shadow-sm p-3 my-3">
+            {!! __('Для комментария <a href=":login">авторизайтесь</a> или <a href=":reg">зарегистрируйтесь</a>',
+                        ['login' => route('login'), 'reg' => route('register')]) !!}
+        </div>
+    @endif
     <x-comment.list-with-pagination :$comments/>
 </x-app-layout>
