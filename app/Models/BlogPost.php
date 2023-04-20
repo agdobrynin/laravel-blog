@@ -6,20 +6,20 @@ use App\Dto\BlogPostFilterDto;
 use App\Enums\CacheTagsEnum;
 use App\Enums\OrderBlogPostEnum;
 use App\Models\Traits\HasComments;
+use App\Models\Traits\HasTagged;
 use App\Scopes\LatestCreatedScope;
 use App\Scopes\ShowDeletedForAdminRoleScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 
 class BlogPost extends Model
 {
-    use HasFactory, SoftDeletes, HasComments;
+    use HasFactory, SoftDeletes, HasComments, HasTagged;
 
     protected $fillable = ['title', 'content', 'user_id'];
 
@@ -31,11 +31,6 @@ class BlogPost extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function tags(): BelongsToMany
-    {
-        return $this->belongsToMany(Tag::class)->withTimestamps()->as('tagged');
     }
 
     public function image(): MorphOne
