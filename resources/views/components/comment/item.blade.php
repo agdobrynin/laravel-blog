@@ -10,9 +10,9 @@
             />
         </small>
     </div>
-    <div style="white-space: pre-wrap;">{{ $comment->content }}</div>
-        @if($comment->tags()->count())
-            <div class="text-lowercase pt-0 fw-lighter">
+    <div style="white-space: pre-wrap;">{{ $comment->contentWithoutTags() }}</div>
+        @if($comment->tags_count)
+            <div class="text-lowercase pt-3 fw-lighter">
                 {{ __('тэги комментария:') }}
                 <x-info.tags :tags="$comment['tags']" class="bg-secondary fw-lighter text-light"/>
             </div>

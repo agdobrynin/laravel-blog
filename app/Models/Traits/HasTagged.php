@@ -9,6 +9,7 @@ use App\Services\Contracts\TagsDictionaryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Str;
 
 trait HasTagged
 {
@@ -19,6 +20,20 @@ trait HasTagged
     public function tags(): MorphToMany
     {
         return $this->morphToMany(Tag::class, 'taggable')->withTimestamps()->as('tagged');
+    }
+
+    public function contentWithoutTags(): ?string
+    {
+        throw_if(
+            !isset($this->{static::$syncTagsFromField}),
+            message: 'Model "'.static::class.'" do not has attribute "'.static::$syncTagsFromField.'"'
+        );
+
+        if(static::$tagPattern) {
+            return preg_replace(static::$tagPattern, '', $this->{static::$syncTagsFromField});
+        }
+
+        return $this->{static::$syncTagsFromField};
     }
 
     protected static function bootHasTagged(): void
@@ -39,15 +54,16 @@ trait HasTagged
      */
     protected static function findTags(string $content): ?Collection
     {
-        \preg_match_all(static::$tagPattern, $content, $foundTags);
+        \preg_match_all(static::$tagPattern, $content, $foundSourceTags);
 
-        if (!isset($foundTags[1])) {
+        if (!isset($foundSourceTags[1])) {
             return null;
         }
 
         $tags = self::$tagsDictionary ? self::$tagsDictionary->tags() : Tag::all();
+        array_walk($foundSourceTags[1], fn(&$item) => $item = Str::upper($item));
 
-        return $tags->whereIn('name', $foundTags[1]);
+        return $tags->filter(fn(Tag $item) => in_array(Str::upper($item->name), $foundSourceTags[1]));
     }
 
     protected static function syncTags($model): void
