@@ -18,7 +18,7 @@
             class="border rounded p-3 shadow-sm"/>
     @else
         <div class="border rounded shadow-sm p-3 my-3">
-            {!! __('Для комментария <a href=":login">авторизайтесь</a> или <a href=":reg">зарегистрируйтесь</a>',
+            {!! __('Для комментария <a href=":login">авторизуйтесь</a> или <a href=":reg">зарегистрируйтесь</a>',
                         ['login' => route('login'), 'reg' => route('register')]) !!}
         </div>
     @endif
