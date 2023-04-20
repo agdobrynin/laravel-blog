@@ -17,8 +17,12 @@
                     </div>
                 @endif
                 @if($post->tags->count())
-                    <div class="text-lowercase pt-0">
-                        <x-post.tags :tags="$post['tags']" class="bg-success fw-lighter text-light"/>
+                    <div class="text-lowercase pt-0 fw-lighter">
+                        {{ __('Тэги поста:') }}
+                        <x-info.tags
+                                :tags="$post['tags']"
+                                routeName="posts.index"
+                                class="bg-success fw-lighter text-light"/>
                     </div>
                 @endif
                 <div class="mt-0 mb-4 pt-4">

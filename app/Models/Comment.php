@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasTagged;
 use App\Scopes\LatestCreatedScope;
 use App\Scopes\ShowDeletedForAdminRoleScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Comment extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasTagged;
 
     protected $fillable = ['content', 'user_id'];
 

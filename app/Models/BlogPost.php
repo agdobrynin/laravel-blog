@@ -57,6 +57,8 @@ class BlogPost extends Model
 
     public static function boot(): void
     {
+        // Turnoff sync tags from field.
+        static::$syncTagsFromField = null;
         static::addGlobalScope(new ShowDeletedForAdminRoleScope());
         parent::boot();
         static::addGlobalScope(new LatestCreatedScope());

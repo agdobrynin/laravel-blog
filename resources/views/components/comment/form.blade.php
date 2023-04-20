@@ -15,5 +15,8 @@
         rows="2"
         value="{{ old('content', $comment->content ?? '') }}"/>
     <input type="submit" class="btn btn-primary btn-sm w-100" value="{{ __('Добавить') }}">
+    <p class="text-muted mt-4">
+        {{ __('Можно использовать теги на комментарии указан значение между символов решётка "#"') }}
+    </p>
 </form>
 
