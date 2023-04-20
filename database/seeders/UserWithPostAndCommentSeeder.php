@@ -30,7 +30,7 @@ class UserWithPostAndCommentSeeder extends Seeder
 
         // comments for posts
         BlogPost::all()->each(static function (BlogPost $post) use ($users, $commentMaxCount) {
-            $post->comments()
+            $post->commentsOn()
                 ->saveMany(
                     Comment::factory(rand(0, $commentMaxCount))
                         ->state(
