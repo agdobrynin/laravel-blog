@@ -10,7 +10,7 @@ class PostCommentController extends Controller
 {
     public function store(BlogPost $post, StoreCommentRequest $request)
     {
-        $comment = $post->comments()->save(
+        $comment = $post->commentsOn()->save(
             new Comment(
                 [
                     'content' => $request->input('content'),

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\CacheTagsEnum;
 use App\Enums\RolesEnum;
+use App\Models\Traits\HasComments;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -20,7 +21,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasComments;
 
     public const ROLE_CACHE_PREFIX_KEY = 'user-roles:';
 
@@ -62,11 +63,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
-    }
-
-    public function commentsOn(): MorphMany
-    {
-        return $this->morphMany(Comment::class, 'commentable');
     }
 
     public function image(): MorphOne

@@ -24,8 +24,8 @@
                     />
                 </div>
                 <div class="text-end">
-                    <span class="badge rounded-pill {{$post->comments_count ? 'bg-success' : 'bg-secondary'}}">
-                        💬 {{ $post->comments_count }}
+                    <span class="badge rounded-pill {{$post->comments_on_count ? 'bg-success' : 'bg-secondary'}}">
+                        💬 {{ $post->comments_on_count }}
                     </span>
                 </div>
             </div>

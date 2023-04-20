@@ -49,7 +49,7 @@ class PostTest extends TestCase
         $post->user_id = $user->id;
         $post->save();
         $comments = Comment::factory(5)->make();
-        $post->comments()->saveMany($comments);
+        $post->commentsOn()->saveMany($comments);
 
         $response = $this->get('/posts');
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Dto\BlogPostFilterDto;
 use App\Enums\CacheTagsEnum;
 use App\Enums\OrderBlogPostEnum;
+use App\Models\Traits\HasComments;
 use App\Scopes\LatestCreatedScope;
 use App\Scopes\ShowDeletedForAdminRoleScope;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,14 +13,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 
 class BlogPost extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasComments;
 
     protected $fillable = ['title', 'content', 'user_id'];
 
@@ -27,11 +27,6 @@ class BlogPost extends Model
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
-
-    public function comments(): MorphMany
-    {
-        return $this->morphMany(Comment::class, 'commentable');
-    }
 
     public function user(): BelongsTo
     {
@@ -52,10 +47,10 @@ class BlogPost extends Model
     {
         return $builder
             ->with(['user.image', 'tags'])
-            ->withCount('comments')
+            ->withCount('commentsOn')
             ->when(
                 $dto->order === OrderBlogPostEnum::MOST_COMMENTED,
-                fn(Builder $query, $value) => $query->orderBy('comments_count', 'desc')
+                fn(Builder $query, $value) => $query->orderBy('comments_on_count', 'desc')
             )
             ->when(
                 $dto->tag,
@@ -73,14 +68,8 @@ class BlogPost extends Model
 
         static::created(fn() => Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)->flush());
 
-        static::deleted(function (self $post) {
-            Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)->flush();
-            $post->comments()->delete();
-        });
+        static::deleted(fn() => Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)->flush());
 
-        static::restoring(function (self $post) {
-            Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)->flush();
-            $post->comments()->withTrashed()->where('deleted_at', '>=', $post->deleted_at)->restore();
-        });
+        static::restoring(fn() => Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)->flush());
     }
 }
