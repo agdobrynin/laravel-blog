@@ -13,7 +13,7 @@
     <x-slot:items>
         @foreach($mostActiveBloggerDto->bloggers as $blogger)
             <li class="list-group-item">
-                <span class="fw-bold">{{ $blogger->name }}</span>
+                <span class="fw-bold"><a href="{{ route('users.show', $blogger) }}">{{ $blogger->name }}</a></span>
                 , опубликовал <span class="badge bg-info">{{ $blogger->blog_posts_count }}</span> постов
             </li>
         @endforeach
