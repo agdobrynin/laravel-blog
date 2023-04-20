@@ -67,7 +67,7 @@ return new class extends Migration {
             ->get()
             ->map(fn($item) => (array)$item);
 
-        DB::table('taggables')->insert($rows->toArray());
+        DB::table('blog_post_tag')->insert($rows->toArray());
 
         Schema::drop('taggables');
     }
