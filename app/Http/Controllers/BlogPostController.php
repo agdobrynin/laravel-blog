@@ -39,7 +39,7 @@ class BlogPostController extends Controller
         $filterDto = new BlogPostFilterDto($order, $tags->find($tagId), $user);
         $posts = BlogPost::filter($filterDto)
             ->paginate(env('BLOG_POSTS_PAGINATE_SIZE', 12))
-            ->onEachSide(3)
+            ->onEachSide(1)
             ->withQueryString();
 
         return view(
@@ -90,7 +90,7 @@ class BlogPostController extends Controller
         $comments = $post->commentsOn()->with(['user.image', 'tags'])
             ->withCount('tags')
             ->paginate(env('COMMENTS_PAGINATE_SIZE', 20))
-            ->onEachSide(3)
+            ->onEachSide(1)
             ->withQueryString();
 
         $post->loadMissing(['user.image', 'tags', 'image']);
