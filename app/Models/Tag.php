@@ -19,6 +19,11 @@ class Tag extends Model
         return $this->morphedByMany(BlogPost::class, 'taggable')->withTimestamps()->as('tagged');
     }
 
+    public function comments(): MorphToMany
+    {
+        return $this->morphedByMany(Comment::class, 'taggable')->withTimestamps()->as('tagged');
+    }
+
     public static function boot(): void
     {
         parent::boot();

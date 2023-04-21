@@ -138,6 +138,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeWithMostBlogPostLastMonth(Builder $builder, ?int $lastMonth = null, ?int $minCountPost = null): Builder
     {
         return $builder
+            ->with('image')
             ->when($lastMonth, function (Builder $query, int $value) {
                 return $query->withCount([
                     'blogPosts' => function (Builder $query) use ($value) {
