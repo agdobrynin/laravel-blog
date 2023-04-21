@@ -52,6 +52,10 @@ class BlogPost extends Model
                 function (Builder $query, $value) {
                     $query->whereHas('tags', fn(Builder $query) => $query->where('tags.id', $value->id));
                 }
+            )
+            ->when(
+                $dto->user,
+                fn (Builder $query, $value)  => $query->where('user_id', $value->id)
             );
     }
 

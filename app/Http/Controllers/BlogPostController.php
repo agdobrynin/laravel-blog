@@ -9,6 +9,7 @@ use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
 use App\Models\Image;
+use App\Models\User;
 use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
 use Illuminate\Http\Request;
@@ -33,8 +34,9 @@ class BlogPostController extends Controller
         $tagId = (int)$request->get('tag');
 
         $tags = $tagsDictionary->tags();
+        $user = User::find($request->get('user'));
 
-        $filterDto = new BlogPostFilterDto($order, $tags->find($tagId));
+        $filterDto = new BlogPostFilterDto($order, $tags->find($tagId), $user);
         $posts = BlogPost::filter($filterDto)
             ->paginate(env('BLOG_POSTS_PAGINATE_SIZE', 12))
             ->onEachSide(3)
