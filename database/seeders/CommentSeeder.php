@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\BlogPost;
 use App\Models\Comment;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
@@ -83,5 +84,8 @@ class CommentSeeder extends Seeder
                         ->make()
                 );
         });
+
+        $tags = Tag::all();
+        Comment::all()->each(fn(Comment $comment) => $comment->tags()->sync($tags->random(rand(0, 3))));
     }
 }

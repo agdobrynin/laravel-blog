@@ -18,6 +18,6 @@ enum CacheTagsEnum: string
     #[Description('Cache statistic blocks for reading now posts and other site items.')]
     case READ_NOW_OBJECT = 'read_now_object';
 
-    #[Description('Cache for blog post tags')]
-    case TAGS = 'post_tags';
+    #[Description('Cache for tags dictionary (taggable objects)')]
+    case TAGS = 'dictionary_tags';
 }

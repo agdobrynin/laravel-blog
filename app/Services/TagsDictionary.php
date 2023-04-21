@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\CacheTagsEnum;
 use App\Models\Tag;
 use App\Services\Contracts\TagsDictionaryInterface;
 use Illuminate\Cache\TaggedCache;
@@ -11,27 +12,35 @@ use Illuminate\Support\Collection as CollectionSimple;
 
 class TagsDictionary implements TagsDictionaryInterface
 {
-    protected Collection $tags;
+    public function __construct(protected ?TaggedCache $cache = null)
+    {
+    }
 
-    public function __construct(?TaggedCache $cache = null)
+    /**
+     * @return Collection<int,Tag>
+     */
+    public function tags(): Collection
+    {
+        return $this->getTags();
+    }
+
+    /**
+     * @return CollectionSimple<int, string>
+     */
+    public function tagsForForm(): CollectionSimple
+    {
+        return $this->getTags()
+            ->reduce(fn(CollectionSimple $carry, Tag $item) => $carry->put($item->id, $item->name), collect());
+    }
+
+    private function getTags()
     {
         $query = Tag::orderBy('name', 'asc');
 
-        if ($cache) {
-            $this->tags = $cache->get(Tag::class, fn() => $query->get());
-        } else {
-            $this->tags = $query->get();
+        if ($this->cache) {
+            return $this->cache->remember(CacheTagsEnum::TAGS->value, null, fn() => $query->get());
         }
-    }
 
-    public function tags(): Collection
-    {
-        return $this->tags;
-    }
-
-    public function tagsForForm(): CollectionSimple
-    {
-        return $this->tags
-            ->reduce(fn(CollectionSimple $carry, Tag $item) => $carry->put($item->id, $item->name), collect());
+        return $query->get();
     }
 }

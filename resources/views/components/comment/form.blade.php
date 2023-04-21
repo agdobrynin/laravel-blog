@@ -15,5 +15,19 @@
         rows="2"
         value="{{ old('content', $comment->content ?? '') }}"/>
     <input type="submit" class="btn btn-primary btn-sm w-100" value="{{ __('Добавить') }}">
+
+    @inject('tagsDictionary', App\Services\Contracts\TagsDictionaryInterface::class)
+
+    @if($tagsDictionary->tags()->count())
+        <p class="text-muted mt-4">
+            {{ __('Можно использовать теги на комментарии указан значение между символов решётка "#"') }}
+        </p>
+        <div class="row">
+            @foreach($tagsDictionary->tags() as $tag)
+                <div class="col text-muted text-nowrap fs-small">#{{ $tag->name }}#</div>
+            @endforeach
+        </div>
+
+    @endif
 </form>
 

@@ -46,7 +46,8 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $comments = $user->commentsOn()->with('user.image')
+        $comments = $user->commentsOn()->with(['user.image', 'tags'])
+            ->withCount('tags')
             ->paginate(env('COMMENTS_PAGINATE_SIZE', 20))
             ->onEachSide(3)
             ->withQueryString();

@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Enums\CacheTagsEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Cache;
 
 class Tag extends Model
@@ -14,9 +14,9 @@ class Tag extends Model
 
     protected $fillable = ['name'];
 
-    public function blogPosts(): BelongsToMany
+    public function blogPosts(): MorphToMany
     {
-        return $this->belongsToMany(BlogPost::class)->withTimestamps()->as('tagged');
+        return $this->morphedByMany(BlogPost::class, 'taggable')->withTimestamps()->as('tagged');
     }
 
     public static function boot(): void
