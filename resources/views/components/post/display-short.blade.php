@@ -10,7 +10,8 @@
         </div>
         @if($post->tags->count())
             <div class="card-body text-start text-lowercase pt-0">
-                <x-post.tags :tags="$post['tags']" class="bg-light text-dark fw-lighter"/>
+                <span class="badge bg-light text-muted fw-lighter">{{ __('Тэги поста:') }}</span>
+                <x-info.tags :tags="$post['tags']" routeName="posts.index" class="bg-light text-dark fw-lighter"/>
             </div>
         @endif
         <div class="card-footer text-muted">
