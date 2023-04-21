@@ -6,13 +6,14 @@ use App\Enums\CacheTagsEnum;
 use App\Models\BlogPost;
 use App\Models\Tag;
 use App\Models\User;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Cache;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
 class BlogPostSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     /**
      * Run the database seeds.
      */

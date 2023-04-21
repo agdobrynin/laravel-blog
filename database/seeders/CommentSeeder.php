@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\BlogPost;
 use App\Models\Comment;
 use App\Models\Tag;
@@ -12,6 +12,8 @@ use Illuminate\Database\Seeder;
 
 class CommentSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     /**
      * Run the database seeds.
      */
