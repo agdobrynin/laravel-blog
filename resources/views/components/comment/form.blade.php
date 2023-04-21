@@ -20,8 +20,9 @@
 
     @if($tagsDictionary->tags()->count())
         <p class="text-muted mt-4">
-            {{ __('Можно использовать теги на комментарии указан значение между символов решётка "#"') }}
+            {{ __('Можно использовать теги на комментарии указав значение тэга между символов решётка "#"') }}
         </p>
+        <div class="text-muted fs-small">{{ __('Список доступных тэгов:') }}</div>
         <div class="row">
             @foreach($tagsDictionary->tags() as $tag)
                 <div class="col text-muted text-nowrap fs-small">#{{ $tag->name }}#</div>
