@@ -27,4 +27,9 @@ class Image extends Model
     {
         return Storage::url($this->path);
     }
+
+    public function fullPath(): string
+    {
+        return Storage::path($this->path);
+    }
 }
