@@ -1,15 +1,3 @@
-<style>
-    .avatar {
-        vertical-align: middle;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        margin: 0em 1em 1em 0em;
-        float: left;
-        border: 1px solid gray;
-        box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
-    }
-</style>
 <x-mail::message>
 ### Привет {{ $comment->commentable->user->name }}.
 

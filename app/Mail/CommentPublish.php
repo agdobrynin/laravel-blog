@@ -13,6 +13,8 @@ class CommentPublish extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $theme = 'default-with-avatar';
+
     /**
      * Create a new message instance.
      */
@@ -27,7 +29,7 @@ class CommentPublish extends Mailable
     {
         return new Envelope(
             subject: trans('Добавлен новый комментарий'),
-            tags: ['new comment']
+            tags: ['new', 'comment']
         );
     }
 
