@@ -9,14 +9,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CommentAdd extends Mailable
+class CommentPublish extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(readonly public Comment $comment)
+    public function __construct(public readonly Comment $comment)
     {
     }
 
@@ -37,8 +37,7 @@ class CommentAdd extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.comment.ru.new',
-            text: 'emails.comment.ru.new-text'
+            markdown: 'emails.comment.ru.new-markdown',
         );
     }
 

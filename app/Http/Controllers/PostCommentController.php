@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCommentRequest;
-use App\Mail\CommentAdd;
+use App\Mail\CommentPublish;
 use App\Models\BlogPost;
 use App\Models\Comment;
 use Illuminate\Support\Facades\Mail;
@@ -23,7 +23,7 @@ class PostCommentController extends Controller
         );
 
         if ($comment->id) {
-            Mail::to($post->user)->send(new CommentAdd($comment));
+            Mail::to($post->user)->send(new CommentPublish($comment));
 
             return redirect()
                 ->route('posts.show', $post)
