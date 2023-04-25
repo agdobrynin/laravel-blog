@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Enums\QueueNamesEnum;
 use App\Mail\CommentPostedOnWatchedPost;
-use App\Models\BlogPost;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -41,7 +40,7 @@ class NotifyUsersWatchedPost implements ShouldQueue
                     Mail::to($user)->send(
                         new CommentPostedOnWatchedPost($user, $this->comment)
                     );
-                 }
+                }
             });
     }
 }
