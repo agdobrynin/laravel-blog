@@ -155,6 +155,15 @@ class User extends Authenticatable implements MustVerifyEmail
             ->orderBy('blog_posts_count', 'desc');
     }
 
+    public function scopeUsersCommentPost(Builder $builder, BlogPost $post): Builder
+    {
+        return $builder->whereHas(
+                'comments',
+                fn($q) => $q->where('commentable_id', $post->id)
+                    ->where('commentable_type', BlogPost::class)
+        );
+    }
+
     private function clearCache(): void
     {
         if (config('roles.cache.enabled')) {

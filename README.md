@@ -99,8 +99,9 @@ composer install --ignore-platform-reqs --no-scripts
 5. Запустить воркер (worker) обрабатывающий задачи из очереди сообщений
 
     ```shell
-    ./vendor/bin/sail artisan queue:work
+    ./vendor/bin/sail artisan queue:work  --queue=email,default,low
     ```
+   в проекте используется две очереди с разными приоритетами
 
 ### Доступные сайты в dev окружении
 
