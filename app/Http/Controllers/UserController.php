@@ -73,7 +73,7 @@ class UserController extends Controller
         $user->save();
 
         if ($avatar = $request->file('avatar')) {
-            $path = $avatar->store(StoragePathEnum::USER_AVATAR->value);
+            $path = Storage::putFileAs(StoragePathEnum::USER_AVATAR->value, $avatar);
 
             if ($user->image) {
                 Storage::delete($user->image->path);
