@@ -35,7 +35,7 @@ class ImageResizer implements ShouldQueue
 
 
         switch ($this->model->imageable_type) {
-            case BlogPost::class:
+            case BlogPost::class :
             {
                 if ($image->width() > 950) {
                     $image->resize(950, null, function ($constraint) {
@@ -46,13 +46,15 @@ class ImageResizer implements ShouldQueue
                 break;
             }
 
-            case User::class:
+            case User::class :
             {
                 if ($image->width() > 256) {
                     $image->resize(256, null, function ($constraint) {
                         $constraint->aspectRatio();
                     })->crop(256, 256)->save();
                 }
+
+                break;
             }
 
             default:
