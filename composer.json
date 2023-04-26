@@ -8,6 +8,7 @@
         "php": "^8.2",
         "eduardokum/laravel-mail-auto-embed": "^2.10",
         "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "^2.7",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",

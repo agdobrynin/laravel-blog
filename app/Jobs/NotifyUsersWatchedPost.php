@@ -11,7 +11,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Mail;
 
 class NotifyUsersWatchedPost implements ShouldQueue
 {
@@ -37,9 +36,7 @@ class NotifyUsersWatchedPost implements ShouldQueue
             ->get()
             ->map(function (User $user) {
                 if ($user->id !== $this->comment->user()->first()?->id) {
-                    Mail::to($user)->send(
-                        new CommentPostedOnWatchedPost($user, $this->comment)
-                    );
+                    SendEmails::dispatch(new CommentPostedOnWatchedPost($user, $this->comment), $user);
                 }
             });
     }

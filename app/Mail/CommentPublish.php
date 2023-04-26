@@ -2,16 +2,14 @@
 
 namespace App\Mail;
 
-use App\Enums\QueueNamesEnum;
 use App\Models\Comment;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CommentPublish extends Mailable implements ShouldQueue
+class CommentPublish extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -22,7 +20,6 @@ class CommentPublish extends Mailable implements ShouldQueue
      */
     public function __construct(public readonly Comment $comment)
     {
-        $this->onQueue(QueueNamesEnum::DEFAULT->value);
     }
 
     /**

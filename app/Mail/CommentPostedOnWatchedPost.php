@@ -2,17 +2,15 @@
 
 namespace App\Mail;
 
-use App\Enums\QueueNamesEnum;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CommentPostedOnWatchedPost extends Mailable implements ShouldQueue
+class CommentPostedOnWatchedPost extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -23,7 +21,6 @@ class CommentPostedOnWatchedPost extends Mailable implements ShouldQueue
      */
     public function __construct(public readonly User $user, public readonly Comment $comment)
     {
-        $this->onQueue(QueueNamesEnum::LOW->value);
     }
 
     /**

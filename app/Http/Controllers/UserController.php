@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\StoragePathEnum;
 use App\Http\Requests\UserUpdateRequest;
+use App\Jobs\ImageResizer;
 use App\Models\Image;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -81,6 +82,8 @@ class UserController extends Controller
             } else {
                 $user->image()->save(new Image(['path' => $path]));
             }
+
+            ImageResizer::dispatch($user->image);
         }
 
         return redirect()
