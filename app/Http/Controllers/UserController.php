@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\StoragePathEnum;
 use App\Http\Requests\UserUpdateRequest;
-use App\Jobs\ImageResizer;
+use App\Jobs\ImageResizerAvatar;
 use App\Models\Image;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -83,7 +83,7 @@ class UserController extends Controller
                 $user->image()->save(new Image(['path' => $path]));
             }
 
-            ImageResizer::dispatch($user->image);
+            ImageResizerAvatar::dispatch($user->image);
         }
 
         return redirect()
