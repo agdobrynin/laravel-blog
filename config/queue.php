@@ -90,4 +90,11 @@ return [
         'table' => 'failed_jobs',
     ],
 
+    'jobs' => [
+        'send_emails' => [
+            'max_locks' => env('QUEUE_SEND_EMAILS_MAX_LOCKS', 6),
+            'time_lock' => env('QUEUE_SEND_EMAILS_TIME_LOCK', 10),
+            'release_delay' => env('QUEUE_SEND_EMAILS_RELEASE_DELAY', 10),
+        ],
+    ]
 ];

@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Enums\QueueNamesEnum;
 use App\Models\User;
+use App\Services\SendEmailsJobConfig;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Redis\LimiterTimeoutException;
@@ -30,13 +31,14 @@ class SendEmails implements ShouldQueue
      * Execute the job.
      * @throws LimiterTimeoutException
      */
-    public function handle(): void
+    public function handle(SendEmailsJobConfig $config): void
     {
         Redis::throttle(self::class)
-            ->allow(8)
-            ->every(10)->then(
+            ->allow($config->maxLocks)
+            ->every($config->timeLock)
+            ->then(
                 fn() => Mail::to($this->user)->send($this->mailable),
-                fn() => $this->release(5)
+                fn() => $this->release($config->releaseDelay)
             );
     }
 }
