@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Enums\QueueNamesEnum;
 use App\Models\BlogPost;
 use App\Models\Image as ImageModel;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -32,23 +33,35 @@ class ImageResizer implements ShouldQueue
         $imagePath = $this->model->fullPath();
         $image = Image::make($imagePath);
 
+
         switch ($this->model->imageable_type) {
-            case BlogPost::class: {
-                $image->resize(700, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
+            case BlogPost::class:
+            {
+                if ($image->width() > 950) {
+                    $image->resize(950, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })->save();
+                }
+
                 break;
             }
+
+            case User::class:
+            {
+                if ($image->width() > 256) {
+                    $image->resize(256, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })->crop(256, 256)->save();
+                }
+            }
+
             default:
-                $image->resize(50, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-
-                });
-                $image->crop(50, 50);
+                throw new \LogicException(
+                    trans(
+                        'Неизвестный тип изображения для ресайза :type',
+                        ['type' => $this->model->imageable_type]
+                    )
+                );
         }
-
-        $image->save($imagePath);
     }
 }

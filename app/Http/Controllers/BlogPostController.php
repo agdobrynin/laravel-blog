@@ -139,7 +139,7 @@ class BlogPostController extends Controller
                 $post->image()->save(new Image(['path' => $path]));
             }
 
-            ImageResizer::dispatch($post->image);
+            ImageResizer::dispatch($post->image()->first());
         }
 
         return redirect()
