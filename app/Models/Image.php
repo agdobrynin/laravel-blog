@@ -28,9 +28,9 @@ class Image extends Model
         return Storage::url($this->path);
     }
 
-    public function fullPath(): string
+    public function fullPath(): ?string
     {
-        return Storage::path($this->path);
+        return Storage::has($this->path) ? Storage::path($this->path) : null;
     }
 
     public static function boot()

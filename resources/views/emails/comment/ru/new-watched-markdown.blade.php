@@ -16,7 +16,7 @@
 написал:
 
 <x-mail::panel>
-    @if($comment->user?->image)
+    @if($comment->user?->image->fullPath())
         <img class="avatar"
              alt="{{ __('Аватар пользователя') }}"
              src="file://{{ $comment->user->image->fullPath() }}"/>
