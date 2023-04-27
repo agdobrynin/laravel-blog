@@ -73,9 +73,10 @@ class BlogPostController extends Controller
 
         if ($file = $request->file('thumb')) {
             $path = Storage::putFile(StoragePathEnum::POST_THUMBNAIL->value, $file);
-            $post->image()->save(new Image(['path' => $path]));
+            $image = new Image(['path' => $path]);
+            $post->image()->save($image);
 
-            ImageResizerBlogPost::dispatch($post->image);
+            ImageResizerBlogPost::dispatch($image);
         }
 
         $post->tags()->sync($data['tags']);
@@ -124,7 +125,6 @@ class BlogPostController extends Controller
         $post->tags()->sync($data['tags']);
 
         if ($request->input('delete_image') && $post->image) {
-            Storage::delete($post->image->path);
             $post->image->delete();
         }
 
@@ -132,12 +132,10 @@ class BlogPostController extends Controller
             $path = Storage::putFile(StoragePathEnum::POST_THUMBNAIL->value, $file);
 
             if ($post->image) {
-                Storage::delete($post->image->path);
-                $post->image->path = $path;
-                $post->image->save();
-            } else {
-                $post->image()->save(new Image(['path' => $path]));
+                $post->image->delete();
             }
+
+            $post->image()->save(new Image(['path' => $path]));
 
             ImageResizerBlogPost::dispatch($post->image()->first());
         }

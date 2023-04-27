@@ -76,14 +76,13 @@ class UserController extends Controller
             $path = Storage::putFile(StoragePathEnum::USER_AVATAR->value, $avatar);
 
             if ($user->image) {
-                Storage::delete($user->image->path);
-                $user->image->path = $path;
-                $user->image->save();
-            } else {
-                $user->image()->save(new Image(['path' => $path]));
+                $user->image->delete();
             }
 
-            ImageResizerAvatar::dispatch($user->image);
+            $image = new Image(['path' => $path]);
+            $user->image()->save($image);
+
+            ImageResizerAvatar::dispatch($image);
         }
 
         return redirect()

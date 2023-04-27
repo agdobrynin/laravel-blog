@@ -32,4 +32,11 @@ class Image extends Model
     {
         return Storage::path($this->path);
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::deleted(fn(Image $model) => Storage::delete($model->path));
+    }
 }
