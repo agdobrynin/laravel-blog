@@ -40,7 +40,7 @@ class ImageResizerAvatar implements ShouldQueue
      */
     public function handle(): void
     {
-        $imagePath = $this->model->fullPath();
+        $imagePath = $this->model->fullOrigPath();
         $image = Image::make($imagePath);
 
         if (self::AVATAR_SQUARE_WITH < max($image->width(), $image->height())) {

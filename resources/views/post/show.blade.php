@@ -27,7 +27,7 @@
                 @endif
                 <div class="mt-0 mb-4 pt-4">
                     @if($image = $post->image)
-                        <img src="{{ $image->url() }}" class="img-fluid w-100 mb-4 img-thumbnail" alt="Image">
+                        <img src="{{ $image->thumbUrl() ? : $image->origUrl() }}" class="img-fluid w-100 mb-4 img-thumbnail" alt="Image">
                     @endif
                     <div style="white-space: pre-wrap;">{{ $post->content }}</div>
                 </div>

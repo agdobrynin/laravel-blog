@@ -40,7 +40,7 @@ class ImageResizerBlogPost implements ShouldQueue
      */
     public function handle(): void
     {
-        $imagePath = $this->model->fullPath();
+        $imagePath = $this->model->fullOrigPath();
         $image = Image::make($imagePath);
 
         if ($image->width() > self::BLOG_POST_IMAGE_WITH) {

@@ -11,7 +11,7 @@ class Image extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['path'];
+    protected $fillable = ['path', 'path_thumb'];
 
     public function blogPost(): MorphOne
     {
@@ -23,20 +23,34 @@ class Image extends Model
         return $this->morphOne(User::class, 'imageable');
     }
 
-    public function url(): string
+    public function origUrl(): ?string
     {
-        return Storage::url($this->path);
+        return Storage::has($this->path) ? Storage::url($this->path) : null;
     }
 
-    public function fullPath(): ?string
+    public function thumbUrl(): ?string
+    {
+        return $this->path_thumb && Storage::has($this->path_thumb)
+            ? Storage::url($this->path_thumb)
+            : null;
+    }
+
+    public function fullOrigPath(): ?string
     {
         return Storage::has($this->path) ? Storage::path($this->path) : null;
+    }
+
+    public function withOutImage(): bool
+    {
+        return Storage::has($this->path) && Storage::has($this->path_thumb);
     }
 
     public static function boot()
     {
         parent::boot();
 
-        self::deleted(fn(Image $model) => Storage::delete($model->path));
+        self::deleted(function (Image $model) {
+            Storage::delete([$model->path, $model->path_thumb]);
+        });
     }
 }
