@@ -3,25 +3,29 @@
 namespace App\Jobs;
 
 use App\Enums\QueueNamesEnum;
+use App\Enums\StoragePathEnum;
 use App\Models\Image as ImageModel;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
 class ImageResizerAvatar implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected const AVATAR_SQUARE_WITH = 256;
-
     /**
      * Create a new job instance.
      */
-    public function __construct(public readonly ImageModel $model)
+    public function __construct(
+        public readonly ImageModel $model,
+        public readonly int $with
+    )
     {
         if ($model->imageable_type !== User::class) {
             $message = trans(
@@ -38,24 +42,31 @@ class ImageResizerAvatar implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(FilesystemManager $storage): void
     {
         $imagePath = $this->model->fullOrigPath();
         $image = Image::make($imagePath);
 
-        if (self::AVATAR_SQUARE_WITH < max($image->width(), $image->height())) {
-            $width = $image->width() < $image->height() ? self::AVATAR_SQUARE_WITH : null;
-            $height = $width ? null : self::AVATAR_SQUARE_WITH;
+        if ($this->with < max($image->width(), $image->height())) {
+            $width = $image->width() < $image->height() ? $this->with : null;
+            $height = $width ? null : $this->with;
 
             $image->resize($width, $height, function ($constraint) {
                 $constraint->aspectRatio();
             });
 
-            $x = $width ? 0 : ceil(($image->width() - self::AVATAR_SQUARE_WITH) / 2);
-            $y = $height ? 0 : ceil(($image->height() - self::AVATAR_SQUARE_WITH) / 2);
+            $x = $width ? 0 : ceil(($image->width() - $this->with) / 2);
+            $y = $height ? 0 : ceil(($image->height() - $this->with) / 2);
 
-            $image->crop(self::AVATAR_SQUARE_WITH, self::AVATAR_SQUARE_WITH, $x, $y);
-            $image->save();
+            $image->crop($this->with, $this->with, $x, $y);
+
+            throw new \LogicException('Not realized yet :(');
+//            $storage->putFile(StoragePathEnum::USER_AVATAR_THUMB->value, )
+//
+//            $pathThumb = StoragePathEnum::USER_AVATAR_THUMB->value.DIRECTORY_SEPARATOR.$image->basename;
+//            $image->save(Storage::path($pathThumb));
+//            $this->model->path_thumb = $pathThumb;
+//            $this->model->save();
         }
     }
 }

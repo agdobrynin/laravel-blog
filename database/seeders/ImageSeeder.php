@@ -36,7 +36,7 @@ class ImageSeeder extends Seeder
 
             BlogPost::all()->random(count($thumbs))->unique()->each(function (BlogPost $post, int $index) use ($thumbs) {
                 $path = Storage::disk('public')
-                    ->putFile(StoragePathEnum::POST_THUMBNAIL->value, $thumbs[$index]);
+                    ->putFile(StoragePathEnum::POST_IMAGE->value, $thumbs[$index]);
                 $post->image()->save(new Image(['path' => $path]));
                 $this->command->info('Add image for post with title '.$post->title);
             });

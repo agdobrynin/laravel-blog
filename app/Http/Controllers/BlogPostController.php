@@ -72,7 +72,7 @@ class BlogPostController extends Controller
         $post = BlogPost::create($data);
 
         if ($file = $request->file('thumb')) {
-            $path = Storage::putFile(StoragePathEnum::POST_THUMBNAIL->value, $file);
+            $path = Storage::putFile(StoragePathEnum::POST_IMAGE->value, $file);
             $image = new Image(['path' => $path]);
             $post->image()->save($image);
 
@@ -129,7 +129,7 @@ class BlogPostController extends Controller
         }
 
         if ($file = $request->file('thumb')) {
-            $path = Storage::putFile(StoragePathEnum::POST_THUMBNAIL->value, $file);
+            $path = Storage::putFile(StoragePathEnum::POST_IMAGE->value, $file);
 
             if ($post->image) {
                 $post->image->delete();
