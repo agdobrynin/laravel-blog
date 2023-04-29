@@ -18,9 +18,6 @@ class ImageResizerBlogPost implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct(
         public readonly ImageModel $model,
         public readonly int        $width
@@ -43,9 +40,6 @@ class ImageResizerBlogPost implements ShouldQueue, ShouldBeUnique
         return $this->model->id.'-'.$this->width;
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(FilesystemManager $storage): void
     {
         $imagePath = $this->model->fullOrigPath();

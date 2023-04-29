@@ -16,17 +16,11 @@ class NotifyUsersWatchedPost implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct(public readonly Comment $comment)
     {
         $this->onQueue(QueueNamesEnum::LOW->value);
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
         $post = $this->comment->commentable()->first();

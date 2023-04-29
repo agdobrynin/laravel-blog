@@ -19,9 +19,6 @@ class ImageDelete implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct(
         public readonly string $imageableType,
         public readonly string $path,
@@ -39,10 +36,12 @@ class ImageDelete implements ShouldQueue, ShouldBeUnique
         $this->onQueue(QueueNamesEnum::LOW->value);
     }
 
-    /**
-     * Execute the job.
-     */
-    public function handle(FilesystemManager $storage): void
+    public function uniqueId(): string
+    {
+        return $this->imageableType.'-'.$this->path;
+    }
+
+     public function handle(FilesystemManager $storage): void
     {
         $storage->delete($this->path);
 

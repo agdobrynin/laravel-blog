@@ -19,16 +19,12 @@ class SendEmails implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct(public readonly Mailable $mailable, public readonly User $user)
     {
         $this->onQueue(QueueNamesEnum::EMAIL->value);
     }
 
     /**
-     * Execute the job.
      * @throws LimiterTimeoutException
      */
     public function handle(SendEmailsJobConfig $config): void

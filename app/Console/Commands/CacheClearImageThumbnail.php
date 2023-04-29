@@ -10,23 +10,11 @@ class CacheClearImageThumbnail extends Command
 {
     protected const AVATAR = 'avatar';
     protected const POST = 'post';
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
+
     protected $signature = 'cache:clear-image-thumbnail {--' . self::AVATAR . ' : Clear thumbnails for user avatars} {--' . self::POST . ' : Clear thumbnails for blog posts}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Clear thumbnails for images (avatars, blog post)';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(FilesystemManager $storage): void
     {
         $choices[] = $this->option(self::AVATAR) ? self::AVATAR : null;
