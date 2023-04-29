@@ -7,6 +7,7 @@ use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
 use App\Services\MostActiveBloggers;
 use App\Services\ReadNowObject;
+use App\Services\SendEmailsJobConfig;
 use App\Services\TagsDictionary;
 use App\Services\TagsDictionaryCache;
 use Illuminate\Foundation\Application;
@@ -42,6 +43,16 @@ class AppServiceProvider extends ServiceProvider
                 : null;
 
             return new TagsDictionary($cache);
+        });
+
+        $this->app->singleton(SendEmailsJobConfig::class, function () {
+            extract(config('queue.jobs.send_emails'));
+
+            return new SendEmailsJobConfig(
+                maxLocks: $max_locks,
+                releaseDelay: $release_delay,
+                timeLock: $time_lock
+            );
         });
     }
 

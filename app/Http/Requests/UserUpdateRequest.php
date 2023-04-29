@@ -26,8 +26,8 @@ class UserUpdateRequest extends FormRequest
             'avatar' => [
                 'image',
                 'mimes:jpg,jpeg,png,gif',
-                'max:200',
-                'dimensions:min_width=50,min_height=50,max_width=600,max_height=600'
+                'max:3500',
+                'dimensions:min_width=50,min_height=50,max_width=4000,max_height=4000'
             ]
         ];
     }

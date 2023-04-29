@@ -71,8 +71,9 @@ class BlogPostController extends Controller
         $post = BlogPost::create($data);
 
         if ($file = $request->file('thumb')) {
-            $path = $file->store(StoragePathEnum::POST_THUMBNAIL->value);
-            $post->image()->save(new Image(['path' => $path]));
+            $path = Storage::putFile(StoragePathEnum::POST_IMAGE->value, $file);
+            $image = new Image(['path' => $path]);
+            $post->image()->save($image);
         }
 
         $post->tags()->sync($data['tags']);
@@ -121,20 +122,17 @@ class BlogPostController extends Controller
         $post->tags()->sync($data['tags']);
 
         if ($request->input('delete_image') && $post->image) {
-            Storage::delete($post->image->path);
             $post->image->delete();
         }
 
         if ($file = $request->file('thumb')) {
-            $path = $file->store(StoragePathEnum::POST_THUMBNAIL->value);
+            $path = Storage::putFile(StoragePathEnum::POST_IMAGE->value, $file);
 
             if ($post->image) {
-                Storage::delete($post->image->path);
-                $post->image->path = $path;
-                $post->image->save();
-            } else {
-                $post->image()->save(new Image(['path' => $path]));
+                $post->image->delete();
             }
+
+            $post->image()->save(new Image(['path' => $path]));
         }
 
         return redirect()

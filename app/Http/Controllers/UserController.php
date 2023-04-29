@@ -72,15 +72,14 @@ class UserController extends Controller
         $user->save();
 
         if ($avatar = $request->file('avatar')) {
-            $path = $avatar->store(StoragePathEnum::USER_AVATAR->value);
+            $path = Storage::putFile(StoragePathEnum::USER_AVATAR->value, $avatar);
 
             if ($user->image) {
-                Storage::delete($user->image->path);
-                $user->image->path = $path;
-                $user->image->save();
-            } else {
-                $user->image()->save(new Image(['path' => $path]));
+                $user->image->delete();
             }
+
+            $image = new Image(['path' => $path]);
+            $user->image()->save($image);
         }
 
         return redirect()

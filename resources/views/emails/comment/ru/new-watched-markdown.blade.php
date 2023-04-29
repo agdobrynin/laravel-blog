@@ -1,7 +1,7 @@
 <x-mail::message>
-### Привет {{ $comment->commentable->user->name }}.
+### Привет {{ $user->name }}.
 
-Новый комментарий на Ваш пост:
+Новый комментарий на пост под которым Вы оставил свой комментарий:
 
 <x-mail::button url="{{ route('posts.show', [$comment->commentable]) }}">
     {{ $comment->commentable->title }}

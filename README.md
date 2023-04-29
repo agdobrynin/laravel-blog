@@ -96,6 +96,12 @@ composer install --ignore-platform-reqs --no-scripts
     ```shell
     ./vendor/bin/sail npm run build
     ```
+5. Запустить воркер (worker) обрабатывающий задачи из очереди сообщений
+
+    ```shell
+    ./vendor/bin/sail artisan queue:work --tries=3 --queue=email,default,low
+    ```
+   в проекте используется две очереди с разными приоритетами
 
 ### Доступные сайты в dev окружении
 
