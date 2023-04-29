@@ -28,7 +28,7 @@ class Image extends Model
 
     public function thumbFile(?int $width = null): ?string
     {
-        if ($this->path && \in_array($this->imageable_type, [User::class, BlogPost::class])) {
+        if ($this->path && $width && \in_array($this->imageable_type, [User::class, BlogPost::class])) {
             $info = pathinfo($this->path);
 
             $directory = $this->imageable_type === User::class
@@ -53,9 +53,11 @@ class Image extends Model
                 return Storage::url($thumbFile);
             }
 
-            $this->imageable_type === User::class
-                ? ImageResizerAvatar::dispatch($this, $width)
-                : ImageResizerBlogPost::dispatch($this, $width);
+            if ($this->imageable_type === User::class) {
+                ImageResizerAvatar::dispatch($this, $width);
+            } else {
+                ImageResizerBlogPost::dispatch($this, $width);
+            }
         }
 
         return $this->origUrl();

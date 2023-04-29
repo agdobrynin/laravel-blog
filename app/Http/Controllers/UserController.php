@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enums\StoragePathEnum;
 use App\Http\Requests\UserUpdateRequest;
-use App\Jobs\ImageResizerAvatar;
 use App\Models\Image;
 use App\Models\User;
 use Illuminate\Http\Request;

@@ -3,10 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Comment;
 use Illuminate\Database\Seeder;
-use App\Models\User;
-use App\Models\BlogPost as Posts;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,5 +26,7 @@ class DatabaseSeeder extends Seeder
             CommentSeeder::class,
             ImageSeeder::class,
         ]);
+
+        Artisan::call('cache:clear');
     }
 }

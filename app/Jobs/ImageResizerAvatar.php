@@ -38,6 +38,11 @@ class ImageResizerAvatar implements ShouldQueue, ShouldBeUnique
         $this->onQueue(QueueNamesEnum::LOW->value);
     }
 
+    public function uniqueId(): string
+    {
+        return $this->model->id.'-'.$this->width;
+    }
+
     /**
      * Execute the job.
      */
