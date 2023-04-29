@@ -26,9 +26,9 @@ class Image extends Model
         return Storage::has($this->path) ? Storage::url($this->path) : null;
     }
 
-    public function thumbFile(?int $width = null): ?string
+    public function thumbFile(int $width): ?string
     {
-        if ($this->path && $width && \in_array($this->imageable_type, [User::class, BlogPost::class])) {
+        if ($this->path && $width > 1 && \in_array($this->imageable_type, [User::class, BlogPost::class])) {
             $info = pathinfo($this->path);
 
             $directory = $this->imageable_type === User::class
@@ -46,8 +46,13 @@ class Image extends Model
         return null;
     }
 
-    public function thumbUrl(?int $width = null): string
+    public function thumbUrl(int $width): string
     {
+        throw_if(
+            $width < 1,
+            message: trans('Ширина изображения должна быть более нуля. Получено значение ":width"', ['width' => $width])
+        );
+
         if ($thumbFile = $this->thumbFile($width)) {
             if (Storage::has($thumbFile)) {
                 return Storage::url($thumbFile);
