@@ -25,7 +25,7 @@
     <div class="row mb-4">
         <div class="col-12 col-md-6 text-center img-thumbnail">
             @if($post?->image)
-                <img src="{{ $post->image->origUrl() }}" class="img-fluid w-100"/>
+                <img src="{{ $post->image->url() }}" alt="Blog post image" class="img-fluid w-100"/>
             @else
                 {{ __('Без картинки') }}
             @endif
