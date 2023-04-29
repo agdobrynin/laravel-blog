@@ -6,26 +6,29 @@ use App\Enums\QueueNamesEnum;
 use App\Models\BlogPost;
 use App\Models\Image as ImageModel;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Intervention\Image\Facades\Image;
 
-class ImageResizerBlogPost implements ShouldQueue
+class ImageResizerBlogPost implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    protected const BLOG_POST_IMAGE_WITH = 950;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(public readonly ImageModel $model)
+    public function __construct(
+        public readonly ImageModel $model,
+        public readonly int        $width
+    )
     {
         if ($model->imageable_type !== BlogPost::class) {
             $message = trans(
-                'Неизвестный тип изображения для ресайза :type',
+                'Неизвестный тип изображения для изменения размера :type',
                 ['type' => $model->imageable_type]
             );
 
@@ -38,15 +41,19 @@ class ImageResizerBlogPost implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(FilesystemManager $storage): void
     {
         $imagePath = $this->model->fullOrigPath();
         $image = Image::make($imagePath);
 
-        if ($image->width() > self::BLOG_POST_IMAGE_WITH) {
-            $image->resize(self::BLOG_POST_IMAGE_WITH, null, function ($constraint) {
+        if ($image->width() > $this->width) {
+            $image->resize($this->width, null, function ($constraint) {
                 $constraint->aspectRatio();
-            })->save();
+            });
+
+            $file = $this->model->thumbFile(width: $this->width);
+
+            $storage->put($file, $image->stream()->getContents());
         }
     }
 }

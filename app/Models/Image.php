@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\StoragePathEnum;
+use App\Jobs\ImageDelete;
+use App\Jobs\ImageResizerAvatar;
+use App\Jobs\ImageResizerBlogPost;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Facades\Storage;
 
 class Image extends Model
@@ -13,14 +16,9 @@ class Image extends Model
 
     protected $fillable = ['path'];
 
-    public function blogPost(): MorphOne
+    public function imageable()
     {
-        return $this->morphOne(BlogPost::class, 'imageable');
-    }
-
-    public function user(): MorphOne
-    {
-        return $this->morphOne(User::class, 'imageable');
+        return $this->morphTo();
     }
 
     public function origUrl(): ?string
@@ -28,11 +26,39 @@ class Image extends Model
         return Storage::has($this->path) ? Storage::url($this->path) : null;
     }
 
-    public function thumbUrl(): ?string
+    public function thumbFile(?int $width = null): ?string
     {
-        return $this->path_thumb && Storage::has($this->path_thumb)
-            ? Storage::url($this->path_thumb)
-            : null;
+        if ($this->path && \in_array($this->imageable_type, [User::class, BlogPost::class])) {
+            $info = pathinfo($this->path);
+
+            $directory = $this->imageable_type === User::class
+                ? StoragePathEnum::USER_AVATAR_THUMB->value
+                : StoragePathEnum::POST_IMAGE_THUMB->value;
+
+            return $directory . DIRECTORY_SEPARATOR . sprintf(
+                    '%s%s%s',
+                    $info['filename'],
+                    $width ? '_w_' . $width : '',
+                    $info['extension'] ? '.' . $info['extension'] : ''
+                );
+        }
+
+        return null;
+    }
+
+    public function thumbUrl(?int $width = null): string
+    {
+        if ($thumbFile = $this->thumbFile($width)) {
+            if (Storage::has($thumbFile)) {
+                return Storage::url($thumbFile);
+            }
+
+            $this->imageable_type === User::class
+                ? ImageResizerAvatar::dispatch($this, $width)
+                : ImageResizerBlogPost::dispatch($this, $width);
+        }
+
+        return $this->origUrl();
     }
 
     public function fullOrigPath(): ?string
@@ -44,6 +70,6 @@ class Image extends Model
     {
         parent::boot();
 
-        self::deleted(fn (Image $model) => Storage::delete($model->path));
+        self::deleted(fn(Image $model) => ImageDelete::dispatch($model->imageable_type, $model->path));
     }
 }

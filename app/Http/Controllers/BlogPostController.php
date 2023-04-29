@@ -7,7 +7,6 @@ use App\Enums\OrderBlogPostEnum;
 use App\Enums\StoragePathEnum;
 use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
-use App\Jobs\ImageResizerBlogPost;
 use App\Models\BlogPost;
 use App\Models\Image;
 use App\Models\User;
@@ -75,8 +74,6 @@ class BlogPostController extends Controller
             $path = Storage::putFile(StoragePathEnum::POST_IMAGE->value, $file);
             $image = new Image(['path' => $path]);
             $post->image()->save($image);
-
-            ImageResizerBlogPost::dispatch($image);
         }
 
         $post->tags()->sync($data['tags']);
@@ -136,8 +133,6 @@ class BlogPostController extends Controller
             }
 
             $post->image()->save(new Image(['path' => $path]));
-
-            ImageResizerBlogPost::dispatch($post->image()->first());
         }
 
         return redirect()

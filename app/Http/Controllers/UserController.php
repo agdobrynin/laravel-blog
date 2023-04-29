@@ -81,8 +81,6 @@ class UserController extends Controller
 
             $image = new Image(['path' => $path]);
             $user->image()->save($image);
-
-            ImageResizerAvatar::dispatch($image);
         }
 
         return redirect()
