@@ -33,7 +33,7 @@ class CommentPublish extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.comment.ru.new-markdown',
+            markdown: 'emails.comment.ru.new-post-markdown',
         );
     }
 
