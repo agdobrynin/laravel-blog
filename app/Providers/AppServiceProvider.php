@@ -29,8 +29,10 @@ class AppServiceProvider extends ServiceProvider
             fn(Application $app) => $app->make(
                 MostActiveBloggers::class,
                 [
-                    'lastMonth' => env('MOST_ACTIVE_BLOGGER_LAST_MONTH'),
-                    'minCountPost' => env('MOST_ACTIVE_BLOGGER_MIN_POSTS', 5),
+                    'lastMonth' => config('most_active_bloggers.last_month'),
+                    'minCountPost' => config('most_active_bloggers.min_count_post'),
+                    'take' => config('most_active_bloggers.take'),
+                    'cacheTtl' => config('most_active_bloggers.cache_ttl'),
                 ]
             )
         );

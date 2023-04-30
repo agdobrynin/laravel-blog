@@ -19,11 +19,10 @@ interface MostActiveBloggersInterface
      *
      * @return int|null
      */
-    public function getMinCountPost():? int;
+    public function getMinCountPost(): int;
 
     /**
-     * @param int $take Limit of users
      * @return Collection<User>
      */
-    public function get(int $take): Collection;
+    public function get(): Collection;
 }
