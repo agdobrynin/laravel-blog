@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCommentRequest;
 use App\Jobs\NotifyUsersWatchedCommentable;
 use App\Jobs\SendEmails;
-use App\Mail\CommentPublish;
+use App\Mail\CommentPublishNotifyOwner;
 use App\Models\BlogPost;
 use App\Models\Comment;
 use Illuminate\Support\Facades\Mail;
@@ -25,7 +25,7 @@ class PostCommentController extends Controller
         );
 
         if ($comment->id) {
-            SendEmails::dispatch(new CommentPublish($comment), $post->user);
+            SendEmails::dispatch(new CommentPublishNotifyOwner($comment), $post->user);
             NotifyUsersWatchedCommentable::dispatch($comment);
 
             return redirect()
