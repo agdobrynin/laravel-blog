@@ -18,7 +18,7 @@ class NotifyUsersAboutComment
 
     public function handle(CommentPosted $event): void
     {
-        $owner = match($event->comment->commentable_type) {
+        $owner = match ($event->comment->commentable_type) {
             User::class => $event->comment->commentable,
             BlogPost::class => $event->comment->commentable->user
         };

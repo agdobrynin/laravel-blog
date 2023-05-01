@@ -28,7 +28,7 @@ class NotifyUsersWatchedCommentable implements ShouldQueue
             ->with('image')
             ->get()
             ->map(function (User $user) {
-                $owner = match($this->comment->commentable_type) {
+                $owner = match ($this->comment->commentable_type) {
                     BlogPost::class => $this->comment->commentable->user,
                     User::class => $this->comment->commentable,
                 };
