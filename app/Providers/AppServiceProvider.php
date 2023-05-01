@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Enums\CacheTagsEnum;
 use App\Services\Contracts\MostActiveBloggersInterface;
 use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
@@ -12,7 +13,7 @@ use App\Services\TagsDictionary;
 use App\Services\TagsDictionaryCache;
 use Illuminate\Foundation\Application;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -33,6 +34,9 @@ class AppServiceProvider extends ServiceProvider
                     'minCountPost' => config('most_active_bloggers.min_count_post'),
                     'take' => config('most_active_bloggers.take'),
                     'cacheTtl' => config('most_active_bloggers.cache_ttl'),
+                    'cache' => config('most_active_bloggers.cache_ttl')
+                        ? Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)
+                        : null,
                 ]
             )
         );
