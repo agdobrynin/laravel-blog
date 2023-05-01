@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Enums\QueueNamesEnum;
 use App\Mail\CommentPostedOnWatchedCommentable;
+use App\Models\BlogPost;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -27,7 +28,12 @@ class NotifyUsersWatchedCommentable implements ShouldQueue
             ->with('image')
             ->get()
             ->map(function (User $user) {
-                if ($user->id !== $this->comment->user()->first()?->id) {
+                $owner = match($this->comment->commentable_type) {
+                    BlogPost::class => $this->comment->commentable->user,
+                    User::class => $this->comment->commentable,
+                };
+
+                if ($user->id !== $owner?->id) {
                     SendEmails::dispatch(new CommentPostedOnWatchedCommentable($user, $this->comment), $user);
                 }
             });

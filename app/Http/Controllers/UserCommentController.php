@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CommentPosted;
 use App\Http\Requests\StoreCommentRequest;
-use App\Jobs\NotifyUsersWatchedCommentable;
-use App\Jobs\SendEmails;
-use App\Mail\CommentPublishNotifyOwner;
 use App\Models\Comment;
 use App\Models\User;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -33,8 +31,7 @@ class UserCommentController extends Controller
         );
 
         if ($comment && $comment->id) {
-            SendEmails::dispatch(new CommentPublishNotifyOwner($comment), $user);
-            NotifyUsersWatchedCommentable::dispatch($comment);
+            event(new CommentPosted($comment));
 
             return redirect()->route('users.show', $user)
                 ->with('success', trans('comment.add.success'));
