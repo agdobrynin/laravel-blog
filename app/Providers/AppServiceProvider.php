@@ -52,12 +52,12 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(SendEmailsJobConfig::class, function () {
-            extract(config('queue.jobs.send_emails'));
+            ['max_locks' => $maxLocks, 'time_lock' => $timeLock, 'release_delay' => $releaseDelay] = config('queue.jobs.send_emails');
 
             return new SendEmailsJobConfig(
-                maxLocks: $max_locks,
-                releaseDelay: $release_delay,
-                timeLock: $time_lock
+                maxLocks: $maxLocks,
+                releaseDelay: $releaseDelay,
+                timeLock: $timeLock
             );
         });
     }
