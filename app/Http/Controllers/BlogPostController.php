@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Dto\BlogPostFilterDto;
 use App\Enums\OrderBlogPostEnum;
 use App\Enums\StoragePathEnum;
+use App\Events\BlogPostAdded;
 use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
@@ -77,6 +78,8 @@ class BlogPostController extends Controller
         }
 
         $post->tags()->sync($data['tags']);
+
+        event(new BlogPostAdded($post));
 
         return redirect()
             ->route('posts.show', ['post' => $post])
