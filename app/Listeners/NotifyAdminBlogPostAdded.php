@@ -20,7 +20,7 @@ class NotifyAdminBlogPostAdded implements ShouldQueue
         Role::where('slug', RolesEnum::ADMIN->value)
             ->with('users')
             ->first()
-            ->users
+            ?->users
             ->map(fn(User $user) => SendEmails::dispatch(new NotifyBlogPostAddedMail($event->post), $user));
     }
 }
