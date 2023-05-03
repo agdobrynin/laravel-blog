@@ -1,10 +1,10 @@
 <x-mail::message>
 ### Привет {{ $user->name }}.
 
-Новый комментарий на пост под которым Вы оставил свой комментарий:
+Новый комментарий под профилем пользователя {{ $comment->commentable->name }} на который Вы оставили свой комментарий:
 
-<x-mail::button url="{{ route('posts.show', [$comment->commentable]) }}">
-    {{ $comment->commentable->title }}
+<x-mail::button url="{{ route('users.show', [$comment->commentable]) }}">
+    {{ $comment->commentable->name }}
 </x-mail::button>
 
 Комментатор
@@ -16,10 +16,10 @@
 написал:
 
 <x-mail::panel>
-    @if($comment->user?->image->fullPath())
+    @if($fullOrigPath = $comment->user?->image?->fullOrigPath())
         <img class="avatar"
              alt="{{ __('Аватар пользователя') }}"
-             src="file://{{ $comment->user->image->fullPath() }}"/>
+             src="file://{{ $fullOrigPath }}"/>
     @else
         <img class="avatar"
              alt="{{ __('Аватар пользователя') }}"

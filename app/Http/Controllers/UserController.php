@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CacheTagsEnum;
 use App\Enums\StoragePathEnum;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\Image;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -80,6 +82,8 @@ class UserController extends Controller
 
             $image = new Image(['path' => $path]);
             $user->image()->save($image);
+
+            Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)->flush();
         }
 
         return redirect()

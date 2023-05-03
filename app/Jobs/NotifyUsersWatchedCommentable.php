@@ -3,7 +3,8 @@
 namespace App\Jobs;
 
 use App\Enums\QueueNamesEnum;
-use App\Mail\CommentPostedOnWatchedPost;
+use App\Mail\CommentPostedOnWatchedCommentable;
+use App\Models\BlogPost;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -12,7 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class NotifyUsersWatchedPost implements ShouldQueue
+class NotifyUsersWatchedCommentable implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -23,14 +24,17 @@ class NotifyUsersWatchedPost implements ShouldQueue
 
     public function handle(): void
     {
-        $post = $this->comment->commentable()->first();
-
-        User::usersCommentPost($post)
+        User::usersCommentable($this->comment->commentable)
             ->with('image')
             ->get()
             ->map(function (User $user) {
-                if ($user->id !== $this->comment->user()->first()?->id) {
-                    SendEmails::dispatch(new CommentPostedOnWatchedPost($user, $this->comment), $user);
+                $owner = match ($this->comment->commentable_type) {
+                    BlogPost::class => $this->comment->commentable->user,
+                    User::class => $this->comment->commentable,
+                };
+
+                if ($user->id !== $owner?->id) {
+                    SendEmails::dispatch(new CommentPostedOnWatchedCommentable($user, $this->comment), $user);
                 }
             });
     }

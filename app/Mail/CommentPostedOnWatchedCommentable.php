@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\BlogPost;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -10,7 +11,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CommentPostedOnWatchedPost extends Mailable
+class CommentPostedOnWatchedCommentable extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -25,16 +26,26 @@ class CommentPostedOnWatchedPost extends Mailable
 
     public function envelope(): Envelope
     {
+        $subject = match ($this->comment->commentable_type) {
+            User::class => trans('Новый комментарий под профилем :user в котором Вы оставили свой комментарий', ['user' => $this->comment->commentable->name]),
+            BlogPost::class => trans('Добавлен новый комментарий к публикации на которую Вы оставили комментарий'),
+        };
+
         return new Envelope(
-            subject: trans('Добавлен новый комментарий к публикации на которую Вы оставили комментарий'),
+            subject: $subject,
             tags: ['new', 'comment', 'watched', 'subscription']
         );
     }
 
     public function content(): Content
     {
+        $markdown = match ($this->comment->commentable_type) {
+            User::class => 'emails.comment.ru.new-watched-profile-markdown',
+            BlogPost::class => 'emails.comment.ru.new-watched-post-markdown',
+        };
+
         return new Content(
-            markdown: 'emails.comment.ru.new-watched-markdown',
+            markdown: $markdown,
         );
     }
 

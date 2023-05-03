@@ -2,14 +2,16 @@
 
 namespace App\Mail;
 
+use App\Models\BlogPost;
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CommentPublish extends Mailable
+class CommentPublishNotifyOwner extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -32,8 +34,13 @@ class CommentPublish extends Mailable
 
     public function content(): Content
     {
+        $markdown = match ($this->comment->commentable_type) {
+            BlogPost::class => 'emails.comment.ru.new-post-markdown',
+            User::class => 'emails.comment.ru.new-profile-markdown'
+        };
+
         return new Content(
-            markdown: 'emails.comment.ru.new-markdown',
+            markdown: $markdown,
         );
     }
 

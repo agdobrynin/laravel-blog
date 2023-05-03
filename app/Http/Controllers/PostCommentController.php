@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CommentPosted;
 use App\Http\Requests\StoreCommentRequest;
-use App\Jobs\NotifyUsersWatchedPost;
-use App\Jobs\SendEmails;
-use App\Mail\CommentPublish;
 use App\Models\BlogPost;
 use App\Models\Comment;
-use Illuminate\Support\Facades\Mail;
 
 class PostCommentController extends Controller
 {
@@ -25,8 +22,7 @@ class PostCommentController extends Controller
         );
 
         if ($comment->id) {
-            SendEmails::dispatch(new CommentPublish($comment), $post->user);
-            NotifyUsersWatchedPost::dispatch($comment);
+            event(new CommentPosted($comment));
 
             return redirect()
                 ->route('posts.show', $post)

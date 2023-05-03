@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Enums\CacheTagsEnum;
 use App\Services\Contracts\MostActiveBloggersInterface;
 use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
@@ -12,7 +13,7 @@ use App\Services\TagsDictionary;
 use App\Services\TagsDictionaryCache;
 use Illuminate\Foundation\Application;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,8 +30,13 @@ class AppServiceProvider extends ServiceProvider
             fn(Application $app) => $app->make(
                 MostActiveBloggers::class,
                 [
-                    'lastMonth' => env('MOST_ACTIVE_BLOGGER_LAST_MONTH'),
-                    'minCountPost' => env('MOST_ACTIVE_BLOGGER_MIN_POSTS', 5),
+                    'lastMonth' => config('most_active_bloggers.last_month'),
+                    'minCountPost' => config('most_active_bloggers.min_count_post'),
+                    'take' => config('most_active_bloggers.take'),
+                    'cacheTtl' => config('most_active_bloggers.cache_ttl'),
+                    'cache' => config('most_active_bloggers.cache_ttl')
+                        ? Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)
+                        : null,
                 ]
             )
         );
@@ -46,12 +52,12 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(SendEmailsJobConfig::class, function () {
-            extract(config('queue.jobs.send_emails'));
+            ['max_locks' => $maxLocks, 'time_lock' => $timeLock, 'release_delay' => $releaseDelay] = config('queue.jobs.send_emails');
 
             return new SendEmailsJobConfig(
-                maxLocks: $max_locks,
-                releaseDelay: $release_delay,
-                timeLock: $time_lock
+                maxLocks: $maxLocks,
+                releaseDelay: $releaseDelay,
+                timeLock: $timeLock
             );
         });
     }

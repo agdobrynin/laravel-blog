@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CommentPosted;
 use App\Http\Requests\StoreCommentRequest;
 use App\Models\Comment;
 use App\Models\User;
@@ -19,6 +20,7 @@ class UserCommentController extends Controller
      */
     public function store(User $user, StoreCommentRequest $request): RedirectResponse
     {
+        /** @var Comment|false $comment */
         $comment = $user->commentsOn()->save(
             new Comment(
                 [
@@ -28,7 +30,9 @@ class UserCommentController extends Controller
             )
         );
 
-        if ($comment->id) {
+        if ($comment && $comment->id) {
+            event(new CommentPosted($comment));
+
             return redirect()->route('users.show', $user)
                 ->with('success', trans('comment.add.success'));
         }
