@@ -5,10 +5,11 @@ namespace App\Listeners;
 use App\Enums\QueueNamesEnum;
 use App\Enums\RolesEnum;
 use App\Events\BlogPostAdded;
+use App\Jobs\SendEmails;
 use App\Mail\NotifyBlogPostAddedMail;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Mail;
 
 class NotifyAdminBlogPostAdded implements ShouldQueue
 {
@@ -16,7 +17,10 @@ class NotifyAdminBlogPostAdded implements ShouldQueue
 
     public function handle(BlogPostAdded $event): void
     {
-        $admins = Role::where('slug', RolesEnum::ADMIN->value)->with('users')->first();
-        Mail::to($admins->users)->send(new NotifyBlogPostAddedMail($event->post));
+        Role::where('slug', RolesEnum::ADMIN->value)
+            ->with('users')
+            ->first()
+            ->users
+            ->map(fn(User $user) => SendEmails::dispatch(new NotifyBlogPostAddedMail($event->post), $user));
     }
 }
