@@ -11,11 +11,6 @@ use App\Models\User;
 
 class NotifyUsersAboutComment
 {
-    public function __construct()
-    {
-        //
-    }
-
     public function handle(CommentPosted $event): void
     {
         $owner = match ($event->comment->commentable_type) {

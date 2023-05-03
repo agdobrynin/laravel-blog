@@ -16,10 +16,10 @@
 написал:
 
 <x-mail::panel>
-    @if($comment->user?->image?->fullOrigPath())
+    @if($fullOrigPath = $comment->user?->image?->fullOrigPath())
         <img class="avatar"
              alt="{{ __('Аватар пользователя') }}"
-             src="file://{{ $comment->user->image->fullOrigPath() }}"/>
+             src="file://{{ $fullOrigPath }}"/>
     @else
         <img class="avatar"
              alt="{{ __('Аватар пользователя') }}"
