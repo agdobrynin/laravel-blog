@@ -33,7 +33,7 @@ class NotifyUsersWatchedCommentable implements ShouldQueue
                     User::class => $this->comment->commentable,
                 };
 
-                if ($user->id !== $owner?->id) {
+                if ($user->id !== $owner->id) {
                     SendEmails::dispatch(new CommentPostedOnWatchedCommentable($user, $this->comment), $user);
                 }
             });
