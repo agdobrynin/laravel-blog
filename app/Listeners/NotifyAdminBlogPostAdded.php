@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Enums\QueueNamesEnum;
+use App\Enums\RolesEnum;
 use App\Events\BlogPostAdded;
 use App\Mail\NotifyBlogPostAddedMail;
 use App\Models\Role;
@@ -15,6 +16,7 @@ class NotifyAdminBlogPostAdded implements ShouldQueue
 
     public function handle(BlogPostAdded $event): void
     {
-        Mail::to('admin@facke.com')->send(new NotifyBlogPostAddedMail($event->post));
+        $admins = Role::where('slug', RolesEnum::ADMIN->value)->with('users')->first();
+        Mail::to($admins->users)->send(new NotifyBlogPostAddedMail($event->post));
     }
 }
