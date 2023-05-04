@@ -96,5 +96,10 @@ return [
             'time_lock' => env('QUEUE_SEND_EMAILS_TIME_LOCK', 10),
             'release_delay' => env('QUEUE_SEND_EMAILS_RELEASE_DELAY', 10),
         ],
-    ]
+    ],
+    'cache_stat_config' => [
+        'max_locks' => env('QUEUE_CACHE_STAT_MAX_LOCKS', 10),
+        'time_lock' => env('QUEUE_CACHE_STAT_TIME_LOCK', 20),
+        'release_delay' => env('QUEUE_CACHE_STAT_RELEASE_DELAY', 10),
+    ],
 ];

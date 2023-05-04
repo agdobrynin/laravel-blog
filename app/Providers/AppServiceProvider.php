@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Enums\CacheTagsEnum;
+use App\Services\CacheStatQueueConfig;
 use App\Services\Contracts\MostActiveBloggersInterface;
 use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
@@ -55,6 +56,16 @@ class AppServiceProvider extends ServiceProvider
             ['max_locks' => $maxLocks, 'time_lock' => $timeLock, 'release_delay' => $releaseDelay] = config('queue.jobs.send_emails');
 
             return new SendEmailsJobConfig(
+                maxLocks: $maxLocks,
+                releaseDelay: $releaseDelay,
+                timeLock: $timeLock
+            );
+        });
+
+        $this->app->singleton(CacheStatQueueConfig::class, function () {
+            ['max_locks' => $maxLocks, 'time_lock' => $timeLock, 'release_delay' => $releaseDelay] = config('queue.cache_stat_config');
+
+            return new CacheStatQueueConfig(
                 maxLocks: $maxLocks,
                 releaseDelay: $releaseDelay,
                 timeLock: $timeLock
