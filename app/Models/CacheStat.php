@@ -10,5 +10,8 @@ class CacheStat extends Model
     use HasFactory;
 
     protected $primaryKey = 'key';
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $fillable = ['key', 'tags', 'hit', 'mis'];
 }
