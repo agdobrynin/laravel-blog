@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\BlogPostAdded;
 use App\Events\CommentPosted;
+use App\Listeners\CacheStatSubscriber;
 use App\Listeners\NotifyAdminBlogPostAdded;
 use App\Listeners\NotifyUsersAboutComment;
 use Illuminate\Auth\Events\Registered;
@@ -30,6 +31,9 @@ class EventServiceProvider extends ServiceProvider
         ],
     ];
 
+    protected $subscribe = [
+        CacheStatSubscriber::class,
+    ];
     /**
      * Register any events for your application.
      */
