@@ -17,7 +17,7 @@
                     <h6 class="mb-1">{{ $blogger->name }}</h6>
                     <div class="text-muted me-2"><x-user.avatar :user="$blogger" size="48"/></div>
                 </div>
-                <p class="mb-1">опубликовал <span class="badge bg-info">{{ $blogger->blog_posts_count }}</span> постов</p>
+                <p class="mb-1">{{ __('опубликовал') }} <span class="badge bg-info">{{ $blogger->blog_posts_count }}</span> {{ __('постов') }}</p>
             </a>
         @endforeach
     </x-slot:items>

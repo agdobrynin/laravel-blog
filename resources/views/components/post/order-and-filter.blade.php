@@ -4,7 +4,7 @@
 ])
 <form {{ $attributes->merge(['class' => 'row g-3 fw-light']) }}>
     <div class="col-auto">
-        <label for="orderBy">{{ __('Отбразить посты') }}</label>
+        <label for="orderBy">{{ __('Отобразить посты') }}</label>
         <select class="form-select-sm" name="order">
             @foreach(App\Enums\OrderBlogPostEnum::cases() as $enum)
                 <option value="{{ Str::lower($enum->name) }}"
