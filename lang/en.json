@@ -39,5 +39,15 @@
   "Обновить": "Update",
   "Пост": "Post",
   "{1} Сейчас читает :count пользователь|[2,19] Сейчас читает :count пользователей": "{1} Reading :count user now|[2,19] Reading :count users now",
-  "Добавить комментарий к публикации": "Add comment to post"
+  "Добавить комментарий к публикации": "Add comment to post",
+  "Новый пост создан успешно": "New post was added",
+  "Пост обновлен": "Post was updated",
+  "Пост \":title\" успешно удален": "Post \":title\" was deleted",
+  "Пост \":title\" успешно восстановлен": "Post \":title\" was recovered",
+  "Пользователь обновлен.": "User was updated",
+  "Неизвестный тип изображения для удаления файлов :type": "Unknown image :type for deleting",
+  "Неизвестный тип изображения для изменения размера :type": "Unknown image :type for resizing",
+  "Ширина изображения должна быть более нуля. Получено значение \":width\"": "With of image must be more then zero. Given value \":width\"",
+  "Не поддерживаемый тип изображения для миниатюры. Получено :type": "Unsupported image type for thumbnail. Given value :type",
+  "Вы не являетесь владельцем этого поста": "You are not owner this post"
 }

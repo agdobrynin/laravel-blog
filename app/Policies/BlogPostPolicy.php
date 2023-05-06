@@ -82,6 +82,6 @@ class BlogPostPolicy
     {
         return $user->id === $post->user_id
             ? Response::allow()
-            : Response::deny(trans('Вы не являетесь владальцем этого поста'));
+            : Response::deny(trans('Вы не являетесь владельцем этого поста'));
     }
 }
