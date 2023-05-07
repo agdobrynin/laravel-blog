@@ -20,9 +20,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', static function() {
-    return redirect('/en');
-})->middleware('setlocale');
+Route::middleware('setlocale')->get('/', static function() {
+    return redirect()->route('home.index');
+});
 
 Route::prefix('{locale}')
     ->where(['locale' => 'en|ru'])
