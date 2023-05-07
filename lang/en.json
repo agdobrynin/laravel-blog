@@ -49,5 +49,6 @@
   "Неизвестный тип изображения для изменения размера :type": "Unknown image :type for resizing",
   "Ширина изображения должна быть более нуля. Получено значение \":width\"": "With of image must be more then zero. Given value \":width\"",
   "Не поддерживаемый тип изображения для миниатюры. Получено :type": "Unsupported image type for thumbnail. Given value :type",
-  "Вы не являетесь владельцем этого поста": "You are not owner this post"
+  "Вы не являетесь владельцем этого поста": "You are not owner this post",
+  "редактировать": "edit"
 }
