@@ -52,5 +52,10 @@
   "Вы не являетесь владельцем этого поста": "You are not owner this post",
   "редактировать": "edit",
   "comment.add.success": "Comment was added",
-  "error.ups": "Whoops! Something wrong!"
+  "error.ups": "Whoops! Something wrong!",
+  "Изменить имя или аватар": "Change user name or avatar image",
+  "Пользователь сайта": "Site user",
+  "Имя пользователя": "User name",
+  "Добавить комментарий для пользователя :name": "Add comment at user profile for :name",
+  "Для комментария <a href=\":login\">авторизуйтесь</a> или <a href=\":reg\">зарегистрируйтесь</a>": "For commented <a href=\":login\">authorize</a> or <a href=\":reg\">register</a>"
 }
