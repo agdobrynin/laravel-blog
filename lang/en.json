@@ -50,5 +50,7 @@
   "Ширина изображения должна быть более нуля. Получено значение \":width\"": "With of image must be more then zero. Given value \":width\"",
   "Не поддерживаемый тип изображения для миниатюры. Получено :type": "Unsupported image type for thumbnail. Given value :type",
   "Вы не являетесь владельцем этого поста": "You are not owner this post",
-  "редактировать": "edit"
+  "редактировать": "edit",
+  "comment.add.success": "Comment was added",
+  "error.ups": "Whoops! Something wrong!"
 }
