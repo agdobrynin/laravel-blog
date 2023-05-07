@@ -89,7 +89,7 @@ class BlogPostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(BlogPost $post, ReadNowObjectInterface $readNowObject)
+    public function show(string $locale, BlogPost $post, ReadNowObjectInterface $readNowObject)
     {
         $comments = $post->commentsOn()->with(['user.image', 'tags'])
             ->withCount('tags')
@@ -110,7 +110,7 @@ class BlogPostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(BlogPost $post)
+    public function edit(string $locale, BlogPost $post)
     {
         return view('post.edit', ['post' => $post]);
     }
@@ -118,7 +118,7 @@ class BlogPostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(BlogPostRequest $request, BlogPost $post)
+    public function update(string $locale, BlogPostRequest $request, BlogPost $post)
     {
         $data = $request->validated();
         $post->update($data);
@@ -146,7 +146,7 @@ class BlogPostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BlogPost $post)
+    public function destroy(string $locale, BlogPost $post)
     {
         $post->delete();
         $message = trans('Пост ":title" успешно удален', ['title' => $post->title]);
@@ -156,7 +156,7 @@ class BlogPostController extends Controller
             ->with('success', $message);
     }
 
-    public function restore(BlogPost $post)
+    public function restore(string $locale, BlogPost $post)
     {
         if ($post->restore()) {
             $message = trans('Пост ":title" успешно восстановлен', ['title' => $post->title]);

@@ -9,7 +9,7 @@ use App\Models\Comment;
 
 class PostCommentController extends Controller
 {
-    public function store(BlogPost $post, StoreCommentRequest $request)
+    public function store(string $locale, BlogPost $post, StoreCommentRequest $request)
     {
         /** @var Comment $comment */
         $comment = $post->commentsOn()->save(

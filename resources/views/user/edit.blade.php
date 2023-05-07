@@ -14,7 +14,7 @@
                 />
                 <x-ui.input name="avatar"
                             type="file"
-                            label="{{ __('Аватар') }}"
+                            label="{{ __('Аватар пользователя') }}"
                             class="input-small"/>
                 <button class="btn btn-primary w-100" type="submit">{{ __('Обновить') }}</button>
             </div>

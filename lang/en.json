@@ -57,5 +57,7 @@
   "Пользователь сайта": "Site user",
   "Имя пользователя": "User name",
   "Добавить комментарий для пользователя :name": "Add comment at user profile for :name",
-  "Для комментария <a href=\":login\">авторизуйтесь</a> или <a href=\":reg\">зарегистрируйтесь</a>": "For commented <a href=\":login\">authorize</a> or <a href=\":reg\">register</a>"
+  "Для комментария <a href=\":login\">авторизуйтесь</a> или <a href=\":reg\">зарегистрируйтесь</a>": "For commented <a href=\":login\">authorize</a> or <a href=\":reg\">register</a>",
+  "Ваш email успешно подтвержден": "Your email verified",
+  "Ссылка подтверждения успешно отправлена!": "Verify link was emailed!"
 }
