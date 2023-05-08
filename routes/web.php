@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\LocaleEnums;
 use App\Http\Controllers\BlogPostController;
 use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\UserCommentController;
@@ -20,13 +21,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('setlocale')->get('/', static function() {
+Route::middleware('set.locale')->get('/', static function() {
     return redirect()->route('home.index');
 });
 
+$availableLocales = implode('|', array_column(LocaleEnums::cases(), 'value'));
+
 Route::prefix('{locale}')
-    ->where(['locale' => 'en|ru'])
-    ->middleware('setlocale')
+    ->where(['locale' => $availableLocales])
+    ->middleware('set.locale')
     ->group(static function () {
         Auth::routes();
 

@@ -82,7 +82,7 @@ return [
     |
     */
 
-    'locale' => 'ru',
+    'locale' => \App\Enums\LocaleEnums::RU->value,
 
     /*
     |--------------------------------------------------------------------------
@@ -95,7 +95,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'ru',
+    'fallback_locale' => \App\Enums\LocaleEnums::RU->value,
 
     /*
     |--------------------------------------------------------------------------
