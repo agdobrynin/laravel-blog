@@ -13,7 +13,7 @@ class HomeTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(302);
-        $response->assertRedirect('/ru');
+        $response->assertRedirect('/en');
     }
 
     public function testHomeLocaleWelcomeText(): void
