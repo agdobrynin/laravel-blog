@@ -12,6 +12,12 @@
                             class="input-small"
                             value="{{ old('name', $user->name ?? '') }}"
                 />
+                @inject('localeMenu', App\Services\LocaleMenu::class)
+                <x-ui.select name="locale"
+                            label="{{ __('Предпочтительный язык сайта') }}"
+                             :values="$localeMenu->localeWithDescription"
+                             :data="[$user->preference?->locale]"
+                />
                 <x-ui.input name="avatar"
                             type="file"
                             label="{{ __('Аватар пользователя') }}"

@@ -7,7 +7,9 @@ use App\Enums\StoragePathEnum;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\Image;
 use App\Models\User;
+use App\Models\UserPreference;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
@@ -71,7 +73,16 @@ class UserController extends Controller
     public function update(UserUpdateRequest $request, string $locale, User $user)
     {
         $user->name = $request->input('name');
-        $user->save();
+
+        $inputLocale = $request->input('locale');
+        App::setLocale($inputLocale);
+
+        if ($user->preference) {
+            $user->preference->locale = $inputLocale;
+            $user->push();
+        } else {
+            $user->preference()->save(new UserPreference(['locale' => $inputLocale]));
+        }
 
         if ($avatar = $request->file('avatar')) {
             $path = Storage::putFile(StoragePathEnum::USER_AVATAR->value, $avatar);
@@ -87,7 +98,7 @@ class UserController extends Controller
         }
 
         return redirect()
-            ->route('users.show', $user)
+            ->route('users.show', ['user' => $user, 'locale' => $inputLocale])
             ->with('success', trans('Пользователь обновлен.'));
     }
 

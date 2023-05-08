@@ -7,22 +7,28 @@ use App\Attribute\Description;
 use App\Dto\LocaleMenuItemDto;
 use App\Enums\LocaleEnums;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Collection;
 use ReflectionEnumUnitCase;
 
-class LocaleMenu
+readonly class LocaleMenu
 {
+    public array $localeWithDescription;
+
     /**
-     * @var array
+     * @var Collection<LocaleEnums>
      */
-    protected array $locales = [];
+    protected Collection $localeCollection;
 
     public function __construct(LocaleEnums ...$locales)
     {
-        foreach ($locales as $locale) {
-            $description = (new ReflectionEnumUnitCase(LocaleEnums::class, $locale->name))
-                ->getAttributes(Description::class)[0]->newInstance();
-            $this->locales[$locale->value] = $description->description;
-        }
+        $this->localeCollection = collect($locales);
+
+        $this->localeWithDescription = $this->localeCollection
+            ->reduce(function ($acc, LocaleEnums $enums){
+                $acc[$enums->value] = $this->getLocaleWithDescription($enums);
+
+                return $acc;
+        }, []);
     }
 
     /**
@@ -32,10 +38,10 @@ class LocaleMenu
     {
         $items = [];
 
-        foreach ($this->locales as $locale => $title) {
-            $route->setParameter('locale', $locale);
+        foreach ($this->localeCollection as $locale) {
+            $route->setParameter('locale', $locale->value);
             $url = route($route->getName(), $route->parameters());
-            $items[] = new LocaleMenuItemDto($title, $url, $locale);
+            $items[] = new LocaleMenuItemDto($this->localeWithDescription[$locale->value], $url);
         }
 
         return $items;
@@ -43,6 +49,16 @@ class LocaleMenu
 
     public function titleByLocale(string $locale): ?string
     {
-        return $this->locales[$locale] ?? null;
+        if ($enum = $this->localeCollection->firstWhere('value', $locale)) {
+            return $this->localeWithDescription[$enum->value];
+        }
+
+        return null;
+    }
+
+    protected function getLocaleWithDescription(LocaleEnums $enum): string
+    {
+        return (new ReflectionEnumUnitCase(LocaleEnums::class, $enum->name))
+            ->getAttributes(Description::class)[0]->newInstance()->description;
     }
 }

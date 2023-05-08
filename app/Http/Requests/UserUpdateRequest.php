@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\LocaleEnums;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserUpdateRequest extends FormRequest
 {
@@ -28,7 +30,11 @@ class UserUpdateRequest extends FormRequest
                 'mimes:jpg,jpeg,png,gif',
                 'max:3500',
                 'dimensions:min_width=50,min_height=50,max_width=4000,max_height=4000'
-            ]
+            ],
+            'locale' => [
+                'required',
+                Rule::in(array_column(LocaleEnums::cases(), 'value')),
+            ],
         ];
     }
 }

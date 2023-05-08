@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -68,6 +68,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function image(): MorphOne
     {
         return $this->morphOne(Image::class, 'imageable');
+    }
+
+    public function preference(): HasOne
+    {
+        return $this->hasOne(UserPreference::class);
     }
 
     public function roles(): BelongsToMany
@@ -158,9 +163,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeUsersCommentable(Builder $builder, $commentable): Builder
     {
         return $builder->whereHas(
-                'comments',
-                fn($q) => $q->where('commentable_id', $commentable->id)
-                    ->where('commentable_type', get_class($commentable))
+            'comments',
+            fn($q) => $q->where('commentable_id', $commentable->id)
+                ->where('commentable_type', get_class($commentable))
         );
     }
 
