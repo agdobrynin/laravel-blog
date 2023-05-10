@@ -7,6 +7,7 @@ use App\Events\CommentPosted;
 use App\Listeners\CacheStatSubscriber;
 use App\Listeners\NotifyAdminBlogPostAdded;
 use App\Listeners\NotifyUsersAboutComment;
+use App\Listeners\UserEventSubscriber;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -33,6 +34,7 @@ class EventServiceProvider extends ServiceProvider
 
     protected $subscribe = [
         CacheStatSubscriber::class,
+        UserEventSubscriber::class,
     ];
     /**
      * Register any events for your application.
