@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Cache;
 
 readonly class ReadNowObject implements ReadNowObjectInterface
 {
+    protected int $minutesTimeout;
+
+    public function __construct()
+    {
+        $this->minutesTimeout = config('read_now_object.counter_minutes_timeout');
+    }
+
     public function readNowCount(int|string $objectIdentification, string|int $userIdentification): int
     {
         $cacheUsersKey = 'read-object-users:' . $objectIdentification;
@@ -19,7 +26,7 @@ readonly class ReadNowObject implements ReadNowObjectInterface
         $readers[$userIdentification] = $now;
 
         foreach ($readers as $userIdentificationKey => $lastVisit) {
-            if (1 <= $now->diffInMinutes($lastVisit)) {
+            if ($this->minutesTimeout <= $now->diffInMinutes($lastVisit)) {
                 unset($readers[$userIdentificationKey]);
             }
         }
