@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Enums\CacheTagsEnum;
+use App\Enums\LocaleEnums;
 use App\Services\CacheStatQueueConfig;
 use App\Services\Contracts\MostActiveBloggersInterface;
 use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
+use App\Services\LocaleMenu;
 use App\Services\MostActiveBloggers;
 use App\Services\ReadNowObject;
 use App\Services\SendEmailsJobConfig;
@@ -71,6 +73,12 @@ class AppServiceProvider extends ServiceProvider
                 timeLock: $timeLock
             );
         });
+
+        $this->app
+            ->bind(
+                LocaleMenu::class,
+                fn() => new LocaleMenu(LocaleEnums::EN, LocaleEnums::RU)
+            );
     }
 
     /**

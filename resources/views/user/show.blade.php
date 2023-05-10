@@ -6,7 +6,7 @@
         <div class="col-12 col-md-8">
             <x-ui.input :disabled="true" name="" value="{{ $user->name }}" label="{{ __('Имя пользователя') }}"/>
             @can('update', $user)
-                <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-outline-secondary w-100">{{ __('Изменить имя или аватар') }}</a>
+                <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-outline-secondary w-100">{{ __('Изменить профиль') }}</a>
             @endcan
         </div>
     </div>

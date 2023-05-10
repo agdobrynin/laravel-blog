@@ -16,7 +16,7 @@ class PostTest extends TestCase
 
     public function testNoPostInDatabase(): void
     {
-        $response = $this->get('/posts');
+        $response = $this->get('/ru/posts');
 
         $response->assertOk();
         $response->assertSeeText(trans('Записей в блоге нет'));
@@ -31,7 +31,7 @@ class PostTest extends TestCase
         $post->user_id = User::factory()->create()->id;
         $post->save();
 
-        $response = $this->get('/posts');
+        $response = $this->get('/ru/posts');
 
         $response->assertOk();
         $response->assertSeeText('Post title one');
@@ -51,7 +51,7 @@ class PostTest extends TestCase
         $comments = Comment::factory(5)->make();
         $post->commentsOn()->saveMany($comments);
 
-        $response = $this->get('/posts');
+        $response = $this->get('/ru/posts');
 
         $response->assertOk();
         $response->assertSeeText($post->title);
@@ -74,7 +74,7 @@ class PostTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
-            ->post('/posts', $data);
+            ->post('/ru/posts', $data);
 
         $response->assertStatus(302);
         $response->assertSessionHas('success', trans('Новый пост создан успешно'));
@@ -90,7 +90,7 @@ class PostTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
-            ->post('/posts', $data);
+            ->post('/ru/posts', $data);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors([
@@ -109,7 +109,7 @@ class PostTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
-            ->post('/posts', $data);
+            ->post('/ru/posts', $data);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors([
@@ -132,7 +132,7 @@ class PostTest extends TestCase
         $post->tags()->save($tag);
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
-        $url = sprintf('/posts/%s', $post->id);
+        $url = sprintf('/ru/posts/%s', $post->id);
 
         $response = $this->actingAs($user)
             ->put($url, ['title' => 'title updated', 'content' => 'Updated content', 'tags' => [$tag->id]]);
@@ -158,7 +158,7 @@ class PostTest extends TestCase
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
 
-        $url = sprintf('/posts/%s', $post->id);
+        $url = sprintf('/ru/posts/%s', $post->id);
 
         $response = $this->actingAs($user)
             ->delete($url)

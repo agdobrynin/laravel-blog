@@ -51,12 +51,8 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{Auth::user()->name}}
-                            @role(App\Enums\RolesEnum::ADMIN)
-                                👑
-                            @else
-                                🎠
-                            @endrole
-                            <x-user.avatar :user="Auth::user()" class="shadow-sm" :size="36"/>
+                            <small>@role(App\Enums\RolesEnum::ADMIN)👑@else📝@endrole</small>
+                            <x-user.avatar :user="Auth::user()" class="shadow-sm" :size="24"/>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end mt-0">
                             <li><a class="dropdown-item" href="{{ route('users.show', Auth::user()) }}">{{ __('Профиль') }}</a></li>
@@ -73,6 +69,20 @@
                         </ul>
                     </li>
                 @endguest
+                @inject('localeMenu', App\Services\LocaleMenu::class)
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        🌐 {{ $localeMenu->titleByLocale(App::getLocale()) }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end mt-0">
+                        @foreach($localeMenu->menu(Route::current()) as $localeMenuItemDto)
+                            <li><a class="dropdown-item"
+                                   href="{{ $localeMenuItemDto->url }}"
+                                >{{ $localeMenuItemDto->title }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>

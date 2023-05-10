@@ -8,12 +8,17 @@ use Tests\TestCase;
 
 class HomeTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function testHomePageWelcomeText(): void
+    public function testHomeLocaleRedirect(): void
     {
         $response = $this->get('/');
+
+        $response->assertStatus(302);
+        $response->assertRedirect('/en');
+    }
+
+    public function testHomeLocaleWelcomeText(): void
+    {
+        $response = $this->get('/ru');
 
         $response->assertStatus(200);
         $response->assertSeeText('Welcome to Laravel App');

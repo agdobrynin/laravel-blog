@@ -18,7 +18,7 @@ class UserCommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(User $user, StoreCommentRequest $request): RedirectResponse
+    public function store(string $locale, User $user, StoreCommentRequest $request): RedirectResponse
     {
         /** @var Comment|false $comment */
         $comment = $user->commentsOn()->save(
