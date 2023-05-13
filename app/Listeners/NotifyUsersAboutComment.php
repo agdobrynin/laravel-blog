@@ -19,7 +19,8 @@ class NotifyUsersAboutComment
             BlogPost::class => $event->comment->commentable->user
         };
 
-        SendEmails::dispatch(new CommentPublishNotifyOwner($event->comment, $owner->locale()), $owner);
+        $mail = new CommentPublishNotifyOwner($event->comment, $owner->locale());
+        SendEmails::dispatch($mail, $owner);
         NotifyUsersWatchedCommentable::dispatch($event->comment);
     }
 }

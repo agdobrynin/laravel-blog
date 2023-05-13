@@ -19,8 +19,9 @@ class NotifyBlogPostAddedMail extends Mailable
 
     public function __construct(
         public readonly BlogPost    $post,
-        public readonly LocaleEnums $localeEnums,
-        public readonly User        $user)
+        public readonly User        $user,
+        public readonly LocaleEnums $localeEnums
+    )
     {
     }
 
