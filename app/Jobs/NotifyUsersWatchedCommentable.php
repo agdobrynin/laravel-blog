@@ -29,7 +29,7 @@ class NotifyUsersWatchedCommentable implements ShouldQueue
             ->get()
             ->map(function (User $user) {
                 if ($user->id !== $this->comment->user_id) {
-                    SendEmails::dispatch(new CommentPostedOnWatchedCommentable($user, $this->comment), $user);
+                    SendEmails::dispatch(new CommentPostedOnWatchedCommentable($user, $this->comment, $user->locale()), $user);
                 }
             });
     }
