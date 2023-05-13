@@ -2,11 +2,13 @@
 
 namespace App\Mail;
 
+use App\Enums\LocaleEnums;
 use App\Models\BlogPost;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -20,15 +22,26 @@ class CommentPostedOnWatchedCommentable extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public readonly User $user, public readonly Comment $comment)
+    public function __construct(
+        public readonly User $user,
+        public readonly Comment $comment,
+        public readonly LocaleEnums $localeEnums
+    )
     {
     }
 
     public function envelope(): Envelope
     {
         $subject = match ($this->comment->commentable_type) {
-            User::class => trans('Новый комментарий под профилем :user в котором Вы оставили свой комментарий', ['user' => $this->comment->commentable->name]),
-            BlogPost::class => trans('Добавлен новый комментарий к публикации на которую Вы оставили комментарий'),
+            User::class => trans(
+                    'Новый комментарий под профилем :user в котором Вы оставили свой комментарий',
+                    ['user' => $this->comment->commentable->name],
+                    $this->localeEnums->value
+                    ),
+            BlogPost::class => trans(
+                'Добавлен новый комментарий к публикации на которую Вы оставили комментарий',
+                    locale: $this->localeEnums->value
+                ),
         };
 
         return new Envelope(
@@ -40,8 +53,8 @@ class CommentPostedOnWatchedCommentable extends Mailable
     public function content(): Content
     {
         $markdown = match ($this->comment->commentable_type) {
-            User::class => 'emails.comment.ru.new-watched-profile-markdown',
-            BlogPost::class => 'emails.comment.ru.new-watched-post-markdown',
+            User::class => 'emails.comment.'.$this->localeEnums->value.'.new-watched-profile-markdown',
+            BlogPost::class => 'emails.comment.'.$this->localeEnums->value.'.new-watched-post-markdown',
         };
 
         return new Content(
@@ -50,7 +63,7 @@ class CommentPostedOnWatchedCommentable extends Mailable
     }
 
     /**
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {

@@ -1,16 +1,16 @@
 @php use Illuminate\Support\Facades\URL; @endphp
 @php use App\Enums\LocaleEnums;use Illuminate\Support\Str; @endphp
-@php URL::defaults(['locale' => LocaleEnums::RU->value]) @endphp
+@php URL::defaults(['locale' => LocaleEnums::EN->value]) @endphp
 <x-mail::message>
-    ### Привет {{ $user->name }}!
+    ### Hello {{ $user->name }}!
 
-    На сайт добавлен новый пост:
+    New post was added:
 
     <x-mail::button url="{{ route('posts.show', [$post]) }}">
         {{ $post->title }}
     </x-mail::button>
 
-    Автор {{ $post->user->name }} написал:
+    Author {{ $post->user->name }} wrote:
     <x-mail::panel>
         <x-emails.user-avatar :fullOrigPath="$post->user?->image?->fullOrigPath()"/>
 
@@ -18,13 +18,13 @@
 
 
         <p style="font-size: 0.75em">
-            Тэги поста:
+            Post tags:
             @foreach($post->tags as $tag)
                 - {{ $tag->name }}
             @endforeach
         </p>
     </x-mail::panel>
 
-    С уважением Ваш,<br>
+    Sincerely yours,<br>
     {{ config('app.name') }}
 </x-mail::message>

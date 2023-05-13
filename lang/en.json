@@ -60,5 +60,8 @@
     "Для комментария <a href=\":login\">авторизуйтесь</a> или <a href=\":reg\">зарегистрируйтесь</a>": "For commented <a href=\":login\">authorize</a> or <a href=\":reg\">register</a>",
     "Ваш email успешно подтвержден": "Your email verified",
     "Ссылка подтверждения успешно отправлена!": "Verify link was emailed!",
-    "Предпочтительный язык сайта": "Preferred site language"
+    "Предпочтительный язык сайта": "Preferred site language",
+    "С уважением Ваш": "Sincerely yours",
+    "Добавлен новый комментарий": "New comment was added",
+    "Добавлен новый комментарий к публикации на которую Вы оставили комментарий": "A new comment has been added to the post you commented on"
 }

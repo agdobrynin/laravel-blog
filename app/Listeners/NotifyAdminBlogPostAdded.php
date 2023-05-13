@@ -21,6 +21,6 @@ class NotifyAdminBlogPostAdded implements ShouldQueue
             ->with('users')
             ->first()
             ?->users
-            ->map(fn(User $user) => SendEmails::dispatch(new NotifyBlogPostAddedMail($event->post), $user));
+            ->map(fn(User $user) => SendEmails::dispatch(new NotifyBlogPostAddedMail($event->post, $user->locale(), $user), $user));
     }
 }

@@ -13,12 +13,13 @@ class NotifyUsersAboutComment
 {
     public function handle(CommentPosted $event): void
     {
+        /** @var User $owner */
         $owner = match ($event->comment->commentable_type) {
             User::class => $event->comment->commentable,
             BlogPost::class => $event->comment->commentable->user
         };
 
-        SendEmails::dispatch(new CommentPublishNotifyOwner($event->comment), $owner);
+        SendEmails::dispatch(new CommentPublishNotifyOwner($event->comment, $owner->locale()), $owner);
         NotifyUsersWatchedCommentable::dispatch($event->comment);
     }
 }

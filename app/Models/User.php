@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\CacheTagsEnum;
+use App\Enums\LocaleEnums;
 use App\Enums\RolesEnum;
 use App\Models\Traits\HasComments;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -73,6 +74,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function preference(): HasOne
     {
         return $this->hasOne(UserPreference::class);
+    }
+
+    public function locale(): LocaleEnums
+    {
+        $foundIndex = array_search($this->preference?->locale, array_column(LocaleEnums::cases(),'value'));
+
+        return $foundIndex === false
+            ? LocaleEnums::cases()[0]
+            : LocaleEnums::cases()[$foundIndex];
     }
 
     public function roles(): BelongsToMany
