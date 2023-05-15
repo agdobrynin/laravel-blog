@@ -8,7 +8,7 @@
         <select class="form-select-sm" name="order">
             @foreach(App\Enums\OrderBlogPostEnum::cases() as $enum)
                 <option value="{{ Str::lower($enum->name) }}"
-                    @if($enum === $blogPostFilterDto->order) selected @endif>{{ $enum->value }}</option>
+                    @if($enum === $blogPostFilterDto->order) selected @endif>{{ __($enum->value) }}</option>
             @endforeach
         </select>
     </div>

@@ -65,5 +65,7 @@
     "Добавлен новый комментарий": "New comment was added",
     "Добавлен новый комментарий к публикации на которую Вы оставили комментарий": "A new comment has been added to the post you commented on",
     "Добавлен новый пост от пользователя :user": "New post was added by user :user",
-    "Новый комментарий под профилем :user в котором Вы оставили свой комментарий": "New comment was added at user profile :user you commented on"
+    "Новый комментарий под профилем :user в котором Вы оставили свой комментарий": "New comment was added at user profile :user you commented on",
+    "Сначала новые посты": "New post first",
+    "Сначала самые обсуждаемые посты": "Most commented posts"
 }
