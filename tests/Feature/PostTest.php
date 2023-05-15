@@ -148,6 +148,8 @@ class PostTest extends TestCase
         // User with verified email
         $user = User::factory()->create();
 
+        BlogPost::unsetEventDispatcher();
+
         $post = BlogPost::make([
             'title' => 'title one',
             'content' => 'long content here',
@@ -166,6 +168,6 @@ class PostTest extends TestCase
 
         $successMessage = trans('Пост ":title" успешно удален', ['title' => $post->title]);
         $response->assertSessionHas('success', $successMessage);
-        $this->assertSoftDeleted('blog_posts', $post->toArray());
+        $this->assertSoftDeleted('blog_posts', ['id' => $post->id]);
     }
 }
