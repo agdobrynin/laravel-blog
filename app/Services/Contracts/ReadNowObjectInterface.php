@@ -2,7 +2,9 @@
 
 namespace App\Services\Contracts;
 
+use Illuminate\Database\Eloquent\Model;
+
 interface ReadNowObjectInterface
 {
-    public function readNowCount(string|int $objectIdentification, string|int $userIdentification): int;
+    public function readNowCount(Model $object, string|int $userIdentification): int;
 }

@@ -8,6 +8,7 @@ use App\Http\Requests\UserUpdateRequest;
 use App\Models\Image;
 use App\Models\User;
 use App\Models\UserPreference;
+use App\Services\Contracts\ReadNowObjectInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
@@ -48,7 +49,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $locale, User $user)
+    public function show(string $locale, User $user, ReadNowObjectInterface $readNowObject)
     {
         $comments = $user->commentsOn()->with(['user.image', 'tags'])
             ->withCount('tags')
@@ -56,7 +57,14 @@ class UserController extends Controller
             ->onEachSide(1)
             ->withQueryString();
 
-        return view('user.show', ['user' => $user, 'comments' => $comments]);
+        return view(
+            'user.show',
+            [
+                'user' => $user,
+                'comments' => $comments,
+                'readNowCount' => $readNowObject->readNowCount($user, session()->getId())
+            ]
+        );
     }
 
     /**

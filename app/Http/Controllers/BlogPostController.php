@@ -103,7 +103,7 @@ class BlogPostController extends Controller
             'post' => $post,
             'comments' => $comments,
             'pageTitle' => Str::limit($post->title, 30),
-            'readCount' => $readNowObject->readNowCount($post->id, session()->getId()),
+            'readCount' => $readNowObject->readNowCount($post, session()->getId()),
         ]);
     }
 

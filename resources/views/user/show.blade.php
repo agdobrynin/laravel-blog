@@ -8,6 +8,11 @@
             @can('update', $user)
                 <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-outline-secondary w-100">{{ __('Изменить профиль') }}</a>
             @endcan
+            @if(!empty($readNowCount))
+                <div class="text-muted fw-lighter mt-2">
+                    {{ trans_choice('{1} Сейчас читает :count пользователь|[2,19] Сейчас читает :count пользователей', $readNowCount) }}
+                </div>
+            @endif
         </div>
     </div>
 

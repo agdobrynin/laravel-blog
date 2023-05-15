@@ -10,11 +10,11 @@ use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
 use App\Services\LocaleMenu;
 use App\Services\MostActiveBloggers;
-use App\Services\ReadNowObject;
+use App\Services\ReadNowObjectByRedisWithTags;
 use App\Services\SendEmailsJobConfig;
 use App\Services\TagsDictionary;
 use App\Services\TagsDictionaryCache;
-use Illuminate\Foundation\Application;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
@@ -28,25 +28,36 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFive();
 
-        $this->app->bind(
-            MostActiveBloggersInterface::class,
-            fn(Application $app) => $app->make(
-                MostActiveBloggers::class,
-                [
-                    'lastMonth' => config('most_active_bloggers.last_month'),
-                    'minCountPost' => config('most_active_bloggers.min_count_post'),
-                    'take' => config('most_active_bloggers.take'),
-                    'cacheTtl' => config('most_active_bloggers.cache_ttl'),
-                    'cache' => config('most_active_bloggers.cache_ttl')
-                        ? Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value)
-                        : null,
-                ]
-            )
-        );
+        $this->app->singleton(MostActiveBloggersInterface::class, function () {
+            [
+                'last_month' => $lastMonth,
+                'min_count_post' => $minCountPost,
+                'take' => $take,
+                'cache_ttl' => $cacheTtl
 
-        $this->app->bind(ReadNowObjectInterface::class, ReadNowObject::class);
+            ] = config('most_active_bloggers');
 
-        $this->app->bind(TagsDictionaryInterface::class, function () {
+            $cache = $cacheTtl ? Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value) : null;
+
+            return new MostActiveBloggers(
+                take: $take,
+                minCountPost: $minCountPost,
+                cacheTtl: $cacheTtl,
+                lastMonth: $lastMonth,
+                cache: $cache
+            );
+        });
+
+        $this->app->singleton(ReadNowObjectByRedisWithTags::class, function (Application $app) {
+            return new ReadNowObjectByRedisWithTags(
+                config('read_now_object.counter_minutes_timeout'),
+                Cache::tags(CacheTagsEnum::READ_NOW_OBJECT->value)
+            );
+        });
+
+        $this->app->bind(ReadNowObjectInterface::class, ReadNowObjectByRedisWithTags::class);
+
+        $this->app->singleton(TagsDictionaryInterface::class, function () {
             $cache = config('tags-dictionary.cache.enabled')
                 ? TagsDictionaryCache::init(config('tags-dictionary.cache.ttl'))
                 : null;
