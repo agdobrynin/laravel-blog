@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Dto\BlogPostFilterDto;
+use App\Dto\Request\BlogPostDto;
 use App\Enums\OrderBlogPostEnum;
 use App\Enums\StoragePathEnum;
 use App\Events\BlogPostAdded;
 use App\Factory\OrderBlogPostFactory;
-use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
 use App\Models\Image;
 use App\Models\User;
@@ -64,20 +64,21 @@ class BlogPostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(BlogPostRequest $request)
+    public function store(BlogPostDto $dto)
     {
-        $data = $request->validated();
-        $data['user_id'] = $request->user()->id;
-        /** @var BlogPost $post */
-        $post = BlogPost::create($data);
+        $post = new BlogPost();
+        $post->title = $dto->title;
+        $post->content = $dto->content;
+        $post->user()->associate($dto->user);
+        $post->save();
 
-        if ($file = $request->file('thumb')) {
+        if ($file = $dto->uploadedFile) {
             $path = Storage::putFile(StoragePathEnum::POST_IMAGE->value, $file);
             $image = new Image(['path' => $path]);
             $post->image()->save($image);
         }
 
-        $post->tags()->sync($data['tags']);
+        $post->tags()->sync($dto->tags);
 
         event(new BlogPostAdded($post));
 
@@ -118,17 +119,18 @@ class BlogPostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(string $locale, BlogPostRequest $request, BlogPost $post)
+    public function update(string $locale, BlogPost $post, BlogPostDto $dto)
     {
-        $data = $request->validated();
-        $post->update($data);
-        $post->tags()->sync($data['tags']);
+        $post->title = $dto->title;
+        $post->content = $dto->content;
+        $post->save();
+        $post->tags()->sync($dto->tags);
 
-        if ($request->input('delete_image') && $post->image) {
+        if ($dto->deleteImage && $post->image) {
             $post->image->delete();
         }
 
-        if ($file = $request->file('thumb')) {
+        if ($file = $dto->uploadedFile) {
             $path = Storage::putFile(StoragePathEnum::POST_IMAGE->value, $file);
 
             if ($post->image) {

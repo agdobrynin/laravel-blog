@@ -2,8 +2,14 @@
 
 namespace App\Providers;
 
+use App\Dto\Request\BlogPostDto;
+use App\Dto\Request\CommentDto;
+use App\Dto\Request\UserProfileDto;
 use App\Enums\CacheTagsEnum;
 use App\Enums\LocaleEnums;
+use App\Http\Requests\BlogPostRequest;
+use App\Http\Requests\StoreCommentRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Services\CacheStatQueueConfig;
 use App\Services\Contracts\MostActiveBloggersInterface;
 use App\Services\Contracts\ReadNowObjectInterface;
@@ -90,6 +96,21 @@ class AppServiceProvider extends ServiceProvider
                 LocaleMenu::class,
                 fn() => new LocaleMenu(LocaleEnums::EN, LocaleEnums::RU)
             );
+
+        $this->app->bind(
+            UserProfileDto::class,
+            fn() => UserProfileDto::fromRequest(resolve(UserUpdateRequest::class))
+        );
+
+        $this->app->bind(
+            CommentDto::class,
+            fn() => CommentDto::fromRequest(resolve(StoreCommentRequest::class))
+        );
+
+        $this->app->bind(
+            BlogPostDto::class,
+            fn() => BlogPostDto::fromRequest(resolve(BlogPostRequest::class))
+        );
     }
 
     /**
