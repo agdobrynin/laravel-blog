@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Dto\CommentDto;
 use App\Events\CommentPosted;
 use App\Http\Requests\StoreCommentRequest;
 use App\Models\Comment;
@@ -20,17 +21,14 @@ class UserCommentController extends Controller
      */
     public function store(string $locale, User $user, StoreCommentRequest $request): RedirectResponse
     {
-        /** @var Comment|false $comment */
-        $comment = $user->commentsOn()->save(
-            new Comment(
-                [
-                    'content' => $request->input('content'),
-                    'user_id' => $request->user()->id
-                ]
-            )
-        );
+        $dto = new CommentDto($request);
 
-        if ($comment && $comment->id) {
+        $comment = new Comment();
+        $comment->content = $dto->content;
+        $comment->user()->associate($dto->user);
+        $user->commentsOn()->save($comment);
+
+        if ($comment->id) {
             event(new CommentPosted($comment));
 
             return redirect()->route('users.show', $user)

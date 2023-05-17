@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Dto\CommentDto;
 use App\Events\CommentPosted;
 use App\Http\Requests\StoreCommentRequest;
 use App\Models\BlogPost;
@@ -11,15 +12,12 @@ class PostCommentController extends Controller
 {
     public function store(string $locale, BlogPost $post, StoreCommentRequest $request)
     {
-        /** @var Comment $comment */
-        $comment = $post->commentsOn()->save(
-            new Comment(
-                [
-                    'content' => $request->input('content'),
-                    'user_id' => $request->user()?->id
-                ]
-            )
-        );
+        $dto = new CommentDto($request);
+
+        $comment = new Comment();
+        $comment->content = $dto->content;
+        $comment->user()->associate($dto->user);
+        $post->commentsOn()->save($comment);
 
         if ($comment->id) {
             event(new CommentPosted($comment));
