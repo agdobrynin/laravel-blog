@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Dto\Request\UserProfileDto;
 use App\Enums\CacheTagsEnum;
 use App\Enums\StoragePathEnum;
-use App\Http\Requests\UserUpdateRequest;
 use App\Models\Image;
 use App\Models\User;
 use App\Models\UserPreference;
@@ -78,21 +78,19 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserUpdateRequest $request, string $locale, User $user)
+    public function update(string $locale, User $user, UserProfileDto $dto)
     {
-        $user->name = $request->input('name');
-
-        $inputLocale = $request->input('locale');
-        App::setLocale($inputLocale);
+        $user->name = $dto->name;
+        App::setLocale($dto->locale->value);
 
         if ($user->preference) {
-            $user->preference->locale = $inputLocale;
+            $user->preference->locale = $dto->locale->value;
             $user->push();
         } else {
-            $user->preference()->save(new UserPreference(['locale' => $inputLocale]));
+            $user->preference()->save(new UserPreference(['locale' => $dto->locale->value]));
         }
 
-        if ($avatar = $request->file('avatar')) {
+        if ($avatar = $dto->uploadedFile) {
             $path = Storage::putFile(StoragePathEnum::USER_AVATAR->value, $avatar);
 
             if ($user->image) {
@@ -106,7 +104,7 @@ class UserController extends Controller
         }
 
         return redirect()
-            ->route('users.show', ['user' => $user, 'locale' => $inputLocale])
+            ->route('users.show', ['user' => $user, 'locale' => $dto->locale->value])
             ->with('success', trans('Пользователь обновлен.'));
     }
 

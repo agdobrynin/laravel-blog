@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Dto\CommentDto;
+use App\Dto\Request\CommentDto;
 use App\Events\CommentPosted;
 use App\Http\Requests\StoreCommentRequest;
 use App\Models\BlogPost;
 use App\Models\Comment;
+use Illuminate\Http\RedirectResponse;
 
 class PostCommentController extends Controller
 {
-    public function store(string $locale, BlogPost $post, StoreCommentRequest $request)
+    public function store(string $locale, BlogPost $post, CommentDto $dto): RedirectResponse
     {
-        $dto = new CommentDto($request);
-
         $comment = new Comment();
         $comment->content = $dto->content;
-        $comment->user()->associate($dto->user);
+
+        if ($dto->user) {
+            $comment->user()->associate($dto->user);
+        }
+
         $post->commentsOn()->save($comment);
 
         if ($comment->id) {
