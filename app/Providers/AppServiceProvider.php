@@ -45,13 +45,7 @@ class AppServiceProvider extends ServiceProvider
 
             $cache = $cacheTtl ? Cache::tags(CacheTagsEnum::MOST_ACTIVE_BLOGGERS->value) : null;
 
-            return new MostActiveBloggers(
-                take: $take,
-                minCountPost: $minCountPost,
-                cacheTtl: $cacheTtl,
-                lastMonth: $lastMonth,
-                cache: $cache
-            );
+            return new MostActiveBloggers($take, $minCountPost, $cacheTtl, $lastMonth, $cache);
         });
 
         $this->app->singleton(ReadNowObjectByRedisWithTags::class, function (Application $app) {
@@ -74,21 +68,13 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(SendEmailsJobConfig::class, function () {
             ['max_locks' => $maxLocks, 'time_lock' => $timeLock, 'release_delay' => $releaseDelay] = config('queue.jobs.send_emails');
 
-            return new SendEmailsJobConfig(
-                maxLocks: $maxLocks,
-                releaseDelay: $releaseDelay,
-                timeLock: $timeLock
-            );
+            return new SendEmailsJobConfig($maxLocks, $releaseDelay, $timeLock);
         });
 
         $this->app->singleton(CacheStatQueueConfig::class, function () {
             ['max_locks' => $maxLocks, 'time_lock' => $timeLock, 'release_delay' => $releaseDelay] = config('queue.cache_stat_config');
 
-            return new CacheStatQueueConfig(
-                maxLocks: $maxLocks,
-                releaseDelay: $releaseDelay,
-                timeLock: $timeLock
-            );
+            return new CacheStatQueueConfig($maxLocks, $releaseDelay, $timeLock);
         });
 
         $this->app
