@@ -99,17 +99,17 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(
             UserProfileDto::class,
-            fn() => UserProfileDto::fromRequest(resolve(UserUpdateRequest::class))
+            fn(Application $app) => UserProfileDto::fromRequest($app->make(UserUpdateRequest::class))
         );
 
         $this->app->bind(
             CommentDto::class,
-            fn() => CommentDto::fromRequest(resolve(StoreCommentRequest::class))
+            fn(Application $app) => CommentDto::fromRequest($app->make(StoreCommentRequest::class))
         );
 
         $this->app->bind(
             BlogPostDto::class,
-            fn() => BlogPostDto::fromRequest(resolve(BlogPostRequest::class))
+            fn(Application $app) => BlogPostDto::fromRequest($app->make(BlogPostRequest::class))
         );
     }
 
