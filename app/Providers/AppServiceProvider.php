@@ -15,6 +15,7 @@ use App\Services\CacheStatQueueConfig;
 use App\Services\Contracts\MostActiveBloggersInterface;
 use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
+use App\Services\LocaleByHttpHeader;
 use App\Services\LocaleMenu;
 use App\Services\MostActiveBloggers;
 use App\Services\ReadNowObjectByRedisWithTags;
@@ -103,6 +104,13 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             PostCommentsIndexRequestDto::class,
             fn(Application $app) => PostCommentsIndexRequestDto::fromRequest($app->make(Request::class))
+        );
+
+        $this->app->singleton(
+            LocaleByHttpHeader::class,
+            fn(Application $app) => new LocaleByHttpHeader(
+                $app->make(Request::class), LocaleEnums::EN, LocaleEnums::RU
+            )
         );
     }
 

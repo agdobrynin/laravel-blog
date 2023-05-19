@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Dto\Request\Api\PostCommentsIndexRequestDto;
+use App\Dto\Request\CommentDto;
+use App\Events\CommentPosted;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommentResource;
 use App\Models\BlogPost;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 
 class PostCommentController extends Controller
 {
@@ -27,9 +30,20 @@ class PostCommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(BlogPost $post, CommentDto $dto): Response
     {
-        //
+        $comment = new Comment();
+        $comment->content = $dto->content;
+
+        if ($dto->user) {
+            $comment->user()->associate($dto->user);
+        }
+
+        $post->commentsOn()->save($comment);
+
+        event(new CommentPosted($comment));
+
+        return response()->noContent();
     }
 
     /**
