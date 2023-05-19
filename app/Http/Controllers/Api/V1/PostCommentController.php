@@ -16,7 +16,11 @@ class PostCommentController extends Controller
      */
     public function index(BlogPost $post): AnonymousResourceCollection
     {
-        return CommentResource::collection($post->commentsOn()->with('user')->get());
+        return CommentResource::collection(
+            $post->commentsOn()->with('user')
+                // TODO make env or config file for API params. May be set DTO from Request with available params
+                ->paginate()
+        );
     }
 
     /**
