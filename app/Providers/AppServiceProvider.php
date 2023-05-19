@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Dto\Request\Api\PostCommentsIndexRequest;
+use App\Dto\Request\Api\PostCommentsIndexRequestDto;
 use App\Dto\Request\BlogPostDto;
 use App\Dto\Request\CommentDto;
 use App\Dto\Request\UserProfileDto;
@@ -101,8 +101,8 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            PostCommentsIndexRequest::class,
-            fn(Application $app) => PostCommentsIndexRequest::fromRequest($app->make(Request::class))
+            PostCommentsIndexRequestDto::class,
+            fn(Application $app) => PostCommentsIndexRequestDto::fromRequest($app->make(Request::class))
         );
     }
 

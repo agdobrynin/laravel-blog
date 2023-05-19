@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Dto\Request\Api\PostCommentsIndexRequest;
+use App\Dto\Request\Api\PostCommentsIndexRequestDto;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommentResource;
 use App\Models\BlogPost;
@@ -15,11 +15,12 @@ class PostCommentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(BlogPost $post, PostCommentsIndexRequest $request): AnonymousResourceCollection
+    public function index(BlogPost $post, PostCommentsIndexRequestDto $request): AnonymousResourceCollection
     {
         return CommentResource::collection(
             $post->commentsOn()->with('user')
                 ->paginate($request->perPage)
+                ->appends((array)$request)
         );
     }
 
