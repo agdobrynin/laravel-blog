@@ -68,7 +68,7 @@ class PostCommentController extends Controller
         $comment->content = $dto->content;
         $comment->save();
 
-        return \response()->noContent();
+        return response()->noContent();
     }
 
     /**
@@ -78,6 +78,6 @@ class PostCommentController extends Controller
     {
         $comment->delete();
 
-        return \response()->noContent();
+        return response()->noContent();
     }
 }
