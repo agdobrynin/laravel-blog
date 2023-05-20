@@ -17,7 +17,7 @@ class PostCommentController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:sanctum', 'verified'])->only(['update', 'destroy']);
+        $this->middleware(['auth:sanctum', 'verified']);
         $this->authorizeResource(Comment::class, 'comment');
     }
 
