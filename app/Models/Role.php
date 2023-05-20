@@ -25,7 +25,7 @@ class Role extends Model
 
     public static function create(string $name, RolesEnum $rolesEnum): self
     {
-        $instance = new self();
+        $instance = new static();
         $instance->name = $name;
         $instance->slug = $rolesEnum->value;
 

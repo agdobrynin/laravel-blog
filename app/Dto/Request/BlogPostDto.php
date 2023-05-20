@@ -26,7 +26,7 @@ class BlogPostDto implements DtoFromRequest
 
     public static function fromRequest(Request $request): BlogPostDto
     {
-        return new self(
+        return new static(
             $request->input('title'),
             $request->input('content'),
             Tag::whereIn('id', $request->input('tags'))->get(),

@@ -11,6 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\PersonalAccessToken;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthController extends Controller
 {
@@ -22,10 +23,8 @@ class AuthController extends Controller
         /** @var User|null $user */
         $user = User::where('email', $dto->email)->first();
 
-        if (!$user || !Hash::check($dto->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'message' => [trans('These credentials do not match our records.')],
-            ]);
+        if ($user === null || !Hash::check($dto->password, $user->password)) {
+            throw new AccessDeniedHttpException(trans('These credentials do not match our records.'));
         }
 
         return (array)new LoginSuccessDto($user->createToken($dto->device)->plainTextToken);

@@ -29,7 +29,7 @@ readonly class UserProfileDto implements DtoFromRequest
             $foundIndex = 0;
         }
 
-        return new self(
+        return new static(
             LocaleEnums::cases()[$foundIndex],
             $request->input('name'),
             $request->file('avatar')

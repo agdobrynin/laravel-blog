@@ -7,7 +7,7 @@ namespace App\Dto\Request\Api;
 use App\Contracts\DtoFromRequest;
 use Illuminate\Http\Request;
 
-final readonly class LoginDto implements DtoFromRequest
+readonly class LoginDto implements DtoFromRequest
 {
     public function __construct(public string $email, public string $password, public string $device)
     {
@@ -21,6 +21,6 @@ final readonly class LoginDto implements DtoFromRequest
             'device' => 'required',
         ]);
 
-        return new self($request->input('email'), $request->input('password'), $request->input('device'));
+        return new static($request->input('email'), $request->input('password'), $request->input('device'));
     }
 }
