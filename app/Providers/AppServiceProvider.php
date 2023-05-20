@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Dto\Request\Api\LoginDto;
 use App\Dto\Request\Api\PostCommentsIndexRequestDto;
 use App\Dto\Request\BlogPostDto;
 use App\Dto\Request\CommentDto;
@@ -111,6 +112,11 @@ class AppServiceProvider extends ServiceProvider
             fn(Application $app) => new LocaleByHttpHeader(
                 $app->make(Request::class), LocaleEnums::EN, LocaleEnums::RU
             )
+        );
+
+        $this->app->singleton(
+            LoginDto::class,
+            fn(Application $app) => LoginDto::fromRequest($app->make(Request::class))
         );
     }
 

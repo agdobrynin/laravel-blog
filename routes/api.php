@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\V1\PostCommentController;
 use App\Services\LocaleByHttpHeader;
 use Illuminate\Http\Request;
@@ -17,16 +18,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/** @var LocaleByHttpHeader $localeByHeader */
+$localeByHeader = App::make(LocaleByHttpHeader::class);
+App::setLocale($localeByHeader->locale);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('login', [AuthController::class, 'login'])->name('api.login');
+Route::delete('logout', [AuthController::class, 'logout'])
+    ->middleware('auth:sanctum')
+    ->name('api.logout');
+
 Route::prefix('v1')
     ->name('api.v1.')
     ->group(static function () {
-        /** @var LocaleByHttpHeader $localeByHeader */
-        $localeByHeader = App::make(LocaleByHttpHeader::class);
-        App::setLocale($localeByHeader->locale);
-
         Route::apiResource('posts.comments', PostCommentController::class);
     });

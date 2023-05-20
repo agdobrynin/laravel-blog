@@ -9,12 +9,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CommentResource;
 use App\Models\BlogPost;
 use App\Models\Comment;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 
 class PostCommentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth:sanctum', 'verified'])->only(['update', 'destroy']);
+        $this->authorizeResource(Comment::class, 'comment');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -30,7 +36,7 @@ class PostCommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(BlogPost $post, CommentDto $dto): Response
+    public function store(BlogPost $post, CommentDto $dto): JsonResource
     {
         $comment = new Comment();
         $comment->content = $dto->content;
@@ -43,30 +49,35 @@ class PostCommentController extends Controller
 
         event(new CommentPosted($comment));
 
-        return response()->noContent();
+        return new CommentResource($comment);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Comment $comment)
+    public function show(BlogPost $post, Comment $comment): JsonResource
     {
-        //
+        return (new CommentResource($comment));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Comment $comment)
+    public function update(BlogPost $post, Comment $comment, CommentDto $dto): Response
     {
-        //
+        $comment->content = $dto->content;
+        $comment->save();
+
+        return \response()->noContent();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Comment $comment)
+    public function destroy(BlogPost $post, Comment $comment): Response
     {
-        //
+        $comment->delete();
+
+        return \response()->noContent();
     }
 }

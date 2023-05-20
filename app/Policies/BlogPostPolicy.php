@@ -17,7 +17,6 @@ class BlogPostPolicy
         if($user->hasRole(RolesEnum::ADMIN)) {
             return true;
         }
-        // TODO make roles and permission with spatie/laravel-permission
 
         return null;
     }

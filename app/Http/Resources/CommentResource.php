@@ -18,6 +18,7 @@ class CommentResource extends JsonResource
             'id' => $this->id,
             'content' => $this->content,
             'createdAt' => (string)$this->created_at,
+            'updatedAt' => (string)$this->updated_at,
             'user' => new CommentUserResource($this->whenLoaded('user')),
         ];
     }

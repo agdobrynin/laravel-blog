@@ -67,5 +67,6 @@
     "Добавлен новый пост от пользователя :user": "New post was added by user :user",
     "Новый комментарий под профилем :user в котором Вы оставили свой комментарий": "New comment was added at user profile :user you commented on",
     "Сначала новые посты": "New post first",
-    "Сначала самые обсуждаемые посты": "Most commented posts"
+    "Сначала самые обсуждаемые посты": "Most commented posts",
+    "Вы не являетесь владельцем этого комментария": "You are not owner this comment"
 }

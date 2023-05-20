@@ -15,6 +15,9 @@ readonly class CommentDto implements DtoFromRequest
 
     public static function fromRequest(Request $request): CommentDto
     {
-        return new self($request->input('content'), $request->user());
+        return new self(
+            $request->input('content'),
+            $request->user('web') ?: $request->user('sanctum')
+        );
     }
 }
