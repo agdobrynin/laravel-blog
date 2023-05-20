@@ -13,7 +13,7 @@ readonly class PostCommentsIndexRequestDto implements DtoFromRequest
     {
     }
 
-    public static function fromRequest(Request $request): PostCommentsIndexRequestDto
+    public static function fromRequest(Request $request): static
     {
         return new static((int)$request->input('perPage', 15));
     }

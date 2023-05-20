@@ -24,7 +24,7 @@ class BlogPostDto implements DtoFromRequest
         throw_if(!$this->tags->first() instanceof Tag, message: 'Parameter tags must be collection of ' . Tag::class);
     }
 
-    public static function fromRequest(Request $request): BlogPostDto
+    public static function fromRequest(Request $request): static
     {
         return new static(
             $request->input('title'),

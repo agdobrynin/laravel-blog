@@ -13,7 +13,7 @@ readonly class CommentDto implements DtoFromRequest
     {
     }
 
-    public static function fromRequest(Request $request): CommentDto
+    public static function fromRequest(Request $request): static
     {
         $user = $request->routeIs('api/*') ? $request->user('sanctum') : $request->user();
 

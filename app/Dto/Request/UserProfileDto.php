@@ -18,7 +18,7 @@ readonly class UserProfileDto implements DtoFromRequest
     {
     }
 
-    public static function fromRequest(Request $request): UserProfileDto
+    public static function fromRequest(Request $request): static
     {
         $foundIndex = array_search(
             $request->input('locale'),

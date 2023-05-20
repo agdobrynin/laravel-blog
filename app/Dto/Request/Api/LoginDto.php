@@ -13,7 +13,7 @@ readonly class LoginDto implements DtoFromRequest
     {
     }
 
-    public static function fromRequest(Request $request): LoginDto
+    public static function fromRequest(Request $request): static
     {
         $request->validate([
             'email' => 'required|email',
