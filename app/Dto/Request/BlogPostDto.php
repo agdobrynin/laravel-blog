@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Dto\Request;
 
 use App\Contracts\DtoFromRequest;
-use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -19,7 +18,7 @@ class BlogPostDto implements DtoFromRequest
          */
         public array         $tags,
         public User          $user,
-        public ?bool          $deleteImage = null,
+        public ?bool         $deleteImage = null,
         public ?UploadedFile $uploadedFile = null,
     )
     {
