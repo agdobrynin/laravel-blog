@@ -31,13 +31,13 @@
             @endif
         </div>
         <div class="col-12 col-md-6">
-            <x-ui.input name="thumb"
+            <x-ui.input name="uploadedFile"
                         type="file"
                         label="{{ __('Картинка') }}"
                         class="input-small"/>
             @if($post?->image)
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" name="delete_image" role="switch" id="flexSwitchCheckDefault">
+                    <input class="form-check-input" type="checkbox" value="1" name="deleteImage" role="switch" id="flexSwitchCheckDefault">
                     <label class="form-check-label" for="flexSwitchCheckDefault">{{ __('Удалить картинку') }}</label>
                 </div>
             @endif

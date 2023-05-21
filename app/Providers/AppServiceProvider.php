@@ -9,9 +9,6 @@ use App\Dto\Request\CommentDto;
 use App\Dto\Request\UserProfileDto;
 use App\Enums\CacheTagsEnum;
 use App\Enums\LocaleEnums;
-use App\Http\Requests\BlogPostRequest;
-use App\Http\Requests\StoreCommentRequest;
-use App\Http\Requests\UserUpdateRequest;
 use App\Services\CacheStatQueueConfig;
 use App\Services\Contracts\MostActiveBloggersInterface;
 use App\Services\Contracts\ReadNowObjectInterface;
@@ -89,17 +86,17 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(
             UserProfileDto::class,
-            fn(Application $app) => UserProfileDto::fromRequest($app->make(UserUpdateRequest::class))
+            fn(Application $app) => UserProfileDto::fromRequest($app->make(Request::class))
         );
 
         $this->app->bind(
             CommentDto::class,
-            fn(Application $app) => CommentDto::fromRequest($app->make(StoreCommentRequest::class))
+            fn(Application $app) => CommentDto::fromRequest($app->make(Request::class))
         );
 
         $this->app->bind(
             BlogPostDto::class,
-            fn(Application $app) => BlogPostDto::fromRequest($app->make(BlogPostRequest::class))
+            fn(Application $app) => BlogPostDto::fromRequest($app->make(Request::class))
         );
 
         $this->app->bind(
