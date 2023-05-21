@@ -16,7 +16,10 @@ readonly class CommentDto implements DtoFromRequest
     public static function fromRequest(Request $request): static
     {
         $user = $request->routeIs('api/*') ? $request->user('sanctum') : $request->user();
+        $data = $request->validate([
+            'content' => 'required|min:10',
+        ]);
 
-        return new static($request->input('content'), $user);
+        return new static(...$data, user: $user);
     }
 }
