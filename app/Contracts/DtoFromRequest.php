@@ -6,5 +6,5 @@ use Illuminate\Http\Request;
 
 interface DtoFromRequest
 {
-    public static function fromRequest(Request $request): self;
+    public static function fromRequest(Request $request): static;
 }

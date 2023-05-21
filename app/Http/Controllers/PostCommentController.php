@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dto\Request\CommentDto;
 use App\Events\CommentPosted;
-use App\Http\Requests\StoreCommentRequest;
+use App\Http\Resources\CommentResource;
 use App\Models\BlogPost;
 use App\Models\Comment;
 use Illuminate\Http\RedirectResponse;

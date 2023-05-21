@@ -18,7 +18,7 @@ readonly class UserProfileDto implements DtoFromRequest
     {
     }
 
-    public static function fromRequest(Request $request): UserProfileDto
+    public static function fromRequest(Request $request): static
     {
         $foundIndex = array_search(
             $request->input('locale'),
@@ -29,7 +29,7 @@ readonly class UserProfileDto implements DtoFromRequest
             $foundIndex = 0;
         }
 
-        return new self(
+        return new static(
             LocaleEnums::cases()[$foundIndex],
             $request->input('name'),
             $request->file('avatar')

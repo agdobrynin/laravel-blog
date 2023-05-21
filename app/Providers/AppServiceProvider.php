@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Dto\Request\Api\LoginDto;
+use App\Dto\Request\Api\PostCommentsIndexRequestDto;
 use App\Dto\Request\BlogPostDto;
 use App\Dto\Request\CommentDto;
 use App\Dto\Request\UserProfileDto;
@@ -14,6 +16,7 @@ use App\Services\CacheStatQueueConfig;
 use App\Services\Contracts\MostActiveBloggersInterface;
 use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
+use App\Services\LocaleByHttpHeader;
 use App\Services\LocaleMenu;
 use App\Services\MostActiveBloggers;
 use App\Services\ReadNowObjectByRedisWithTags;
@@ -21,6 +24,7 @@ use App\Services\SendEmailsJobConfig;
 use App\Services\TagsDictionary;
 use App\Services\TagsDictionaryCache;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
@@ -96,6 +100,23 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             BlogPostDto::class,
             fn(Application $app) => BlogPostDto::fromRequest($app->make(BlogPostRequest::class))
+        );
+
+        $this->app->bind(
+            PostCommentsIndexRequestDto::class,
+            fn(Application $app) => PostCommentsIndexRequestDto::fromRequest($app->make(Request::class))
+        );
+
+        $this->app->singleton(
+            LocaleByHttpHeader::class,
+            fn(Application $app) => new LocaleByHttpHeader(
+                $app->make(Request::class), LocaleEnums::EN, LocaleEnums::RU
+            )
+        );
+
+        $this->app->singleton(
+            LoginDto::class,
+            fn(Application $app) => LoginDto::fromRequest($app->make(Request::class))
         );
     }
 
