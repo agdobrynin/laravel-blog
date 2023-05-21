@@ -16,11 +16,19 @@ class HomeTest extends TestCase
         $response->assertRedirect('/en');
     }
 
-    public function testHomeLocaleWelcomeText(): void
+    public function testHomeLocaleRuWelcomeText(): void
     {
         $response = $this->get('/ru');
 
         $response->assertStatus(200);
-        $response->assertSeeText('Welcome to Laravel App');
+        $response->assertSeeText('Записи в блоге');
+    }
+
+    public function testHomeLocaleEnWelcomeText(): void
+    {
+        $response = $this->get('/en');
+
+        $response->assertStatus(200);
+        $response->assertSeeText('Blog post list');
     }
 }
