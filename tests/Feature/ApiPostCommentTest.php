@@ -80,7 +80,7 @@ class ApiPostCommentTest extends TestCase
             ->assertJsonCount(5, 'data');
     }
 
-    public function testAddComment(): void
+    public function testAddCommentSuccess(): void
     {
         $user = User::factory()->create();
         /** @var BlogPost $post */
@@ -108,6 +108,31 @@ class ApiPostCommentTest extends TestCase
                         'name',
                         'avatar'
                     ],
+                ],
+            ]);
+    }
+
+    public function testAddCommentFailedValidation(): void
+    {
+        $user = User::factory()->create();
+        /** @var BlogPost $post */
+        $post = BlogPost::factory()->make();
+        $post->user()->associate($user);
+        $post->save();
+
+        Sanctum::actingAs($user);
+
+        $response = $this->json(
+            'POST',
+            '/api/v1/posts/' . $post->id . '/comments',
+            ['content' => 'short']
+        );
+
+        $response->assertUnprocessable()
+            ->assertJson([
+                'message' => 'The content field must be at least 10 characters.',
+                'errors' => [
+                    'content' => ['The content field must be at least 10 characters.'],
                 ],
             ]);
     }
