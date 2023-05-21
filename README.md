@@ -74,7 +74,7 @@ cp .env.example .env
 
 и если нужно настроить переменные окружения в `.env` файле
 
-#### Утановка зависимостей проекта через composer
+#### Установка зависимостей проекта через composer
 
 Если на машине разработчика **не установлен** локально composer
 то зависимости проекта можно установить так
@@ -113,11 +113,11 @@ composer install --ignore-platform-reqs --no-scripts
     ./vendor/bin/sail artisan key:generate
     ```
 
-2.  Выполинть миграции и заполинть таблицы тестовыми данными
+2.  Выполнить миграции и заполнить таблицы тестовыми данными
     ```shell
     ./vendor/bin/sail artisan migrate --seed
     ```
-3. Натсроить storage link для загруженных файлов
+3. Настроить storage link для загруженных файлов
     ```shell
     ./vendor/bin/sail artisan storage:link
     ```
