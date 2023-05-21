@@ -74,7 +74,7 @@ class CommentApiPolicy
         return false;
     }
 
-    private function checkIsOwnerAndResponse(?User $user, Comment $comment): Response
+    private function checkIsOwnerAndResponse(User $user, Comment $comment): Response
     {
         return $user?->id === $comment->user_id
             ? Response::allow()

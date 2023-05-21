@@ -63,12 +63,12 @@ class PostCommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(BlogPost $post, Comment $comment, CommentDto $dto): Response
+    public function update(BlogPost $post, Comment $comment, CommentDto $dto): JsonResource
     {
         $comment->content = $dto->content;
         $comment->save();
 
-        return response()->noContent();
+        return (new CommentResource($comment));
     }
 
     /**
