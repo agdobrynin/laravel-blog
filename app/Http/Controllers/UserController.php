@@ -80,7 +80,6 @@ class UserController extends Controller
      */
     public function update(string $locale, User $user, UserProfileDto $dto)
     {
-        dd($dto);
         $user->name = $dto->name;
         App::setLocale($dto->locale->value);
 
