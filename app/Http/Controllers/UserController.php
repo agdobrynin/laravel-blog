@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Dto\Request\UserProfileDto;
 use App\Enums\CacheTagsEnum;
 use App\Enums\StoragePathEnum;
+use App\Http\Requests\UserProfileRequest;
 use App\Models\Image;
 use App\Models\User;
 use App\Models\UserPreference;
@@ -78,9 +79,12 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(string $locale, User $user, UserProfileDto $dto)
+    public function update(string $locale, User $user, UserProfileRequest $request)
     {
+        $dto = new UserProfileDto(...$request->validated());
+
         $user->name = $dto->name;
+        $user->save();
         App::setLocale($dto->locale->value);
 
         if ($user->preference) {
@@ -90,7 +94,7 @@ class UserController extends Controller
             $user->preference()->save(new UserPreference(['locale' => $dto->locale->value]));
         }
 
-        if ($avatar = $dto->uploadedFile) {
+        if ($avatar = $dto->avatar) {
             $path = Storage::putFile(StoragePathEnum::USER_AVATAR->value, $avatar);
 
             if ($user->image) {

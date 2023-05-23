@@ -2,10 +2,7 @@
 
 namespace App\Providers;
 
-use App\Dto\Request\Api\LoginDto;
-use App\Dto\Request\Api\PostCommentsIndexRequestDto;
 use App\Dto\Request\BlogPostDto;
-use App\Dto\Request\CommentDto;
 use App\Dto\Request\UserProfileDto;
 use App\Enums\CacheTagsEnum;
 use App\Enums\LocaleEnums;
@@ -84,36 +81,11 @@ class AppServiceProvider extends ServiceProvider
                 fn() => new LocaleMenu(LocaleEnums::EN, LocaleEnums::RU)
             );
 
-        $this->app->bind(
-            UserProfileDto::class,
-            fn(Application $app) => UserProfileDto::fromRequest($app->make(Request::class))
-        );
-
-        $this->app->bind(
-            CommentDto::class,
-            fn(Application $app) => CommentDto::fromRequest($app->make(Request::class))
-        );
-
-        $this->app->bind(
-            BlogPostDto::class,
-            fn(Application $app) => BlogPostDto::fromRequest($app->make(Request::class))
-        );
-
-        $this->app->bind(
-            PostCommentsIndexRequestDto::class,
-            fn(Application $app) => PostCommentsIndexRequestDto::fromRequest($app->make(Request::class))
-        );
-
         $this->app->singleton(
             LocaleByHttpHeader::class,
             fn(Application $app) => new LocaleByHttpHeader(
                 $app->make(Request::class), LocaleEnums::EN, LocaleEnums::RU
             )
-        );
-
-        $this->app->singleton(
-            LoginDto::class,
-            fn(Application $app) => LoginDto::fromRequest($app->make(Request::class))
         );
     }
 

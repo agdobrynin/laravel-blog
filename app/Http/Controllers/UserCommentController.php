@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dto\Request\CommentDto;
 use App\Events\CommentPosted;
+use App\Http\Requests\CommentRequest;
 use App\Models\Comment;
 use App\Models\User;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -18,14 +19,12 @@ class UserCommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(string $locale, User $user, CommentDto $dto): RedirectResponse
+    public function store(string $locale, User $user, CommentRequest $request): RedirectResponse
     {
+        $dto = new CommentDto(...$request->validated(), user: $request->user());
         $comment = new Comment();
         $comment->content = $dto->content;
-
-        if ($dto->user) {
-            $comment->user()->associate($dto->user);
-        }
+        $comment->user()->associate($dto->user);
 
         $user->commentsOn()->save($comment);
 

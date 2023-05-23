@@ -33,6 +33,7 @@ Route::delete('logout', [AuthController::class, 'logout'])
 
 Route::prefix('v1')
     ->name('api.v1.')
+    ->middleware(['auth:sanctum', 'verified'])
     ->group(static function () {
         Route::apiResource('posts.comments', PostCommentController::class);
     });

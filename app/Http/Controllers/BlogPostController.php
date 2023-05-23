@@ -8,6 +8,7 @@ use App\Enums\OrderBlogPostEnum;
 use App\Enums\StoragePathEnum;
 use App\Events\BlogPostAdded;
 use App\Factory\OrderBlogPostFactory;
+use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
 use App\Models\Image;
 use App\Models\User;
@@ -64,8 +65,10 @@ class BlogPostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(BlogPostDto $dto)
+    public function store(BlogPostRequest $request)
     {
+        $dto = new BlogPostDto(...$request->validated(), user: $request->user());
+
         $post = new BlogPost();
         $post->title = $dto->title;
         $post->content = $dto->content;
@@ -119,8 +122,9 @@ class BlogPostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(string $locale, BlogPost $post, BlogPostDto $dto)
+    public function update(string $locale, BlogPost $post, BlogPostRequest $request)
     {
+        $dto = new BlogPostDto(...$request->validated(), user: $request->user());
         $post->title = $dto->title;
         $post->content = $dto->content;
         $post->save();

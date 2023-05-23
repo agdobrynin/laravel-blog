@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Dto\Request\Api\PostCommentsIndexRequestDto;
+use App\Dto\Request\Api\ApiPostCommentsIndexDto;
 use App\Dto\Request\CommentDto;
 use App\Events\CommentPosted;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ApiPostCommentsIndexRequest;
+use App\Http\Requests\CommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\BlogPost;
 use App\Models\Comment;
@@ -17,18 +19,19 @@ class PostCommentController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:sanctum', 'verified']);
         $this->authorizeResource(Comment::class, 'comment');
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index(BlogPost $post, PostCommentsIndexRequestDto $request): AnonymousResourceCollection
+    public function index(BlogPost $post, ApiPostCommentsIndexRequest $request): AnonymousResourceCollection
     {
+        $dto = new ApiPostCommentsIndexDto(...$request->validated());
+
         return CommentResource::collection(
             $post->commentsOn()->with('user')
-                ->paginate($request->perPage)
+                ->paginate($dto->perPage)
                 ->appends((array)$request)
         );
     }
@@ -36,8 +39,10 @@ class PostCommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(BlogPost $post, CommentDto $dto): JsonResource
+    public function store(BlogPost $post, CommentRequest $request): JsonResource
     {
+        $dto = new CommentDto(...$request->validated(), user: $request->user());
+
         $comment = new Comment();
         $comment->content = $dto->content;
 
@@ -63,8 +68,9 @@ class PostCommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(BlogPost $post, Comment $comment, CommentDto $dto): JsonResource
+    public function update(BlogPost $post, Comment $comment, CommentRequest $request): JsonResource
     {
+        $dto = new CommentDto(...$request->validated());
         $comment->content = $dto->content;
         $comment->save();
 
