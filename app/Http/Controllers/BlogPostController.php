@@ -14,6 +14,8 @@ use App\Models\Image;
 use App\Models\User;
 use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -29,7 +31,7 @@ class BlogPostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, TagsDictionaryInterface $tagsDictionary)
+    public function index(Request $request, TagsDictionaryInterface $tagsDictionary): View
     {
         $order = OrderBlogPostFactory::make($request->get('order', ''))
             ?: OrderBlogPostEnum::LATEST_UPDATED;
@@ -57,7 +59,7 @@ class BlogPostController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
         return view('post.create');
     }
@@ -65,7 +67,7 @@ class BlogPostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(BlogPostRequest $request)
+    public function store(BlogPostRequest $request): RedirectResponse
     {
         $dto = new BlogPostDto(...$request->validated(), user: $request->user());
 
@@ -93,7 +95,7 @@ class BlogPostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $locale, BlogPost $post, ReadNowObjectInterface $readNowObject)
+    public function show(string $locale, BlogPost $post, ReadNowObjectInterface $readNowObject): View
     {
         $comments = $post->commentsOn()->with(['user.image', 'tags'])
             ->withCount('tags')
@@ -114,7 +116,7 @@ class BlogPostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $locale, BlogPost $post)
+    public function edit(string $locale, BlogPost $post): View
     {
         return view('post.edit', ['post' => $post]);
     }
@@ -122,7 +124,7 @@ class BlogPostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(string $locale, BlogPost $post, BlogPostRequest $request)
+    public function update(string $locale, BlogPost $post, BlogPostRequest $request): RedirectResponse
     {
         $dto = new BlogPostDto(...$request->validated(), user: $request->user());
         $post->title = $dto->title;
@@ -152,7 +154,7 @@ class BlogPostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $locale, BlogPost $post)
+    public function destroy(string $locale, BlogPost $post): RedirectResponse
     {
         $post->delete();
         $message = trans('Пост ":title" успешно удален', ['title' => $post->title]);
@@ -162,7 +164,7 @@ class BlogPostController extends Controller
             ->with('success', $message);
     }
 
-    public function restore(string $locale, BlogPost $post)
+    public function restore(string $locale, BlogPost $post): RedirectResponse
     {
         if ($post->restore()) {
             $message = trans('Пост ":title" успешно восстановлен', ['title' => $post->title]);

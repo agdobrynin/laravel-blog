@@ -10,7 +10,8 @@ use App\Models\Image;
 use App\Models\User;
 use App\Models\UserPreference;
 use App\Services\Contracts\ReadNowObjectInterface;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -24,33 +25,9 @@ class UserController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      */
-    public function show(string $locale, User $user, ReadNowObjectInterface $readNowObject)
+    public function show(string $locale, User $user, ReadNowObjectInterface $readNowObject): View
     {
         $comments = $user->commentsOn()->with(['user.image', 'tags'])
             ->withCount('tags')
@@ -71,7 +48,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $locale, User $user)
+    public function edit(string $locale, User $user): View
     {
         return view('user.edit', ['user' => $user]);
     }
@@ -79,7 +56,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(string $locale, User $user, UserProfileRequest $request)
+    public function update(string $locale, User $user, UserProfileRequest $request): RedirectResponse
     {
         $dto = new UserProfileDto(...$request->validated());
 
@@ -110,13 +87,5 @@ class UserController extends Controller
         return redirect()
             ->route('users.show', ['user' => $user, 'locale' => $dto->locale->value])
             ->with('success', trans('Пользователь обновлен.'));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $locale, User $user)
-    {
-        //
     }
 }
