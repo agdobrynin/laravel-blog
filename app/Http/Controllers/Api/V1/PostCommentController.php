@@ -32,7 +32,7 @@ class PostCommentController extends Controller
         return CommentResource::collection(
             $post->commentsOn()->with('user')
                 ->paginate($dto->perPage)
-                ->appends((array)$request)
+                ->appends((array)$dto)
         );
     }
 

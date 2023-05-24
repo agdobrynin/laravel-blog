@@ -17,19 +17,19 @@ class ApiPostCommentTest extends TestCase
 
     public function testForbiddenAllRoutes(): void
     {
-        $response = $this->json('GET', '/api/v1/posts/1/comments');
+        $response = $this->getJson( '/api/v1/posts/1/comments');
         $response->assertUnauthorized();
 
-        $response = $this->json('POST', '/api/v1/posts/1/comments');
+        $response = $this->postJson( '/api/v1/posts/1/comments');
         $response->assertUnauthorized();
 
-        $response = $this->json('GET', '/api/v1/posts/1/comments/1');
+        $response = $this->getJson( '/api/v1/posts/1/comments/1');
         $response->assertUnauthorized();
 
-        $response = $this->json('PUT', '/api/v1/posts/1/comments/1');
+        $response = $this->putJson('/api/v1/posts/1/comments/1');
         $response->assertUnauthorized();
 
-        $response = $this->json('DELETE', '/api/v1/posts/1/comments/1');
+        $response = $this->deleteJson( '/api/v1/posts/1/comments/1');
         $response->assertUnauthorized();
     }
 
@@ -43,7 +43,7 @@ class ApiPostCommentTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', '/api/v1/posts/' . $post->id . '/comments');
+        $response = $this->getJson( '/api/v1/posts/' . $post->id . '/comments');
 
         $response->assertOk()
             ->assertJsonStructure(['data', 'links', 'meta'])
@@ -61,7 +61,7 @@ class ApiPostCommentTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', '/api/v1/posts/' . $post->id . '/comments');
+        $response = $this->getJson('/api/v1/posts/' . $post->id . '/comments');
 
         $response->assertOk()
             ->assertJsonStructure([
@@ -90,8 +90,7 @@ class ApiPostCommentTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json(
-            'POST',
+        $response = $this->postJson(
             '/api/v1/posts/' . $post->id . '/comments',
             ['content' => 'First comment here']
         );
@@ -122,8 +121,7 @@ class ApiPostCommentTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json(
-            'POST',
+        $response = $this->postJson(
             '/api/v1/posts/' . $post->id . '/comments',
             ['content' => 'short']
         );
@@ -149,8 +147,7 @@ class ApiPostCommentTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json(
-            'PUT',
+        $response = $this->putJson(
             '/api/v1/posts/' . $post->id . '/comments/' . $comment->id,
             ['content' => 'Update comment here']
         );
@@ -176,8 +173,7 @@ class ApiPostCommentTest extends TestCase
 
         Sanctum::actingAs(User::factory()->create());
 
-        $response = $this->json(
-            'PUT',
+        $response = $this->putJson(
             '/api/v1/posts/' . $post->id . '/comments/' . $comment->id,
             ['content' => 'Update comment here']
         );
@@ -200,7 +196,7 @@ class ApiPostCommentTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('DELETE', '/api/v1/posts/' . $post->id . '/comments/' . $comment->id);
+        $response = $this->deleteJson('/api/v1/posts/' . $post->id . '/comments/' . $comment->id);
 
         $response->assertNoContent();
     }
@@ -217,7 +213,7 @@ class ApiPostCommentTest extends TestCase
 
         Sanctum::actingAs(User::factory()->create());
 
-        $response = $this->json('DELETE', '/api/v1/posts/' . $post->id . '/comments/' . $comment->id);
+        $response = $this->deleteJson('/api/v1/posts/' . $post->id . '/comments/' . $comment->id);
 
         $response->assertForbidden()
             ->assertJson(['message' => 'You are not owner this comment']);
@@ -242,8 +238,7 @@ class ApiPostCommentTest extends TestCase
             'Authorization' => 'Bearer ' . $admin->createToken('test')->plainTextToken,
         ];
 
-        $response = $this->json(
-            'DELETE',
+        $response = $this->deleteJson(
             '/api/v1/posts/' . $post->id . '/comments/' . $comment->id,
             headers: $requestHeaders
         );
