@@ -1,0 +1,19 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Blog post api",
+        "version": "1.0.1"
+    },
+    "paths": {
+        "/v1/login": {
+            "post": {
+                "operationId": "60ea6c037acd6167d9cd13e71538e375",
+                "responses": {
+                    "200": {
+                        "description": "Take a access token"
+                    }
+                }
+            }
+        }
+    }
+}
