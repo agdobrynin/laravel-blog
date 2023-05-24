@@ -17,19 +17,19 @@ class ApiPostCommentTest extends TestCase
 
     public function testForbiddenAllRoutes(): void
     {
-        $response = $this->getJson( '/api/v1/posts/1/comments');
+        $response = $this->getJson('/api/v1/posts/1/comments');
         $response->assertUnauthorized();
 
-        $response = $this->postJson( '/api/v1/posts/1/comments');
+        $response = $this->postJson('/api/v1/posts/1/comments');
         $response->assertUnauthorized();
 
-        $response = $this->getJson( '/api/v1/posts/1/comments/1');
+        $response = $this->getJson('/api/v1/posts/1/comments/1');
         $response->assertUnauthorized();
 
         $response = $this->putJson('/api/v1/posts/1/comments/1');
         $response->assertUnauthorized();
 
-        $response = $this->deleteJson( '/api/v1/posts/1/comments/1');
+        $response = $this->deleteJson('/api/v1/posts/1/comments/1');
         $response->assertUnauthorized();
     }
 
@@ -43,7 +43,7 @@ class ApiPostCommentTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->getJson( '/api/v1/posts/' . $post->id . '/comments');
+        $response = $this->getJson('/api/v1/posts/' . $post->id . '/comments');
 
         $response->assertOk()
             ->assertJsonStructure(['data', 'links', 'meta'])
