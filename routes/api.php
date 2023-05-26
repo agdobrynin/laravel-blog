@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('login', [AuthController::class, 'login'])->name('api.login');
-Route::delete('logout', [AuthController::class, 'logout'])
+Route::delete('invalidate-token', [AuthController::class, 'invalidateToken'])
     ->middleware('auth:sanctum')
     ->name('api.logout');
 

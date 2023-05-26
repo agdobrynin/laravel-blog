@@ -5,9 +5,25 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-use OpenApi\Attributes\Info;
+use OpenApi\Attributes\{Info, OpenApi, SecurityScheme, Server};
 
-#[Info(version: "1.0.1", title: "Blog post api")]
+#[OpenApi(
+    info: new Info(
+        version: "1.0.1",
+        title: "Blog post api"
+    ),
+    servers: [
+        new Server(url: '/api', description: 'API main endpoint'),
+    ],
+)]
+#[SecurityScheme(
+    securityScheme: 'apiKey',
+    type: 'apiKey',
+    description: 'Bearer token authorization',
+    name: 'apiKey',
+    in: 'header',
+    bearerFormat: 'string'
+)]
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;

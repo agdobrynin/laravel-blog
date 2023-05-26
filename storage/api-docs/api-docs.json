@@ -4,15 +4,188 @@
         "title": "Blog post api",
         "version": "1.0.1"
     },
+    "servers": [
+        {
+            "url": "/api",
+            "description": "API main endpoint"
+        }
+    ],
     "paths": {
-        "/v1/login": {
+        "/login": {
             "post": {
-                "operationId": "60ea6c037acd6167d9cd13e71538e375",
+                "summary": "Get access token by login and password",
+                "operationId": "getAccessToken",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApiLoginDto"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "Take a access token"
+                        "description": "Success credentials. Return access Bearer token.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiLoginResponseSuccessDto"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiValidationDto"
+                                }
+                            }
+                        }
                     }
                 }
+            }
+        },
+        "/invalidate-token": {
+            "delete": {
+                "description": "Invalidate access token",
+                "operationId": "invalidatedAccessToken",
+                "responses": {
+                    "204": {
+                        "description": "Access token was invalidated"
+                    },
+                    "401": {
+                        "description": "Error message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "scalar": "{ {\"apiKey\": {}} }"
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApiLoginDto": {
+                "title": "Request body for get access token",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "device": {
+                        "description": "Device name",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ApiErrorResponseDto": {
+                "title": "Response for error",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Description of what happened"
+                    },
+                    "exception": {
+                        "type": "string",
+                        "example": "Exception"
+                    }
+                },
+                "type": "object"
+            },
+            "ApiLoginResponseSuccessDto": {
+                "title": "Response for success get access token",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "5|YEjTnntLJZDlMPrRh1haTU9BLyWfdzIXHoNddFj5"
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "Bearer"
+                    },
+                    "device": {
+                        "type": "string",
+                        "example": "Samsung A32"
+                    }
+                },
+                "type": "object"
+            },
+            "ApiValidationDto": {
+                "title": "Validation errors",
+                "properties": {
+                    "message": {
+                        "description": "The given data was invalid.",
+                        "type": "string"
+                    },
+                    "errors": {
+                        "properties": {
+                            "fieldName": {
+                                "description": "Key of error display as field name",
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "collectionFormat": "multi"
+                            }
+                        },
+                        "type": "object",
+                        "example": {
+                            "email": [
+                                "The email field is required.",
+                                "The email must be a valid email address."
+                            ],
+                            "password": [
+                                "The email field is required."
+                            ]
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "apiKey": {
+                "type": "apiKey",
+                "description": "Bearer token authorization",
+                "name": "apiKey",
+                "in": "header",
+                "bearerFormat": "string"
             }
         }
     }
