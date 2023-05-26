@@ -17,10 +17,10 @@ use OpenApi\Attributes\{Info, OpenApi, SecurityScheme, Server};
     ],
 )]
 #[SecurityScheme(
-    securityScheme: 'apiKey',
+    securityScheme: 'apiKeyBearer',
     type: 'apiKey',
     description: 'Bearer token authorization',
-    name: 'apiKey',
+    name: 'Authorization',
     in: 'header',
     bearerFormat: 'string'
 )]

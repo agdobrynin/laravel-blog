@@ -36,12 +36,12 @@
                             }
                         }
                     },
-                    "403": {
-                        "description": "Invalid credentials",
+                    "422": {
+                        "description": "Validation errors",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                    "$ref": "#/components/schemas/ApiValidationDto"
                                 }
                             }
                         }
@@ -56,12 +56,12 @@
                             }
                         }
                     },
-                    "422": {
-                        "description": "Validation error",
+                    "403": {
+                        "description": "Validation errors",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiValidationDto"
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
                                 }
                             }
                         }
@@ -75,7 +75,12 @@
                 "operationId": "invalidatedAccessToken",
                 "responses": {
                     "204": {
-                        "description": "Access token was invalidated"
+                        "description": "Access token was invalidated",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     },
                     "401": {
                         "description": "Error message",
@@ -90,7 +95,7 @@
                 },
                 "security": [
                     {
-                        "scalar": "{ {\"apiKey\": {}} }"
+                        "apiKeyBearer": []
                     }
                 ]
             }
@@ -108,7 +113,7 @@
                         "type": "string"
                     },
                     "device": {
-                        "description": "Device name",
+                        "description": "Set device name",
                         "type": "string"
                     }
                 },
@@ -123,7 +128,7 @@
                     },
                     "exception": {
                         "type": "string",
-                        "example": "Exception"
+                        "example": "Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException"
                     }
                 },
                 "type": "object"
@@ -135,13 +140,13 @@
                         "type": "string",
                         "example": "5|YEjTnntLJZDlMPrRh1haTU9BLyWfdzIXHoNddFj5"
                     },
-                    "type": {
-                        "type": "string",
-                        "example": "Bearer"
-                    },
                     "device": {
                         "type": "string",
                         "example": "Samsung A32"
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "Bearer"
                     }
                 },
                 "type": "object"
@@ -154,36 +159,40 @@
                         "type": "string"
                     },
                     "errors": {
-                        "properties": {
-                            "fieldName": {
-                                "description": "Key of error display as field name",
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                },
-                                "collectionFormat": "multi"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/ApiValidationItemDto"
                             }
+                        ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ApiValidationItemDto": {
+                "title": "Validation item errors",
+                "properties": {
+                    "fieldName": {
+                        "description": "Key of error display as field name",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "collectionFormat": "multi"
                         },
-                        "type": "object",
-                        "example": {
-                            "email": [
-                                "The email field is required.",
-                                "The email must be a valid email address."
-                            ],
-                            "password": [
-                                "The email field is required."
-                            ]
-                        }
+                        "example": [
+                            "some errors 1",
+                            "some errors 2"
+                        ]
                     }
                 },
                 "type": "object"
             }
         },
         "securitySchemes": {
-            "apiKey": {
+            "apiKeyBearer": {
                 "type": "apiKey",
                 "description": "Bearer token authorization",
-                "name": "apiKey",
+                "name": "Authorization",
                 "in": "header",
                 "bearerFormat": "string"
             }
