@@ -13,6 +13,9 @@
     "paths": {
         "/login": {
             "post": {
+                "tags": [
+                    "Authenticate"
+                ],
                 "summary": "Get access token by login and password",
                 "operationId": "getAccessToken",
                 "requestBody": {
@@ -71,6 +74,9 @@
         },
         "/invalidate-token": {
             "delete": {
+                "tags": [
+                    "Authenticate"
+                ],
                 "description": "Invalidate access token",
                 "operationId": "invalidatedAccessToken",
                 "responses": {

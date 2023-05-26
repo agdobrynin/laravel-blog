@@ -34,6 +34,7 @@ class AuthController extends Controller
                 ref: ApiLoginDto::class,
             ),
         ),
+        tags: ['Authenticate']
     )]
     #[SWG\Response(
         response: ResponseAlias::HTTP_OK,
@@ -78,6 +79,7 @@ class AuthController extends Controller
         operationId: 'invalidatedAccessToken',
         description: 'Invalidate access token',
         security: [['apiKeyBearer' => []]],
+        tags: ['Authenticate'],
     )]
     #[SWG\Response(
         response: ResponseAlias::HTTP_NO_CONTENT,
