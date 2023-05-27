@@ -3,20 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Dto\Request\Api\ApiLoginDto;
-use App\Dto\Response\Api\ApiErrorResponseDto;
 use App\Dto\Response\Api\ApiLoginResponseSuccessDto;
-use App\Dto\Response\Api\ApiValidationDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApiDoLoginRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\PersonalAccessToken;
-use OpenApi\Attributes as SWG;
-use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+use OpenApi\Attributes as OA;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthController extends Controller
@@ -24,39 +23,22 @@ class AuthController extends Controller
     /**
      * @throws ValidationException
      */
-    #[SWG\Post(
-        path: '/login',
+    #[OA\Post(
+        path: '/take-token',
         operationId: 'getAccessToken',
         summary: 'Get access token by login and password',
-        requestBody: new SWG\RequestBody(
-            required: true,
-            content: new SWG\JsonContent(
-                ref: ApiLoginDto::class,
-            ),
-        ),
+        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(ref: ApiDoLoginRequest::class)),
         tags: ['Authenticate']
     )]
-    #[SWG\Response(
-        response: ResponseAlias::HTTP_OK,
-        description: 'Success credentials. Return access Bearer token.',
-        content: [new SWG\JsonContent(ref: ApiLoginResponseSuccessDto::class)]
+    #[OA\Response(
+        response: 200,
+        description: 'Success credentials.',
+        content: [new OA\JsonContent(ref: ApiLoginResponseSuccessDto::class)]
     )]
-    #[SWG\Response(
-        response: ResponseAlias::HTTP_UNPROCESSABLE_ENTITY,
-        description: 'Validation errors',
-        content: [new SWG\JsonContent(ref: ApiValidationDto::class)]
-    )]
-    #[SWG\Response(
-        response: ResponseAlias::HTTP_BAD_REQUEST,
-        description: 'Errors',
-        content: [new SWG\JsonContent(ref: ApiErrorResponseDto::class)]
-    )]
-    #[SWG\Response(
-        response: ResponseAlias::HTTP_FORBIDDEN,
-        description: 'Validation errors',
-        content: [new SWG\JsonContent(ref: ApiErrorResponseDto::class)]
-    )]
-    public function login(ApiDoLoginRequest $request): JsonResponse
+    #[OA\Response(ref: '#/components/responses/ResponseApiValidationError', response: 422)]
+    #[OA\Response(ref: '#/components/responses/ResponseApiError', response: 400)]
+    #[OA\Response(ref: '#/components/responses/ResponseApiError', response: 403, description: 'Invalid credentials')]
+    public function takeToken(ApiDoLoginRequest $request): JsonResponse
     {
         $dto = new ApiLoginDto(...$request->validated());
         /** @var User|null $user */
@@ -74,27 +56,33 @@ class AuthController extends Controller
         return response()->json((array)$dtoResponse);
     }
 
-    #[SWG\Delete(
+    #[OA\Delete(
         path: '/invalidate-token',
         operationId: 'invalidatedAccessToken',
         description: 'Invalidate access token',
         security: [['apiKeyBearer' => []]],
         tags: ['Authenticate'],
     )]
-    #[SWG\Response(
-        response: ResponseAlias::HTTP_NO_CONTENT,
-        description: 'Access token was invalidated',
-        content: [new SWG\JsonContent()],
-    )]
-    #[SWG\Response(
-        response: ResponseAlias::HTTP_UNAUTHORIZED,
-        description: 'Error message',
-        content: [new SWG\JsonContent(ref: ApiErrorResponseDto::class)]
-    )]
+    #[OA\Response(response: 204, description: 'Token was invalidated', content: [new OA\JsonContent()])]
+    #[OA\Response(ref: '#/components/responses/ResponseApiError', response: 401)]
     public function invalidateToken(Request $request): Response
     {
         PersonalAccessToken::findToken($request->bearerToken())->delete();
 
         return response()->noContent();
+    }
+
+    #[OA\Get(
+        path: '/user',
+        operationId: 'getUserInfo',
+        description: 'Info about authenticated user',
+        security: [['apiKeyBearer' => []]],
+        tags: ['Authenticate'],
+    )]
+    #[OA\Response(ref: '#/components/responses/ResponseApiError', response: 401)]
+    #[OA\Response(response: 200, description: 'Info about user', content: new OA\JsonContent(ref: UserResource::class))]
+    public function user(Request $request): JsonResource
+    {
+        return new UserResource($request->user());
     }
 }

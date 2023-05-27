@@ -4,14 +4,20 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    required: ['id', 'content', 'createdAt', 'updatedAt'],
+    properties: [
+        new OA\Property(property: 'id', type: 'integer'),
+        new OA\Property(property: 'content', type: 'string'),
+        new OA\Property(property: 'createdAt', description: 'Date and time created comment as ISO format', type: 'string'),
+        new OA\Property(property: 'updatedAt', description: 'Date and time updated comment as ISO format', type: 'string'),
+        new OA\Property(property: 'user', ref: CommentUserResource::class)
+    ],
+)]
 class CommentResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return [

@@ -8,21 +8,19 @@ use Illuminate\Routing\Controller as BaseController;
 use OpenApi\Attributes\{Info, OpenApi, SecurityScheme, Server};
 
 #[OpenApi(
-    info: new Info(
-        version: "1.0.1",
-        title: "Blog post api"
-    ),
+    info: new Info(version: '1.0.1', title: 'Blog post api'),
     servers: [
         new Server(url: '/api', description: 'API main endpoint'),
     ],
 )]
 #[SecurityScheme(
     securityScheme: 'apiKeyBearer',
-    type: 'apiKey',
+    type: 'http',
     description: 'Bearer token authorization',
     name: 'Authorization',
     in: 'header',
-    bearerFormat: 'string'
+    bearerFormat: 'string',
+    scheme: 'bearer',
 )]
 class Controller extends BaseController
 {

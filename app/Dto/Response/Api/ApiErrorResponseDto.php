@@ -3,19 +3,16 @@ declare(strict_types=1);
 
 namespace App\Dto\Response\Api;
 
-use OpenApi\Attributes as SWG;
+use OpenApi\Attributes as OA;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-#[SWG\Schema(
-    schema: 'ApiErrorResponseDto',
-    title: 'Response for error',
-)]
+#[OA\Schema(title: 'Response for error')]
 readonly class ApiErrorResponseDto
 {
     public function __construct(
-        #[SWG\Property(example: 'Description of what happened')]
+        #[OA\Property(example: 'Description of what happened')]
         public string $message,
-        #[SWG\Property(example: NotFoundHttpException::class)]
+        #[OA\Property(example: NotFoundHttpException::class)]
         public string $exception,
         public ?string $file = null,
         public ?int $line = null,

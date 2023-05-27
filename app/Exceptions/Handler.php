@@ -62,7 +62,7 @@ class Handler extends ExceptionHandler
 
                 $error = new ApiErrorResponseDto(trans('Запись не найдена'), $e::class, $file, $line);
 
-                return response()->json((array)$error, Response::HTTP_BAD_REQUEST);
+                return response()->json((array)$error, Response::HTTP_NOT_FOUND);
             }
         });
     }
