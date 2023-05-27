@@ -506,6 +506,7 @@
                 "properties": {
                     "content": {
                         "type": "string",
+                        "minimum": 10,
                         "example": "My first comment here"
                     }
                 },

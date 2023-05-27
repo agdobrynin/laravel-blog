@@ -9,7 +9,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'Request body for comment model',
     properties: [
-        new OA\Property(property: 'content', type: 'string', example: 'My first comment here'),
+        new OA\Property(property: 'content', type: 'string', minimum: 10, example: 'My first comment here'),
     ]
 )]
 class CommentRequest extends FormRequest
