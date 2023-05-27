@@ -22,14 +22,14 @@ use Illuminate\Support\Facades\Route;
 $localeByHeader = App::make(LocaleByHttpHeader::class);
 App::setLocale($localeByHeader->locale);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('take-token', [AuthController::class, 'takeToken'])->name('api.login');
 
-Route::post('login', [AuthController::class, 'login'])->name('api.login');
-Route::delete('logout', [AuthController::class, 'logout'])
-    ->middleware('auth:sanctum')
-    ->name('api.logout');
+Route::middleware('auth:sanctum')->group(function() {
+    Route::delete('invalidate-token', [AuthController::class, 'invalidateToken'])
+        ->name('api.logout');
+    Route::get('user', [AuthController::class, 'user'])
+        ->name('api.user');
+});
 
 Route::prefix('v1')
     ->name('api.v1.')

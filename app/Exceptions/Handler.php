@@ -2,9 +2,11 @@
 
 namespace App\Exceptions;
 
+use App\Dto\Response\Api\ApiErrorResponseDto;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -49,10 +51,18 @@ class Handler extends ExceptionHandler
         });
 
         $this->renderable(function (Throwable $e, Request $request) {
-            if ($request->is('api/*') && $e->getPrevious() instanceof ModelNotFoundException) {
-                return response()->json([
-                    'message' => trans('Запись не найдена')
-                ], Response::HTTP_NOT_FOUND);
+            if ($request->expectsJson() && $e->getPrevious() instanceof ModelNotFoundException) {
+                $file = null;
+                $line = null;
+
+                if (App::isLocal()) {
+                    $file = $e->getFile();
+                    $line = $e->getLine();
+                }
+
+                $error = new ApiErrorResponseDto(trans('Запись не найдена'), $e::class, $file, $line);
+
+                return response()->json((array)$error, Response::HTTP_NOT_FOUND);
             }
         });
     }
