@@ -92,8 +92,10 @@ class PostCommentController extends Controller
         $post->commentsOn()->save($comment);
 
         event(new CommentPosted($comment));
+        $resource = new CommentResource($comment);
+        $resource::$wrap = null;
 
-        return new CommentResource($comment);
+        return $resource;
     }
 
     #[OA\Get(
@@ -117,7 +119,11 @@ class PostCommentController extends Controller
     )]
     public function show(BlogPost $post, Comment $comment): JsonResource
     {
-        return (new CommentResource($comment));
+        $comment->loadMissing('user');
+        $resource = new CommentResource($comment);
+        $resource::$wrap = null;
+
+        return $resource;
     }
 
     #[OA\Put(
@@ -146,10 +152,14 @@ class PostCommentController extends Controller
     public function update(BlogPost $post, Comment $comment, CommentRequest $request): JsonResource
     {
         $dto = new CommentDto(...$request->validated());
+        $comment->loadMissing('user');
         $comment->content = $dto->content;
         $comment->save();
 
-        return new CommentResource($comment);
+        $resource = new CommentResource($comment);
+        $resource::$wrap = null;
+
+        return $resource;
     }
 
     #[OA\Delete(
