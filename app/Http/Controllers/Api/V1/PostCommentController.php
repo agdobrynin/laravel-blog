@@ -17,6 +17,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OA;
 
+#[OA\PathParameter(name: 'post', description: 'Blog post Id', required: true, schema: new OA\Schema(type: 'integer'))]
+#[OA\PathParameter(name: 'comment', description: 'Comment Id', required: true, schema: new OA\Schema(type: 'integer'))]
 class PostCommentController extends Controller
 {
     public function __construct()
@@ -32,7 +34,7 @@ class PostCommentController extends Controller
         tags: ['Comments'],
         parameters: [
             new OA\Parameter(ref: '#/components/parameters/Accept-Language'),
-            new OA\PathParameter(name: 'post', description: 'Blog post Id', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\PathParameter(ref: '#/components/parameters/post'),
             new OA\QueryParameter(ref: '#/components/parameters/QueryParameterPerPage'),
             new OA\QueryParameter(ref: '#/components/parameters/QueryParameterPage'),
         ],
@@ -66,7 +68,7 @@ class PostCommentController extends Controller
         tags: ['Comments'],
         parameters: [
             new OA\Parameter(ref: '#/components/parameters/Accept-Language'),
-            new OA\PathParameter(name: 'post', description: 'Blog post Id', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\PathParameter(ref: '#/components/parameters/post'),
         ],
         responses: [
             new OA\Response(ref: '#/components/responses/ResponseApiError', response: 401),
@@ -106,8 +108,8 @@ class PostCommentController extends Controller
         tags: ['Comments'],
         parameters: [
             new OA\Parameter(ref: '#/components/parameters/Accept-Language'),
-            new OA\PathParameter(name: 'post', description: 'Blog post Id', required: true, schema: new OA\Schema(type: 'integer')),
-            new OA\PathParameter(name: 'comment', description: 'Comment Id', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\PathParameter(ref: '#/components/parameters/post'),
+            new OA\PathParameter(ref: '#/components/parameters/comment'),
         ],
         responses: [
             new OA\Response(ref: '#/components/responses/ResponseApiError', response: 401),
@@ -135,8 +137,8 @@ class PostCommentController extends Controller
         tags: ['Comments'],
         parameters: [
             new OA\Parameter(ref: '#/components/parameters/Accept-Language'),
-            new OA\PathParameter(name: 'post', description: 'Blog post Id', required: true, schema: new OA\Schema(type: 'integer')),
-            new OA\PathParameter(name: 'comment', description: 'Comment Id', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\PathParameter(ref: '#/components/parameters/post'),
+            new OA\PathParameter(ref: '#/components/parameters/comment'),
         ],
         responses: [
             new OA\Response(ref: '#/components/responses/ResponseApiError', response: 401),
@@ -170,8 +172,8 @@ class PostCommentController extends Controller
         tags: ['Comments'],
         parameters: [
             new OA\Parameter(ref: '#/components/parameters/Accept-Language'),
-            new OA\PathParameter(name: 'post', description: 'Blog post Id', required: true, schema: new OA\Schema(type: 'integer')),
-            new OA\PathParameter(name: 'comment', description: 'Comment Id', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\PathParameter(ref: '#/components/parameters/post'),
+            new OA\PathParameter(ref: '#/components/parameters/comment'),
         ],
         responses: [
             new OA\Response(ref: '#/components/responses/ResponseApiError', response: 401),

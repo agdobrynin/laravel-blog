@@ -119,13 +119,7 @@
                         "$ref": "#/components/parameters/Accept-Language"
                     },
                     {
-                        "name": "post",
-                        "in": "path",
-                        "description": "Blog post Id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "$ref": "#/components/parameters/post"
                     },
                     {
                         "$ref": "#/components/parameters/QueryParameterPerPage"
@@ -175,13 +169,7 @@
                         "$ref": "#/components/parameters/Accept-Language"
                     },
                     {
-                        "name": "post",
-                        "in": "path",
-                        "description": "Blog post Id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "$ref": "#/components/parameters/post"
                     }
                 ],
                 "requestBody": {
@@ -237,22 +225,10 @@
                         "$ref": "#/components/parameters/Accept-Language"
                     },
                     {
-                        "name": "post",
-                        "in": "path",
-                        "description": "Blog post Id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "$ref": "#/components/parameters/post"
                     },
                     {
-                        "name": "comment",
-                        "in": "path",
-                        "description": "Comment Id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "$ref": "#/components/parameters/comment"
                     }
                 ],
                 "responses": {
@@ -293,22 +269,10 @@
                         "$ref": "#/components/parameters/Accept-Language"
                     },
                     {
-                        "name": "post",
-                        "in": "path",
-                        "description": "Blog post Id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "$ref": "#/components/parameters/post"
                     },
                     {
-                        "name": "comment",
-                        "in": "path",
-                        "description": "Comment Id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "$ref": "#/components/parameters/comment"
                     }
                 ],
                 "requestBody": {
@@ -365,22 +329,10 @@
                         "$ref": "#/components/parameters/Accept-Language"
                     },
                     {
-                        "name": "post",
-                        "in": "path",
-                        "description": "Blog post Id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "$ref": "#/components/parameters/post"
                     },
                     {
-                        "name": "comment",
-                        "in": "path",
-                        "description": "Comment Id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "$ref": "#/components/parameters/comment"
                     }
                 ],
                 "responses": {
@@ -755,6 +707,24 @@
                         "ru"
                     ],
                     "example": "en"
+                }
+            },
+            "post": {
+                "name": "post",
+                "in": "path",
+                "description": "Blog post Id",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "comment": {
+                "name": "comment",
+                "in": "path",
+                "description": "Comment Id",
+                "required": true,
+                "schema": {
+                    "type": "integer"
                 }
             },
             "QueryParameterPerPage": {

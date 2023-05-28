@@ -97,16 +97,14 @@ class ApiPostCommentTest extends TestCase
 
         $response->assertCreated()
             ->assertJsonStructure([
-                'data' => [
+                'id',
+                'content',
+                'createdAt',
+                'updatedAt',
+                'user' => [
                     'id',
-                    'content',
-                    'createdAt',
-                    'updatedAt',
-                    'user' => [
-                        'id',
-                        'name',
-                        'avatar'
-                    ],
+                    'name',
+                    'avatar'
                 ],
             ]);
     }
@@ -154,10 +152,8 @@ class ApiPostCommentTest extends TestCase
 
         $response->assertOk()
             ->assertJson([
-                'data' => [
-                    'id' => $comment->id,
-                    'content' => 'Update comment here',
-                ],
+                'id' => $comment->id,
+                'content' => 'Update comment here',
             ]);
     }
 
