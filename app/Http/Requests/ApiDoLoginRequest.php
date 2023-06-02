@@ -8,7 +8,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'Request body for get access token',
     properties: [
-        new OA\Property(property: 'email', type: 'email', example: 'felix@example.net'),
+        new OA\Property(property: 'email', type: 'string', format: 'email', example: 'felix@example.net'),
         new OA\Property(property: 'password', type: 'string', example: 'password'),
         new OA\Property(property: 'device', type: 'string', example: 'swagger ui device'),
     ]

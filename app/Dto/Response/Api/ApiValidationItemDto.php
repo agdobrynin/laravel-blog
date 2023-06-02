@@ -11,7 +11,7 @@ readonly class ApiValidationItemDto
     public function __construct(
         #[OA\Property(
             description: 'Key of error display as field name',
-            items: new OA\Items(type: 'string', collectionFormat: 'multi'),
+            items: new OA\Items(type: 'string'),
             example: ['some errors 1', 'some errors 2']
         )]
         public array $fieldName

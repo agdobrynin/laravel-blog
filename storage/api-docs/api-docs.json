@@ -18,6 +18,22 @@
                 ],
                 "summary": "Get access token by login and password",
                 "operationId": "getAccessToken",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "schema": {
+                            "description": "Application locale",
+                            "type": "string",
+                            "default": "en",
+                            "enum": [
+                                "en",
+                                "ru"
+                            ],
+                            "example": "en"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -40,13 +56,34 @@
                         }
                     },
                     "422": {
-                        "$ref": "#/components/responses/ResponseApiValidationError"
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiValidationDto"
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "$ref": "#/components/responses/ResponseApiError"
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
                     },
                     "403": {
-                        "$ref": "#/components/responses/ResponseApiError"
+                        "description": "Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -58,6 +95,22 @@
                 ],
                 "description": "Invalidate access token",
                 "operationId": "invalidatedAccessToken",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "schema": {
+                            "description": "Application locale",
+                            "type": "string",
+                            "default": "en",
+                            "enum": [
+                                "en",
+                                "ru"
+                            ],
+                            "example": "en"
+                        }
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "Token was invalidated",
@@ -68,7 +121,14 @@
                         }
                     },
                     "401": {
-                        "$ref": "#/components/responses/ResponseApiError"
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -86,15 +146,22 @@
                 "description": "Info about authenticated user",
                 "operationId": "getUserInfo",
                 "responses": {
-                    "401": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
                     "200": {
                         "description": "Info about user",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/UserResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
                                 }
                             }
                         }
@@ -116,37 +183,104 @@
                 "operationId": "getCommentsByPostId",
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/Accept-Language"
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "schema": {
+                            "description": "Application locale",
+                            "type": "string",
+                            "default": "en",
+                            "enum": [
+                                "en",
+                                "ru"
+                            ],
+                            "example": "en"
+                        }
                     },
                     {
-                        "$ref": "#/components/parameters/post"
+                        "name": "post",
+                        "in": "path",
+                        "description": "Blog post Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     },
                     {
-                        "$ref": "#/components/parameters/QueryParameterPerPage"
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "How comments show per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
                     },
                     {
-                        "$ref": "#/components/parameters/QueryParameterPage"
+                        "name": "page",
+                        "in": "query",
+                        "description": "Current page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
                     }
                 ],
                 "responses": {
-                    "401": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ResponseApiValidationError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
                     "200": {
                         "description": "Comments list with pagination for blog post id",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/CommentResourceCollection"
+                                    "type": "object",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/CommentResource"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/Paginate"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiValidationDto"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
                                 }
                             }
                         }
@@ -166,10 +300,27 @@
                 "operationId": "storeCommentToPostById",
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/Accept-Language"
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "schema": {
+                            "description": "Application locale",
+                            "type": "string",
+                            "default": "en",
+                            "enum": [
+                                "en",
+                                "ru"
+                            ],
+                            "example": "en"
+                        }
                     },
                     {
-                        "$ref": "#/components/parameters/post"
+                        "name": "post",
+                        "in": "path",
+                        "description": "Blog post Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "requestBody": {
@@ -183,24 +334,52 @@
                     }
                 },
                 "responses": {
-                    "401": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ResponseApiValidationError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
                     "201": {
                         "description": "Comment was added",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/CommentResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiValidationDto"
                                 }
                             }
                         }
@@ -222,31 +401,75 @@
                 "operationId": "showCommentByPostIdAndCommentId",
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/Accept-Language"
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "schema": {
+                            "description": "Application locale",
+                            "type": "string",
+                            "default": "en",
+                            "enum": [
+                                "en",
+                                "ru"
+                            ],
+                            "example": "en"
+                        }
                     },
                     {
-                        "$ref": "#/components/parameters/post"
+                        "name": "post",
+                        "in": "path",
+                        "description": "Blog post Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     },
                     {
-                        "$ref": "#/components/parameters/comment"
+                        "name": "comment",
+                        "in": "path",
+                        "description": "Comment Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
-                    "401": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
                     "200": {
                         "description": "Comment",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/CommentResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
                                 }
                             }
                         }
@@ -266,13 +489,36 @@
                 "operationId": "updateCommentById",
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/Accept-Language"
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "schema": {
+                            "description": "Application locale",
+                            "type": "string",
+                            "default": "en",
+                            "enum": [
+                                "en",
+                                "ru"
+                            ],
+                            "example": "en"
+                        }
                     },
                     {
-                        "$ref": "#/components/parameters/post"
+                        "name": "post",
+                        "in": "path",
+                        "description": "Blog post Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     },
                     {
-                        "$ref": "#/components/parameters/comment"
+                        "name": "comment",
+                        "in": "path",
+                        "description": "Comment Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "requestBody": {
@@ -286,27 +532,62 @@
                     }
                 },
                 "responses": {
-                    "401": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ResponseApiValidationError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
                     "200": {
                         "description": "Comment was updated",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/CommentResource"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiValidationDto"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
                                 }
                             }
                         }
@@ -326,33 +607,84 @@
                 "operationId": "destroyCommentById",
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/Accept-Language"
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "schema": {
+                            "description": "Application locale",
+                            "type": "string",
+                            "default": "en",
+                            "enum": [
+                                "en",
+                                "ru"
+                            ],
+                            "example": "en"
+                        }
                     },
                     {
-                        "$ref": "#/components/parameters/post"
+                        "name": "post",
+                        "in": "path",
+                        "description": "Blog post Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     },
                     {
-                        "$ref": "#/components/parameters/comment"
+                        "name": "comment",
+                        "in": "path",
+                        "description": "Comment Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
-                    "401": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/ResponseApiError"
-                    },
                     "204": {
                         "description": "Comment was destroyed",
                         "content": {
                             "application/json": {
                                 "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDto"
+                                }
                             }
                         }
                     }
@@ -424,8 +756,7 @@
                         "description": "Key of error display as field name",
                         "type": "array",
                         "items": {
-                            "type": "string",
-                            "collectionFormat": "multi"
+                            "type": "string"
                         },
                         "example": [
                             "some errors 1",
@@ -439,7 +770,8 @@
                 "title": "Request body for get access token",
                 "properties": {
                     "email": {
-                        "type": "email",
+                        "type": "string",
+                        "format": "email",
                         "example": "felix@example.net"
                     },
                     "password": {
@@ -465,29 +797,37 @@
                 "type": "object"
             },
             "CommentResource": {
-                "required": [
-                    "id",
-                    "content",
-                    "createdAt",
-                    "updatedAt"
-                ],
                 "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "content": {
-                        "type": "string"
-                    },
-                    "createdAt": {
-                        "description": "Date and time created comment as ISO format",
-                        "type": "string"
-                    },
-                    "updatedAt": {
-                        "description": "Date and time updated comment as ISO format",
-                        "type": "string"
-                    },
-                    "user": {
-                        "$ref": "#/components/schemas/CommentUserResource"
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "id",
+                                "content",
+                                "createdAt",
+                                "updatedAt"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "content": {
+                                    "type": "string"
+                                },
+                                "createdAt": {
+                                    "description": "Date and time created comment as ISO format",
+                                    "type": "string"
+                                },
+                                "updatedAt": {
+                                    "description": "Date and time updated comment as ISO format",
+                                    "type": "string"
+                                },
+                                "user": {
+                                    "$ref": "#/components/schemas/CommentUserResource"
+                                }
+                            },
+                            "type": "object"
+                        }
                     }
                 },
                 "type": "object"
@@ -555,25 +895,6 @@
                     }
                 },
                 "type": "object"
-            },
-            "CommentResourceCollection": {
-                "description": "List of Blog post comments with pagination",
-                "type": "object",
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/Paginate"
-                    },
-                    {
-                        "properties": {
-                            "data": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CommentResource"
-                                }
-                            }
-                        }
-                    }
-                ]
             },
             "Paginate": {
                 "description": "Paginate information",
@@ -670,82 +991,6 @@
                     }
                 },
                 "type": "object"
-            }
-        },
-        "responses": {
-            "ResponseApiError": {
-                "description": "Error message",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/ApiErrorResponseDto"
-                        }
-                    }
-                }
-            },
-            "ResponseApiValidationError": {
-                "description": "Validation errors",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/ApiValidationDto"
-                        }
-                    }
-                }
-            }
-        },
-        "parameters": {
-            "Accept-Language": {
-                "name": "Accept-Language",
-                "in": "header",
-                "schema": {
-                    "description": "Application locale",
-                    "type": "string",
-                    "default": "en",
-                    "enum": [
-                        "en",
-                        "ru"
-                    ],
-                    "example": "en"
-                }
-            },
-            "post": {
-                "name": "post",
-                "in": "path",
-                "description": "Blog post Id",
-                "required": true,
-                "schema": {
-                    "type": "integer"
-                }
-            },
-            "comment": {
-                "name": "comment",
-                "in": "path",
-                "description": "Comment Id",
-                "required": true,
-                "schema": {
-                    "type": "integer"
-                }
-            },
-            "QueryParameterPerPage": {
-                "name": "perPage",
-                "in": "query",
-                "description": "How comments show per page",
-                "required": false,
-                "schema": {
-                    "type": "integer",
-                    "default": 15
-                }
-            },
-            "QueryParameterPage": {
-                "name": "page",
-                "in": "query",
-                "description": "Current page",
-                "required": false,
-                "schema": {
-                    "type": "integer",
-                    "default": 1
-                }
             }
         },
         "securitySchemes": {
