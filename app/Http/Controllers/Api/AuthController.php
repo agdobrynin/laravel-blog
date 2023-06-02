@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ApiDoLoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Virtual\HttpApiErrorResponse;
+use App\Virtual\HttpHeaderAcceptLanguage;
+use App\Virtual\HttpValidationErrorResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -27,17 +30,21 @@ class AuthController extends Controller
         path: '/take-token',
         operationId: 'getAccessToken',
         summary: 'Get access token by login and password',
-        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(ref: ApiDoLoginRequest::class)),
         tags: ['Authenticate']
+    )]
+    #[HttpHeaderAcceptLanguage]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(ref: ApiDoLoginRequest::class)
     )]
     #[OA\Response(
         response: 200,
         description: 'Success credentials.',
         content: [new OA\JsonContent(ref: ApiLoginResponseSuccessDto::class)]
     )]
-    #[OA\Response(ref: '#/components/responses/ResponseApiValidationError', response: 422)]
-    #[OA\Response(ref: '#/components/responses/ResponseApiError', response: 400)]
-    #[OA\Response(ref: '#/components/responses/ResponseApiError', response: 403, description: 'Invalid credentials')]
+    #[HttpValidationErrorResponse]
+    #[HttpApiErrorResponse(response: 400)]
+    #[HttpApiErrorResponse(response: 403, description: 'Invalid credentials')]
     public function takeToken(ApiDoLoginRequest $request): JsonResponse
     {
         $dto = new ApiLoginDto(...$request->validated());
@@ -63,8 +70,13 @@ class AuthController extends Controller
         security: [['apiKeyBearer' => []]],
         tags: ['Authenticate'],
     )]
-    #[OA\Response(response: 204, description: 'Token was invalidated', content: [new OA\JsonContent()])]
-    #[OA\Response(ref: '#/components/responses/ResponseApiError', response: 401)]
+    #[HttpHeaderAcceptLanguage]
+    #[OA\Response(
+        response: 204,
+        description: 'Token was invalidated',
+        content: [new OA\JsonContent()]
+    )]
+    #[HttpApiErrorResponse(response: 401, description: 'Unauthorized')]
     public function invalidateToken(Request $request): Response
     {
         PersonalAccessToken::findToken($request->bearerToken())->delete();
@@ -79,8 +91,12 @@ class AuthController extends Controller
         security: [['apiKeyBearer' => []]],
         tags: ['Authenticate'],
     )]
-    #[OA\Response(ref: '#/components/responses/ResponseApiError', response: 401)]
-    #[OA\Response(response: 200, description: 'Info about user', content: new OA\JsonContent(ref: UserResource::class))]
+    #[OA\Response(
+        response: 200,
+        description: 'Info about user',
+        content: new OA\JsonContent(ref: UserResource::class),
+    )]
+    #[HttpApiErrorResponse(response: 401, description: 'Unauthorized')]
     public function user(Request $request): JsonResource
     {
         return new UserResource($request->user());

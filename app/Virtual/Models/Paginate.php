@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Swagger;
+namespace App\Virtual\Models;
 
 use OpenApi\Attributes as OA;
 
