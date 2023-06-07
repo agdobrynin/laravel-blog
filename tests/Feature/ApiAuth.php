@@ -14,36 +14,30 @@ class ApiAuth extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->json(
-            'POST',
+        $this->postJson(
             '/api/login',
             ['email' => $user->email, 'password' => 'password', 'device' => 'test']
-        );
-
-        $response->assertOk()
+        )
+            ->assertOk()
             ->assertJsonStructure(['token', 'type']);
     }
 
     public function testAuthFailedCredit(): void
     {
-        $response = $this->json(
-            'POST',
+        $this->postJson(
             '/api/login',
             ['email' => 'aaa@aaa.com', 'password' => 'password', 'device' => 'test']
-        );
-
-        $response->assertForbidden()
+        )
+            ->assertForbidden()
             ->assertJson(['message' => 'These credentials do not match our records.']);
     }
 
     public function testAuthValidationError(): void
     {
-        $response = $this->json(
-            'POST',
+        $response = $this->postJson(
             '/api/login',
-        );
-
-        $response->assertUnprocessable()
+        )
+            ->assertUnprocessable()
             ->assertJsonStructure([
                 'message',
                 'errors' => [

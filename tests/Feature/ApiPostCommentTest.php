@@ -35,11 +35,7 @@ class ApiPostCommentTest extends TestCase
 
     public function testGetPostWithoutComments(): void
     {
-        $user = User::factory()->create();
-        /** @var BlogPost $post */
-        $post = BlogPost::factory()->make();
-        $post->user()->associate($user);
-        $post->save();
+        ['user' => $user, 'post' => $post] = $this->makeUserWithPost();
 
         Sanctum::actingAs($user);
 
@@ -52,18 +48,13 @@ class ApiPostCommentTest extends TestCase
 
     public function testGetPostFiveComments(): void
     {
-        $user = User::factory()->create();
-        /** @var BlogPost $post */
-        $post = BlogPost::factory()->make();
-        $post->user()->associate($user);
-        $post->save();
+        ['user' => $user, 'post' => $post] = $this->makeUserWithPost();
         $post->commentsOn()->saveMany(Comment::factory(5)->make());
 
         Sanctum::actingAs($user);
 
-        $response = $this->getJson('/api/v1/posts/' . $post->id . '/comments');
-
-        $response->assertOk()
+        $this->getJson('/api/v1/posts/' . $post->id . '/comments')
+            ->assertOk()
             ->assertJsonStructure([
                 'data' => [
                     '*' => [
@@ -82,17 +73,15 @@ class ApiPostCommentTest extends TestCase
 
     public function testAddCommentSuccess(): void
     {
-        $user = User::factory()->has(BlogPost::factory())->create();
-        $post = $user->blogPosts()->first();
+        ['user' => $user, 'post' => $post] = $this->makeUserWithPost();
 
         Sanctum::actingAs($user);
 
-        $response = $this->postJson(
+        $this->postJson(
             '/api/v1/posts/' . $post->id . '/comments',
             ['content' => 'First comment here']
-        );
-
-        $response->assertCreated()
+        )
+            ->assertCreated()
             ->assertJsonStructure([
                 'data' => [
                     'id',
@@ -110,20 +99,15 @@ class ApiPostCommentTest extends TestCase
 
     public function testAddCommentFailedValidation(): void
     {
-        $user = User::factory()->create();
-        /** @var BlogPost $post */
-        $post = BlogPost::factory()->make();
-        $post->user()->associate($user);
-        $post->save();
+        ['user' => $user, 'post' => $post] = $this->makeUserWithPost();
 
         Sanctum::actingAs($user);
 
-        $response = $this->postJson(
+        $this->postJson(
             '/api/v1/posts/' . $post->id . '/comments',
             ['content' => 'short']
-        );
-
-        $response->assertUnprocessable()
+        )
+            ->assertUnprocessable()
             ->assertJson([
                 'message' => 'The content field must be at least 10 characters.',
                 'errors' => [
@@ -134,22 +118,17 @@ class ApiPostCommentTest extends TestCase
 
     public function testEditCommentSuccess(): void
     {
-        $user = User::factory()->create();
-        /** @var BlogPost $post */
-        $post = BlogPost::factory()->make();
-        $post->user()->associate($user);
-        $post->save();
+        ['user' => $user, 'post' => $post] = $this->makeUserWithPost();
         $comment = Comment::factory()->make(['user_id' => $user->id]);
         $post->commentsOn()->save($comment);
 
         Sanctum::actingAs($user);
 
-        $response = $this->putJson(
+        $this->putJson(
             '/api/v1/posts/' . $post->id . '/comments/' . $comment->id,
             ['content' => 'Update comment here']
-        );
-
-        $response->assertOk()
+        )
+            ->assertOk()
             ->assertJson([
                 'data' => [
                     'id' => $comment->id,
@@ -165,22 +144,17 @@ class ApiPostCommentTest extends TestCase
 
     public function testEditCommentFailedNotOwner(): void
     {
-        $user = User::factory()->create();
-        /** @var BlogPost $post */
-        $post = BlogPost::factory()->make();
-        $post->user()->associate($user);
-        $post->save();
+        ['user' => $user, 'post' => $post] = $this->makeUserWithPost();
         $comment = Comment::factory()->make(['user_id' => $user->id]);
         $post->commentsOn()->save($comment);
 
         Sanctum::actingAs(User::factory()->create());
 
-        $response = $this->putJson(
+        $this->putJson(
             '/api/v1/posts/' . $post->id . '/comments/' . $comment->id,
             ['content' => 'Update comment here']
-        );
-
-        $response->assertForbidden()
+        )
+            ->assertForbidden()
             ->assertJson([
                 'message' => 'You are not owner this comment'
             ]);
@@ -188,46 +162,32 @@ class ApiPostCommentTest extends TestCase
 
     public function testDeleteCommentSuccess(): void
     {
-        $user = User::factory()->create();
-        /** @var BlogPost $post */
-        $post = BlogPost::factory()->make();
-        $post->user()->associate($user);
-        $post->save();
+        ['user' => $user, 'post' => $post] = $this->makeUserWithPost();
         $comment = Comment::factory()->make(['user_id' => $user->id]);
         $post->commentsOn()->save($comment);
 
         Sanctum::actingAs($user);
 
-        $response = $this->deleteJson('/api/v1/posts/' . $post->id . '/comments/' . $comment->id);
-
-        $response->assertNoContent();
+        $this->deleteJson('/api/v1/posts/' . $post->id . '/comments/' . $comment->id)
+            ->assertNoContent();
     }
 
     public function testDeleteCommentFailedNotOwner(): void
     {
-        $user = User::factory()->create();
-        /** @var BlogPost $post */
-        $post = BlogPost::factory()->make();
-        $post->user()->associate($user);
-        $post->save();
+        ['user' => $user, 'post' => $post] = $this->makeUserWithPost();
         $comment = Comment::factory()->make(['user_id' => $user->id]);
         $post->commentsOn()->save($comment);
 
         Sanctum::actingAs(User::factory()->create());
 
-        $response = $this->deleteJson('/api/v1/posts/' . $post->id . '/comments/' . $comment->id);
-
-        $response->assertForbidden()
+        $this->deleteJson('/api/v1/posts/' . $post->id . '/comments/' . $comment->id)
+            ->assertForbidden()
             ->assertJson(['message' => 'You are not owner this comment']);
     }
 
     public function testDeleteCommentSuccessByAdmin(): void
     {
-        $user = User::factory()->create();
-        /** @var BlogPost $post */
-        $post = BlogPost::factory()->make();
-        $post->user()->associate($user);
-        $post->save();
+        ['user' => $user, 'post' => $post] = $this->makeUserWithPost();
         $comment = Comment::factory()->make(['user_id' => $user->id]);
         $post->commentsOn()->save($comment);
 
@@ -240,11 +200,19 @@ class ApiPostCommentTest extends TestCase
             'Authorization' => 'Bearer ' . $admin->createToken('test')->plainTextToken,
         ];
 
-        $response = $this->deleteJson(
+        $this->deleteJson(
             '/api/v1/posts/' . $post->id . '/comments/' . $comment->id,
             headers: $requestHeaders
-        );
+        )
+            ->assertNoContent();
+    }
 
-        $response->assertNoContent();
+    protected function makeUserWithPost(): array
+    {
+        $user = User::factory()->hasBlogPosts()->create();
+        /** @var BlogPost $post */
+        $post = $user->blogPosts()->first();
+
+        return ['user' => $user, 'post' => $post];
     }
 }
