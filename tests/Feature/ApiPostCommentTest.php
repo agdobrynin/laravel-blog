@@ -82,11 +82,8 @@ class ApiPostCommentTest extends TestCase
 
     public function testAddCommentSuccess(): void
     {
-        $user = User::factory()->create();
-        /** @var BlogPost $post */
-        $post = BlogPost::factory()->make();
-        $post->user()->associate($user);
-        $post->save();
+        $user = User::factory()->has(BlogPost::factory())->create();
+        $post = $user->blogPosts()->first();
 
         Sanctum::actingAs($user);
 
@@ -97,15 +94,17 @@ class ApiPostCommentTest extends TestCase
 
         $response->assertCreated()
             ->assertJsonStructure([
-                'id',
-                'content',
-                'createdAt',
-                'updatedAt',
-                'user' => [
+                'data' => [
                     'id',
-                    'name',
-                    'avatar'
-                ],
+                    'content',
+                    'createdAt',
+                    'updatedAt',
+                    'user' => [
+                        'id',
+                        'name',
+                        'avatar'
+                    ],
+                ]
             ]);
     }
 
@@ -152,8 +151,15 @@ class ApiPostCommentTest extends TestCase
 
         $response->assertOk()
             ->assertJson([
-                'id' => $comment->id,
-                'content' => 'Update comment here',
+                'data' => [
+                    'id' => $comment->id,
+                    'content' => 'Update comment here',
+                    'user' => [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'avatar' => null,
+                    ]
+                ]
             ]);
     }
 
