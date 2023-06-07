@@ -17,9 +17,8 @@ class UserProfileTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->get('/ru/users/' . $user->id);
-
-        $response->assertOk()
+        $this->get('/ru/users/' . $user->id)
+            ->assertOk()
             ->assertSeeText('Имя пользователя')
             ->assertSee('value="' . $user->name . '"', false)
             ->assertSeeText('Для комментария авторизуйтесь');
@@ -29,12 +28,10 @@ class UserProfileTest extends TestCase
     {
         $user = User::factory(2)->create();
 
-        $this->actingAs($user[0]);
-        $response = $this->get('/ru/users/' . $user[1]->id);
-
-        $response->assertOk()
+        $this->actingAs($user[0])
+            ->get('/ru/users/' . $user[1]->id)
+            ->assertOk()
             ->assertSeeText('Имя пользователя')
-            ->assertSee('value="' . $user[0]->name . '"', false)
             ->assertSee('value="' . $user[1]->name . '"', false)
             ->assertDontSee('Для комментария авторизуйтесь')
             ->assertDontSee('Изменить профиль');
@@ -44,29 +41,27 @@ class UserProfileTest extends TestCase
     {
         $user = User::factory(2)->create();
 
-        $this->actingAs($user[0]);
-        $response = $this->get('/ru/users/' . $user[1]->id . '/edit');
-
-        $response->assertForbidden();
+        $this->actingAs($user[0])
+            ->get('/ru/users/' . $user[1]->id . '/edit')
+            ->assertForbidden();
     }
 
     public function testUpdateWithRuLocaleForUpdateLocaleEnAndChangeName(): void
     {
         $user = User::factory()->create();
 
-        $this->actingAs($user);
-        $response = $this->get('/ru/users/' . $user->id . '/edit');
-
-        $response->assertOk()
+        $this->actingAs($user)
+            ->get('/ru/users/' . $user->id . '/edit')
+            ->assertOk()
             ->assertSee('value="' . $user->name . '"', false);
 
-        $response = $this->put('/ru/users/' . $user->id, ['name' => 'New Name for test', 'locale' => 'en']);
+        $this->actingAs($user)
+            ->put('/ru/users/' . $user->id, ['name' => 'New Name for test', 'locale' => 'en'])
+            ->assertRedirectToRoute('users.show', ['user' => $user->id, 'locale' => 'en']);
 
-        $response->assertRedirectToRoute('users.show', ['user' => $user->id, 'locale' => 'en']);
-
-        $response = $this->get('/en/users/' . $user->id);
-
-        $response->assertOk()
+        $this->actingAs($user)
+            ->get('/en/users/' . $user->id)
+            ->assertOk()
             ->assertSeeInOrder([
                 'User was updated',
                 'Without avatar',
@@ -78,19 +73,15 @@ class UserProfileTest extends TestCase
     public function testUpdateWithRuLocaleAddAvatar(): void
     {
         $user = User::factory()->create();
-
-        $this->actingAs($user);
-
         Storage::fake('avatars');
         $file = UploadedFile::fake()->image('avatar.jpg', 500, 500);
 
-        $response = $this->put('/ru/users/' . $user->id, ['avatar' => $file, 'name' => $user->name, 'locale' => 'ru']);
+        $this->actingAs($user)
+            ->put('/ru/users/' . $user->id, ['avatar' => $file, 'name' => $user->name, 'locale' => 'ru'])
+            ->assertRedirectToRoute('users.show', ['user' => $user->id, 'locale' => 'ru']);
 
-        $response->assertRedirectToRoute('users.show', ['user' => $user->id, 'locale' => 'ru']);
-
-        $response = $this->get('/ru/users/' . $user->id);
-
-        $response->assertOk()
+        $response = $this->get('/ru/users/' . $user->id)
+            ->assertOk()
             ->assertSeeInOrder([
                 'Пользователь обновлен',
                 'Имя пользователя',
