@@ -7,6 +7,7 @@ use App\Models\BlogPost;
 use App\Models\Comment;
 use App\Models\Role;
 use App\Models\User;
+use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -15,22 +16,19 @@ class ApiPostCommentTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testForbiddenAllRoutes(): void
+    /** @dataProvider dataForbiddenRoute */
+    public function testForbiddenRoute(string $method, string $route): void
     {
-        $response = $this->getJson('/api/v1/posts/1/comments');
-        $response->assertUnauthorized();
+        $this->json($method, $route)->assertUnauthorized();
+    }
 
-        $response = $this->postJson('/api/v1/posts/1/comments');
-        $response->assertUnauthorized();
-
-        $response = $this->getJson('/api/v1/posts/1/comments/1');
-        $response->assertUnauthorized();
-
-        $response = $this->putJson('/api/v1/posts/1/comments/1');
-        $response->assertUnauthorized();
-
-        $response = $this->deleteJson('/api/v1/posts/1/comments/1');
-        $response->assertUnauthorized();
+    public function dataForbiddenRoute(): Generator
+    {
+        yield 'comments get' => ['get', '/api/v1/posts/1/comments'];
+        yield 'comments post' => ['post', '/api/v1/posts/1/comments'];
+        yield 'one comment get' => ['get', '/api/v1/posts/1/comments/1'];
+        yield 'comment put' => ['put', '/api/v1/posts/1/comments/1'];
+        yield 'comment delete' => ['delete', '/api/v1/posts/1/comments/1'];
     }
 
     public function testGetPostWithoutComments(): void
