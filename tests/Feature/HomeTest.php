@@ -2,33 +2,24 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Generator;
 use Tests\TestCase;
 
 class HomeTest extends TestCase
 {
-    public function testHomeLocaleRedirect(): void
+    /** @dataProvider dataForLocale */
+    public function testHomeLocale(string $locale, string $text, int $statusCode, ?string $redirectUrl = null): void
     {
-        $response = $this->get('/');
+        $response = $this->get('/' . $locale)
+            ->assertStatus($statusCode);
 
-        $response->assertStatus(302);
-        $response->assertRedirect('/en');
+        $redirectUrl ? $response->assertRedirect($redirectUrl) : $response->assertSeeText($text);
     }
 
-    public function testHomeLocaleRuWelcomeText(): void
+    public function dataForLocale(): Generator
     {
-        $response = $this->get('/ru');
-
-        $response->assertStatus(200);
-        $response->assertSeeText('Записи в блоге');
-    }
-
-    public function testHomeLocaleEnWelcomeText(): void
-    {
-        $response = $this->get('/en');
-
-        $response->assertStatus(200);
-        $response->assertSeeText('Blog post list');
+        yield 'ru locale' => ['ru', 'Записи в блоге', 200];
+        yield 'en locale' => ['en', 'Blog post list', 200];
+        yield 'redirect to' => ['', '', 302, '/en'];
     }
 }
