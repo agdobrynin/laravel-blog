@@ -6,6 +6,7 @@ use App\Models\BlogPost;
 use App\Models\Comment;
 use App\Models\Tag;
 use App\Models\User;
+use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -16,49 +17,40 @@ class PostTest extends TestCase
 
     public function testNoPostInDatabase(): void
     {
-        $response = $this->get('/ru/posts');
-
-        $response->assertOk();
-        $response->assertSeeText(trans('Записей в блоге нет'));
+        $this->get('/ru/posts')
+            ->assertOk()
+            ->assertSeeText(trans('Записей в блоге нет'));
     }
 
     public function testAddPostAndSeeItOnPageWithNoComments(): void
     {
-        $post = BlogPost::make([
+        $post = BlogPost::factory([
             'title' => 'Post title one',
             'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        ]);
-        $post->user_id = User::factory()->create()->id;
-        $post->save();
+        ])->for(User::factory()->create())
+            ->create();
 
-        $response = $this->get('/ru/posts');
-
-        $response->assertOk();
-        $response->assertSeeText('Post title one');
-        $response->assertSeeText('Lorem ipsum dolor sit amet');
-        $response->assertSeeText('💬 0');
+        $this->get('/ru/posts')
+            ->assertOk()
+            ->assertSeeText('Post title one')
+            ->assertSeeText('Lorem ipsum dolor sit amet')
+            ->assertSeeText('💬 0');
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
     }
 
     public function testAddPostAndSeeItOnPageWithFiveComments(): void
     {
-        $user = User::factory()->create();
-        /** @var BlogPost $post */
-        $post = BlogPost::factory()->make();
-        $post->user_id = $user->id;
-        $post->save();
-        $comments = Comment::factory(5)->make();
-        $post->commentsOn()->saveMany($comments);
+        $post = BlogPost::factory()
+            ->for(User::factory()->create())
+            ->has(Comment::factory(5), 'commentsOn')
+            ->create();
 
-        $response = $this->get('/ru/posts');
-
-        $response->assertOk();
-        $response->assertSeeText($post->title);
-
-        $limitContent = Str::limit($post->content,  50);
-        $response->assertSeeText($limitContent);
-        $response->assertSeeText('💬 5');
+        $this->get('/ru/posts')
+            ->assertOk()
+            ->assertSeeText($post->title)
+            ->assertSeeText(Str::limit($post->content,  50))
+            ->assertSeeText('💬 5');
     }
 
     public function testStorePostWithVerifiedUser(): void
@@ -70,93 +62,71 @@ class PostTest extends TestCase
             'content' => 'Long content in new post',
             'tags' => [$tag->id],
         ];
-        // User with verified email
-        $user = User::factory()->create();
 
-        $response = $this->actingAs($user)
-            ->post('/ru/posts', $data);
-
-        $response->assertStatus(302);
-        $response->assertSessionHas('success', trans('Новый пост создан успешно'));
+        $this->actingAs(User::factory()->create())
+            ->post('/ru/posts', $data)
+            ->assertStatus(302)
+            ->assertSessionHas('success', trans('Новый пост создан успешно'));
     }
 
-    public function testStorePostFailValidationRequired(): void
+    /** @dataProvider dataStore */
+    public function testStoreValidation(array $data, array $sessionErrors): void
     {
-        $data = [
-            'title' => '',
-            'content' => '',
-        ];
-        // User with verified email
-        $user = User::factory()->create();
+        $this->actingAs(User::factory()->create())
+            ->post('/ru/posts', $data)
+            ->assertRedirect()
+            ->assertSessionHasErrors($sessionErrors);
+    }
 
-        $response = $this->actingAs($user)
-            ->post('/ru/posts', $data);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors([
+    public function dataStore(): Generator
+    {
+        yield 'empty keys data' => [[], [
             'title' => 'Поле наименование обязательно.',
-            'content' => 'Поле контент обязательно.',
-        ]);
-    }
+            'content' => 'Поле контент обязательно.']];
 
-    public function testStorePostFailValidationTooShort(): void
-    {
-        $data = [
-            'title' => 't',
-            'content' => 'c',
-        ];
-        // User with verified email
-        $user = User::factory()->create();
+        yield 'empty value data' => [['title' => '', 'content' => ''], [
+            'title' => 'Поле наименование обязательно.',
+            'content' => 'Поле контент обязательно.']];
 
-        $response = $this->actingAs($user)
-            ->post('/ru/posts', $data);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors([
+        yield 'title is too short' => [['title' => 'a', 'content' => ''], [
             'title' => 'Количество символов в поле наименование должно быть не меньше 5.',
-            'content' => 'Количество символов в поле контент должно быть не меньше 10.',
-        ]);
+            'content' => 'Поле контент обязательно.']];
+
+        yield 'title and description is too short' => [['title' => 'a', 'content' => 'a'], [
+            'title' => 'Количество символов в поле наименование должно быть не меньше 5.',
+            'content' => 'Количество символов в поле контент должно быть не меньше 10.']];
     }
 
     public function testEditPostSuccess(): void
     {
-        // User with verified email
         $user = User::factory()->create();
-        $tag = Tag::create(['name' => 'Yap!']);
-
-        $post = new BlogPost();
-        $post->title = 'The new title';
-        $post->content = 'Long new content';
-        $post->user_id = $user->id;
-        $post->save();
-        $post->tags()->save($tag);
+        /** @var BlogPost $post */
+        $post = BlogPost::factory(['title' => 'The new title', 'content' => 'Long new content'])
+            ->for($user)
+            ->create();
+        $post->tags()->save(Tag::factory()->create());
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
         $url = sprintf('/ru/posts/%s', $post->id);
+        $tagIds = $post->tags()->get()->pluck('id')->toArray();
 
-        $response = $this->actingAs($user)
-            ->put($url, ['title' => 'title updated', 'content' => 'Updated content', 'tags' => [$tag->id]]);
+        $this->actingAs($user)
+            ->put($url, ['title' => 'title updated', 'content' => 'Updated content', 'tags' => $tagIds])
+            ->assertStatus(302)
+            ->assertSessionHas('success', trans('Пост обновлен'));
 
-        $response->assertStatus(302);
-        $response->assertSessionHas('success', trans('Пост обновлен'));
         $this->assertDatabaseHas('blog_posts', ['title' => 'title updated']);
         $this->assertDatabaseMissing('blog_posts', $post->toArray());
     }
 
     public function testDelete(): void
     {
-        // User with verified email
         $user = User::factory()->create();
-
         BlogPost::unsetEventDispatcher();
 
-        $post = BlogPost::make([
-            'title' => 'title one',
-            'content' => 'long content here',
-        ]);
-
-        $post->user_id = $user->id;
-        $post->save();
+        $post = BlogPost::factory(['title' => 'title one', 'content' => 'long content here'])
+            ->for($user)
+            ->create();
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
 
