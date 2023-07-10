@@ -103,10 +103,6 @@ docker run --rm -u "$(id -u):$(id -g)" \
 ./vendor/bin/sail up -d
 ```
 
-```shell
-./vendor/bin/sail composer install
-```
-
 доступные команды по остановке или пересборке контейнеров можно узнать на странице
 [Laravel Sail](https://laravel.com/docs/10.x/sail)
 или выполните команду `./vendor/bin/sail` для получения краткой справки о доступных командах.
