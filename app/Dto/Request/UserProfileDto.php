@@ -18,7 +18,8 @@ readonly class UserProfileDto
     {
         $foundIndex = array_search(
             $locale,
-            array_column(LocaleEnums::cases(), 'value')
+            array_column(LocaleEnums::cases(), 'value'),
+            true
         );
 
         if ($foundIndex === false) {

@@ -17,7 +17,6 @@ readonly class BlogPostDto
          * @var array<int> Ids of from Tag model.
          */
         public array         $tags,
-        public User          $user,
         ?string              $deleteImage = null,
         public ?UploadedFile $uploadedFile = null,
     )

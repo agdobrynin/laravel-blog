@@ -71,12 +71,12 @@ class BlogPostController extends Controller
         BlogPostImageStorageInterface $storage,
     ): RedirectResponse
     {
-        $dto = new BlogPostDto(...$request->validated(), user: $request->user());
+        $dto = new BlogPostDto(...$request->validated());
 
         $post = new BlogPost();
         $post->title = $dto->title;
         $post->content = $dto->content;
-        $post->user()->associate($dto->user);
+        $post->user()->associate($request->user());
         $post->save();
 
         if ($file = $dto->uploadedFile) {
@@ -133,7 +133,7 @@ class BlogPostController extends Controller
         BlogPostImageStorageInterface $storage
     ): RedirectResponse
     {
-        $dto = new BlogPostDto(...$request->validated(), user: $request->user());
+        $dto = new BlogPostDto(...$request->validated());
         $post->title = $dto->title;
         $post->content = $dto->content;
         $post->save();
