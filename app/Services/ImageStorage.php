@@ -6,7 +6,7 @@ use App\Services\Contracts\AvatarImageStorageInterface;
 use App\Services\Contracts\BlogPostImageStorageInterface;
 use App\Services\Contracts\ImageStorageInterface;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Illuminate\Events\Dispatcher;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
 

@@ -21,7 +21,7 @@ use App\Services\SendEmailsJobConfig;
 use App\Services\TagsDictionary;
 use App\Services\TagsDictionaryCache;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Events\Dispatcher;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
