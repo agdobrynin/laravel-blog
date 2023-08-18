@@ -2,10 +2,11 @@
     'user',
     'createdAt' => null,
     'updatedAt' => null,
-    'avatarSize' => 24
+    'avatarSize' => 24,
+    'avatarImgSize' => 128,
 ])
 <span>
-    <x-user.avatar :$user :size="$avatarSize" {{ $attributes->merge(['class' => '']) }}/>
+    <x-user.avatar :$user  size="{{ $avatarSize }}" imgWith="{{ $avatarImgSize }}" {{ $attributes->merge(['class' => '']) }}/>
     {{ __('Автор') }}:
     @if($user)
         <a href="{{ route('users.show', $user) }}">{{$user->name}}</a>

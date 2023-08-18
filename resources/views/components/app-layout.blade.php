@@ -52,7 +52,7 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{Auth::user()->name}}
                             <small>@role(App\Enums\RolesEnum::ADMIN)👑@else📝@endrole</small>
-                            <x-user.avatar :user="Auth::user()" class="shadow-sm" :size="24"/>
+                            <x-user.avatar :user="Auth::user()" class="shadow-sm" :size="24" :imgWith="24"/>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end mt-0">
                             <li><a class="dropdown-item" href="{{ route('users.show', Auth::user()) }}">{{ __('Профиль') }}</a></li>

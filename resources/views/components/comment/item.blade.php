@@ -6,7 +6,8 @@
             <x-user.author-and-date
                 :user="$comment['user']"
                 :created_at="$comment['created_at']"
-                :avatarSize="24"
+                avatarSize="24"
+                avatarImgSize="24"
             />
         </small>
     </div>
@@ -17,5 +18,5 @@
                 <x-info.tags :tags="$comment['tags']" class="bg-secondary fw-lighter text-light"/>
             </div>
         @endif
-    @if($comment->trashed()) <del class="text-muted"> @endif
+    @if($comment->trashed()) </del> @endif
 </div>

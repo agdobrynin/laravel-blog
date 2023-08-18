@@ -90,8 +90,7 @@ class UserProfileTest extends TestCase
 
         /** @var Image $image */
         $image = User::find($user->id)->image;
-        $url = $image->url();
-        $response->assertSee($url . '" alt="Аватар пользователя"', false);
+        $response->assertSee($image->path . '" alt="Аватар пользователя"', false);
         $this->assertNotNull($image);
     }
 }

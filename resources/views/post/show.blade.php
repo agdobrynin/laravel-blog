@@ -1,4 +1,5 @@
 <x-app-layout pageTitle="{{ __('Пост') }}: {{$pageTitle}}">
+    @inject('storage', \App\Services\Contracts\BlogPostImageStorageInterface::class)
     <div class="row">
         <div class="col-12 @if($mostActiveBloggerDto->bloggers->count()) col-md-8 col-xl-9 @endif">
             <div class="border rounded shadow-sm p-3">
@@ -27,7 +28,7 @@
                 @endif
                 <div class="mt-0 mb-4 pt-4">
                     @if($image = $post->image)
-                        <img src="{{ $image->thumbUrl(950) }}" class="img-fluid w-100 mb-4 img-thumbnail" alt="Image">
+                        <img src="{{ $storage->thumbUrl($image->path, 950) }}" class="img-fluid w-100 mb-4 img-thumbnail" alt="Image">
                     @endif
                     <div style="white-space: pre-wrap;">{{ $post->content }}</div>
                 </div>

@@ -4,17 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Dto\Request\UserProfileDto;
 use App\Enums\CacheTagsEnum;
-use App\Enums\StoragePathEnum;
 use App\Http\Requests\UserProfileRequest;
 use App\Models\Image;
 use App\Models\User;
 use App\Models\UserPreference;
+use App\Services\Contracts\AvatarImageStorageInterface;
 use App\Services\Contracts\ReadNowObjectInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -56,7 +55,12 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(string $locale, User $user, UserProfileRequest $request): RedirectResponse
+    public function update(
+        string                      $locale,
+        User                        $user,
+        UserProfileRequest          $request,
+        AvatarImageStorageInterface $storage
+    ): RedirectResponse
     {
         $dto = new UserProfileDto(...$request->validated());
 
@@ -72,7 +76,7 @@ class UserController extends Controller
         }
 
         if ($avatar = $dto->avatar) {
-            $path = Storage::putFile(StoragePathEnum::USER_AVATAR->value, $avatar);
+            $path = $storage->putFile($avatar);
 
             if ($user->image) {
                 $user->image->delete();

@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\StoragePathEnum;
+use App\Services\Contracts\AvatarImageStorageInterface;
+use App\Services\Contracts\BlogPostImageStorageInterface;
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\FilesystemManager;
 
 class CacheClearImageThumbnail extends Command
 {
@@ -15,7 +15,10 @@ class CacheClearImageThumbnail extends Command
 
     protected $description = 'Clear thumbnails for images (avatars, blog post)';
 
-    public function handle(FilesystemManager $storage): void
+    public function handle(
+        AvatarImageStorageInterface   $storageAvatar,
+        BlogPostImageStorageInterface $storageBlogPost
+    ): void
     {
         $choices[] = $this->option(self::AVATAR) ? self::AVATAR : null;
         $choices[] = $this->option(self::POST) ? self::POST : null;
@@ -32,19 +35,14 @@ class CacheClearImageThumbnail extends Command
             );
         }
 
-        $directories = array_reduce($choices, function ($acc, $choice) {
+        foreach ($choices as $choice) {
             if ($choice === self::AVATAR) {
-                $acc[] = StoragePathEnum::USER_AVATAR_THUMB->value;
+                $storageAvatar->thumbClear(null);
+                $this->info('Clear thumbnails for avatar images');
             } elseif ($choice === self::POST) {
-                $acc[] = StoragePathEnum::POST_IMAGE_THUMB->value;
+                $storageBlogPost->thumbClear(null);
+                $this->info('Clear thumbnails for blog post images');
             }
-
-            return $acc;
-        }, []);
-
-        foreach ($directories as $directory) {
-            $storage->deleteDirectory($directory);
-            $this->info('Delete directory with thumbnails: ' . $directory);
         }
     }
 }

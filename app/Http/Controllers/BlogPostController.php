@@ -5,19 +5,18 @@ namespace App\Http\Controllers;
 use App\Dto\BlogPostFilterDto;
 use App\Dto\Request\BlogPostDto;
 use App\Enums\OrderBlogPostEnum;
-use App\Enums\StoragePathEnum;
 use App\Events\BlogPostAdded;
 use App\Factory\OrderBlogPostFactory;
 use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
 use App\Models\Image;
 use App\Models\User;
+use App\Services\Contracts\BlogPostImageStorageInterface;
 use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class BlogPostController extends Controller
@@ -67,7 +66,10 @@ class BlogPostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(BlogPostRequest $request): RedirectResponse
+    public function store(
+        BlogPostRequest               $request,
+        BlogPostImageStorageInterface $storage,
+    ): RedirectResponse
     {
         $dto = new BlogPostDto(...$request->validated(), user: $request->user());
 
@@ -78,7 +80,7 @@ class BlogPostController extends Controller
         $post->save();
 
         if ($file = $dto->uploadedFile) {
-            $path = Storage::putFile(StoragePathEnum::POST_IMAGE->value, $file);
+            $path = $storage->putFile($file);
             $image = new Image(['path' => $path]);
             $post->image()->save($image);
         }
@@ -124,7 +126,12 @@ class BlogPostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(string $locale, BlogPost $post, BlogPostRequest $request): RedirectResponse
+    public function update(
+        string                        $locale,
+        BlogPost                      $post,
+        BlogPostRequest               $request,
+        BlogPostImageStorageInterface $storage
+    ): RedirectResponse
     {
         $dto = new BlogPostDto(...$request->validated(), user: $request->user());
         $post->title = $dto->title;
@@ -137,7 +144,7 @@ class BlogPostController extends Controller
         }
 
         if ($file = $dto->uploadedFile) {
-            $path = Storage::putFile(StoragePathEnum::POST_IMAGE->value, $file);
+            $path = $storage->putFile($file);
 
             if ($post->image) {
                 $post->image->delete();

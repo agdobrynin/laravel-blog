@@ -6,6 +6,7 @@
 ])
 
 @inject('tagsDictionary', App\Services\Contracts\TagsDictionaryInterface::class)
+@inject('storage', \App\Services\Contracts\BlogPostImageStorageInterface::class)
 
 <form action="{{ $route }}"
       method="post"
@@ -25,7 +26,7 @@
     <div class="row mb-4">
         <div class="col-12 col-md-6 text-center img-thumbnail">
             @if($post?->image)
-                <img src="{{ $post->image->url() }}" alt="Blog post image" class="img-fluid w-100"/>
+                <img src="{{ $storage->url($post->image->path) }}" alt="Blog post image" class="img-fluid w-100"/>
             @else
                 {{ __('Без картинки') }}
             @endif
