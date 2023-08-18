@@ -2,14 +2,17 @@
 
 namespace App\Providers;
 
-use App\Dto\Request\BlogPostDto;
-use App\Dto\Request\UserProfileDto;
 use App\Enums\CacheTagsEnum;
 use App\Enums\LocaleEnums;
+use App\Events\ResizeAvatarImageEvent;
+use App\Events\ResizeBlogPostImageEvent;
 use App\Services\CacheStatQueueConfig;
+use App\Services\Contracts\AvatarImageStorageInterface;
+use App\Services\Contracts\BlogPostImageStorageInterface;
 use App\Services\Contracts\MostActiveBloggersInterface;
 use App\Services\Contracts\ReadNowObjectInterface;
 use App\Services\Contracts\TagsDictionaryInterface;
+use App\Services\ImageStorage;
 use App\Services\LocaleByHttpHeader;
 use App\Services\LocaleMenu;
 use App\Services\MostActiveBloggers;
@@ -18,9 +21,11 @@ use App\Services\SendEmailsJobConfig;
 use App\Services\TagsDictionary;
 use App\Services\TagsDictionaryCache;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -87,6 +92,25 @@ class AppServiceProvider extends ServiceProvider
                 $app->make(Request::class), LocaleEnums::EN, LocaleEnums::RU
             )
         );
+
+        $this->app->bind(
+            AvatarImageStorageInterface::class,
+            fn() => new ImageStorage(
+                Storage::disk('avatar'),
+                ResizeAvatarImageEvent::class,
+                $this->app->make(Dispatcher::class),
+            )
+        );
+
+        $this->app->bind(
+            BlogPostImageStorageInterface::class,
+            fn() => new ImageStorage(
+                Storage::disk('blog_image'),
+                ResizeBlogPostImageEvent::class,
+                $this->app->make(Dispatcher::class)
+            )
+        );
+
     }
 
     /**

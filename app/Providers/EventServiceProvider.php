@@ -4,9 +4,13 @@ namespace App\Providers;
 
 use App\Events\BlogPostAdded;
 use App\Events\CommentPosted;
+use App\Events\ResizeAvatarImageEvent;
+use App\Events\ResizeBlogPostImageEvent;
 use App\Listeners\CacheStatSubscriber;
 use App\Listeners\NotifyAdminBlogPostAdded;
 use App\Listeners\NotifyUsersAboutComment;
+use App\Listeners\ResizeAvatarImageSubscriber;
+use App\Listeners\ResizeBlogPostImageSubscriber;
 use App\Listeners\UserEventSubscriber;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -29,6 +33,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         BlogPostAdded::class => [
             NotifyAdminBlogPostAdded::class,
+        ],
+        ResizeAvatarImageEvent::class => [
+            ResizeAvatarImageSubscriber::class,
+        ],
+        ResizeBlogPostImageEvent::class => [
+            ResizeBlogPostImageSubscriber::class,
         ],
     ];
 

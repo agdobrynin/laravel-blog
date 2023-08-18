@@ -3,9 +3,11 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Enums\StoragePathEnum;
+use App\Services\Contracts\AvatarImageStorageInterface;
+use App\Services\Contracts\BlogPostImageStorageInterface;
 use Illuminate\Database\Seeder;
 use Illuminate\Filesystem\FilesystemManager;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
@@ -19,10 +21,13 @@ class DatabaseSeeder extends Seeder
             $this->command->call('mig:ref');
             $this->command->info('Database was refreshed');
 
-            foreach (StoragePathEnum::cases() as $case) {
-                $storage->deleteDirectory($case->value);
-                $this->command->info('Delete storage directory: '.$case->value);
-            }
+            /** @var AvatarImageStorageInterface $storageAvatar */
+            $storageAvatar = App::make(AvatarImageStorageInterface::class);
+            /** @var BlogPostImageStorageInterface $storagePost */
+            $storagePost = App::make(BlogPostImageStorageInterface::class);
+
+            $storageAvatar->fileSystem()->deleteDirectory('');
+            $storagePost->fileSystem()->deleteDirectory('');
         }
 
         $this->call([
