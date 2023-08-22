@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Services\Contracts\AvatarImageStorageInterface;
 use App\Services\Contracts\BlogPostImageStorageInterface;
 use App\Services\Contracts\ImageStorageInterface;
-use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
 
@@ -49,28 +49,32 @@ readonly class ImageStorage implements ImageStorageInterface, AvatarImageStorage
 
     public function thumbFilePath(string $path, ?int $width = null, ?int $height = null): string
     {
-        $info = pathinfo($path);
+        ['extension' => $extension, 'filename' => $filename] = pathinfo($path);
 
         return sprintf(
             '%s%s%s%s%s%s',
             $this->thumbDirectory($path),
             DIRECTORY_SEPARATOR,
-            $info['filename'],
+            $filename,
             $width ? '_w_' . $width : '',
             $height ? '_h_' . $height : '',
-            $info['extension'] ? '.' . $info['extension'] : ''
+            $extension ? '.' . $extension : ''
         );
     }
 
     protected function thumbDirectory(?string $path = null): string
     {
-        $info = $path ? pathinfo($path) : null;
+        if ($path) {
+            ['filename' => $filename] = pathinfo($path);
+        } else {
+            $filename = '';
+        }
 
         return sprintf(
             '%s%s%s',
             self::THUMB_PREFIX,
             DIRECTORY_SEPARATOR,
-            $info['filename'] ?? '',
+            $filename,
         );
     }
 
